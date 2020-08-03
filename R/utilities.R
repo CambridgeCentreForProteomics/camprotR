@@ -19,3 +19,9 @@
 remove_dots <- function(x) {
   gsub("(?<=\\.)\\.+", "", x, perl = TRUE)
 }
+
+#' @noRd
+message_parse <- function(x, column, message) {
+  message(sprintf("%s features found from %s master proteins => %s",
+                  nrow(x), length(unique(x[[column]])), message))
+}
