@@ -111,13 +111,19 @@ parse_features <- function(data,
     }
   }
 
-  # remove peptides with non-unique master proteins
+  # remove features without a master protein
+  if (any(is.na(data[[master_protein_col]]))) {
+    data <- data[!is.na(data[[master_protein_col]]), ]
+    message_parse(data, master_protein_col, "features without a master protein removed")
+  }
+
+  # remove features with non-unique master proteins
   if (unique_master) {
     data <- data[data[["Number.of.Protein.Groups"]] == 1, ]
     message_parse(data, master_protein_col, "features with non-unique master proteins removed")
   }
 
-  # remove peptides with quantification warnings if necessary
+  # remove features with quantification warnings if necessary
   if (silac | TMT & level == "peptide") {
     data <- data[is.na(data[["Quan.Info"]]), ]
     message_parse(data, master_protein_col, "features without quantification removed")
