@@ -4,7 +4,7 @@
 \name{camprotR-package}
 \alias{camprotR}
 \alias{camprotR-package}
-\title{camprotR: What the Package Does (One Line, Title Case)}
+\title{camprotR: Processing, analysing and visualising CCP proteomics data}
 \description{
 What the package does (one paragraph).
 }
@@ -13,7 +13,7 @@ What the package does (one paragraph).
 
 Authors:
 \itemize{
-  \item Tom Smith \email{some@email.com} (\href{https://orcid.org/ORCID_goes_here}{ORCID})
+  \item Tom Smith \email{tss38@cam.ac.uk} (\href{https://orcid.org/0000-0002-0697-8777}{ORCID})
 }
 
 }
