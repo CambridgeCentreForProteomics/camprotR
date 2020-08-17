@@ -20,6 +20,23 @@ remove_dots <- function(x) {
   gsub("(?<=\\.)\\.+", "", x, perl = TRUE)
 }
 
+#' Remove leading X
+#'
+#' @description A convenience function to remove a leading X
+#'
+#' @param x `character`.
+#' @return Returns `character` with leading X removed
+#' @examples
+#'
+#' df <- data.frame('1'=c(1,2))
+#'
+#' removeX(colnames(df))
+#'
+#' @export
+removeX <- function(x) {
+  gsub("^X", "", x)
+}
+
 #' @noRd
 message_parse <- function(x, column, message) {
   message(sprintf("%s features found from %s master proteins => %s",
