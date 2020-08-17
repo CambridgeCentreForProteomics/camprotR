@@ -25,7 +25,7 @@ theme_camprot <- function(base_size=20, base_family='serif',
   if(!border){
     camprot_theme <- camprot_theme + theme(
       panel.border = element_blank(),
-      axis.line = element_line(colour = "black"))
+      axis.line = element_line(colour = "black", size=0.5))
   }
   
   camprot_theme
