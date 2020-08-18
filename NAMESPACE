@@ -3,6 +3,7 @@
 export(determine_ancestor_function)
 export(determine_offspring_function)
 export(expand_terms)
+export(filter_TMT_PSMs)
 export(filter_na)
 export(filter_val)
 export(filter_zero)
