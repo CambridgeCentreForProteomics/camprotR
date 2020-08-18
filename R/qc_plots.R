@@ -80,8 +80,9 @@ get_psm_metrics <- function(obj,
       not_missing=sum(!is.na(intensity), na.rm=TRUE),
       below_thresh=sum(intensity<threshold, na.rm=TRUE),
       above_thresh=sum(intensity>=threshold, na.rm=TRUE),
-      perc_below=round(100*below_thresh/(below_thresh+above_thresh),1),
-      perc_missing=round(100*missing/(missing+not_missing),1),
+      total=missing+not_missing,
+      perc_below=round(100*below_thresh/(total),1),
+      perc_missing=round(100*missing/(total),1),
       median_intensity=median(intensity, na.rm=TRUE)) %>%
     ungroup
 }
