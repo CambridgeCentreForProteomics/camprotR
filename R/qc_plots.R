@@ -47,22 +47,20 @@ plot_quant <- function(obj,
   return(p)
 }
 
-#' Summarise percentage of tag intensities below notch and missing
+#' Summarise percentage of tag intensities below a given threshold and missing
 #'
 #' @description Given an `MSnSet`, return a `data.frame` summarising the
-#' percentage of tag intensities below notch and missing
+#' percentage of tag intensities below a given threshold, missing values
 #' and the median tag intensity
 #'
 #' @param obj `MSnSet`.
 #' @param group_by_sample Group the summaries by sample
-#' @param notch_lower `numeric` Lower boundary of notch
-#' @param notch_upper `numeric` Upper boundary of notch
+#' @param threshold `numeric` Minimum intensity threshold
 #'  
 #' @return `data.frame` object.
 #' @export
 get_psm_metrics <- function(obj,
-                            notch_lower=3.75,
-                            notch_upper=5.75,
+                            threshold=5.75,
                             group_by_sample=FALSE){
   e_data <- data.frame(exprs(obj))
   
@@ -80,9 +78,9 @@ get_psm_metrics <- function(obj,
     summarise(
       missing=sum(is.na(intensity), na.rm=TRUE),
       not_missing=sum(!is.na(intensity), na.rm=TRUE),
-      below_notch=sum(intensity<notch_upper, na.rm=TRUE),
-      above_notch=sum(intensity>=notch_upper, na.rm=TRUE),
-      perc_below=round(100*below_notch/(below_notch+above_notch),1),
+      below_thresh=sum(intensity<threshold, na.rm=TRUE),
+      above_thresh=sum(intensity>=threshold, na.rm=TRUE),
+      perc_below=round(100*below_thresh/(below_thresh+above_thresh),1),
       perc_missing=round(100*missing/(missing+not_missing),1),
       median_intensity=median(intensity, na.rm=TRUE)) %>%
     ungroup
