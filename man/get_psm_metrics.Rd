@@ -2,21 +2,14 @@
 % Please edit documentation in R/qc_plots.R
 \name{get_psm_metrics}
 \alias{get_psm_metrics}
-\title{Summarise percentage of tag intensities below notch and missing}
+\title{Summarise percentage of tag intensities below a given threshold and missing}
 \usage{
-get_psm_metrics(
-  obj,
-  notch_lower = 3.75,
-  notch_upper = 5.75,
-  group_by_sample = FALSE
-)
+get_psm_metrics(obj, threshold = 5.75, group_by_sample = FALSE)
 }
 \arguments{
 \item{obj}{\code{MSnSet}.}
 
-\item{notch_lower}{\code{numeric} Lower boundary of notch}
-
-\item{notch_upper}{\code{numeric} Upper boundary of notch}
+\item{threshold}{\code{numeric} Minimum intensity threshold}
 
 \item{group_by_sample}{Group the summaries by sample}
 }
@@ -25,6 +18,6 @@ get_psm_metrics(
 }
 \description{
 Given an \code{MSnSet}, return a \code{data.frame} summarising the
-percentage of tag intensities below notch and missing
+percentage of tag intensities below a given threshold, missing values
 and the median tag intensity
 }
