@@ -81,7 +81,7 @@ parse_features <- function(data,
     # identify associated crap proteins first if necessary
     if (filter_associated_crap) {
       associated_crap <- data %>%
-        filter(master_protein_col %in% crap_proteins |
+        filter(!!sym(master_protein_col) %in% crap_proteins |
                  grepl("cRAP", data[[protein_col]], ignore.case = FALSE)) %>%
         pull(protein_col) %>%
         strsplit("; ") %>%
@@ -94,10 +94,10 @@ parse_features <- function(data,
 
     # then remove normal crap proteins
     data <- data %>%
-      filter(!master_protein_col %in% crap_proteins &
+      filter(!(!!sym(master_protein_col)) %in% crap_proteins &
                !grepl("cRAP", data[[protein_col]], ignore.case = FALSE))
     message_parse(data, master_protein_col, "cRAP features removed")
-
+    
     # then remove associated crap proteins if necessary
     if (filter_associated_crap) {
       if (length(associated_crap) > 0) {
@@ -125,7 +125,7 @@ parse_features <- function(data,
 
   # remove features with quantification warnings if necessary
   if (silac | TMT & level == "peptide") {
-    data <- data[is.na(data[["Quan.Info"]]), ]
+    data <- data[(is.na(data[["Quan.Info"]]) | data[["Quan.Info"]]==''), ]
     message_parse(data, master_protein_col, "features without quantification removed")
   }
   data
