@@ -113,7 +113,7 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
     geom_vline(xintercept=log2(notch_upper), size=0.5, colour=colours[1])
   
   if(facet_by_sample){
-    psm_metrics <- get_psm_metrics(obj, group_by_sample=TRUE) %>%
+    psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
       mutate(label=sprintf('%s %%  ', perc_below))
 
     p <- p + geom_text(aes(label=label), data=psm_metrics,
@@ -123,7 +123,7 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
       theme_camprot(border=FALSE, base_size=10)
   } else{
     
-    psm_metrics <- get_psm_metrics(obj)
+    psm_metrics <- get_psm_metrics(obj, threshold=notch_upper)
     
     p <- p + annotate(geom='text',
                       label=sprintf('%s %%  ', psm_metrics$perc_below),
