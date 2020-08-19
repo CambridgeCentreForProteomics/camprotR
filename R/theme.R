@@ -48,8 +48,8 @@ get_cat_palette <- function(n){
   # colour-blind friendly palettes from:
   # http://mkweb.bcgsc.ca/colorblind/palettes.mhtml#page-container
   
-  cbPalette7 <- c("#2271B2", "#f0e442", "#359B73", "#d55e00",
-                  "#3DB7E9", "#e69f00", "#F748A5")
+  cbPalette7 <- c("#2271B2", "#d55e00", "#3DB7E9", "#e69f00", "#359B73",
+                  "#F748A5", "#f0e442")
   
   cbPalette12 <- c("#9F0162", "#009F81", "#FF5AAF", "#00FCCF",
                    "#8400CD", "#008DF9", "#00C2F9", "#FFB2FD",
