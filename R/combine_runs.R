@@ -187,14 +187,14 @@ compare_sequences_per_protein <- function(seq2new_master_prot,
 compare_IDs <- function(seq2new_master_prot, master_prot_col){
   id_match <- seq2new_master_prot %>%
     rowwise() %>%
-    mutate(same_id=ifelse(matchProteins(
+    mutate(same_id=ifelse(match_proteins(
       !!sym(master_prot_col), Updated.Master.Protein.Accessions),
       'Same ID(s)', 'Different ID(s)')) %>%
     pull(same_id) %>%
     table()
   
-  message(id_match)
-  message(round(100*id_match/sum(id_match), 1))
+  print(id_match)
+  print(round(100*id_match/sum(id_match), 1))
   
   invisible(NULL)
 }
@@ -223,8 +223,8 @@ compare_single_master <- function(seq2new_master_prot, master_prot_col){
     spread(key=updated, value=n) %>%
     tibble::column_to_rownames('original')
   
-  message(single_master)
-  message(round(100*single_master/sum(single_master), 2))
+  print(single_master)
+  print(round(100*single_master/sum(single_master), 2))
   
   invisible(NULL)
 }
