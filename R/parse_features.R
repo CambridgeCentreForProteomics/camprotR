@@ -81,7 +81,7 @@ parse_features <- function(data,
     # identify associated crap proteins first if necessary
     if (filter_associated_crap) {
       associated_crap <- data %>%
-        filter(master_protein_col %in% crap_proteins |
+        filter(!!sym(master_protein_col) %in% crap_proteins |
                  grepl("cRAP", data[[protein_col]], ignore.case = FALSE)) %>%
         pull(protein_col) %>%
         strsplit("; ") %>%
@@ -94,10 +94,10 @@ parse_features <- function(data,
 
     # then remove normal crap proteins
     data <- data %>%
-      filter(!master_protein_col %in% crap_proteins &
+      filter(!(!!sym(master_protein_col)) %in% crap_proteins &
                !grepl("cRAP", data[[protein_col]], ignore.case = FALSE))
     message_parse(data, master_protein_col, "cRAP features removed")
-
+    
     # then remove associated crap proteins if necessary
     if (filter_associated_crap) {
       if (length(associated_crap) > 0) {
@@ -125,8 +125,48 @@ parse_features <- function(data,
 
   # remove features with quantification warnings if necessary
   if (silac | TMT & level == "peptide") {
-    data <- data[is.na(data[["Quan.Info"]]), ]
+    data <- data[(is.na(data[["Quan.Info"]]) | data[["Quan.Info"]]==''), ]
     message_parse(data, master_protein_col, "features without quantification removed")
   }
   data
+}
+
+#' Filter a PSM-level MSnSet to remove low quality PSMs
+#'
+#' @description Filter PSMs from TMT quantification to remove the following
+#'
+#' 1. Missing values (NA) for all tags
+#' 2. Interference/co-isolation above a set value (default=100, e.g no filtering)
+#' 3. Signal:noise ratio below a set value (default=0, e.g no filtering)
+#' 
+#' @param obj `MSnSet` PSMs
+#' @param inter_thresh `numeric` Maximum allowed interference/co-isolation
+#' @param sn_thresh `numeric` Minimum allowed signal:noise threshold
+#' @param master_protein_col `string`. Name of column containing master
+#' proteins.
+#' @param inter_col `string` Name of column containing the interference value
+#' @param sn_col `string` Name of column containing the signal:noise value
+#' 
+#' @return `MSnSet` with the filtered PSMs.
+#' @export
+filter_TMT_PSMs <- function(obj,
+                        inter_thresh=100,
+                        sn_thresh=0,
+                        master_protein_col='Master.Protein.Accessions',
+                        inter_col='Isolation.Interference.in.Percent',
+                        sn_col='Average.Reporter.SN',
+                        verbose=TRUE){
+  
+  if(verbose) message("Filtering PSMs...")
+  
+  obj <- obj[rowSums(is.finite(exprs(obj)))>0,]
+  if(verbose) message_parse(fData(obj), master_protein_col, "No quant filtering")
+  
+  obj <- obj[fData(obj)[[inter_col]]<=inter_thresh,]
+  if(verbose) message_parse(fData(obj), master_protein_col, "Co-isolation filtering")
+  
+  obj <- obj[fData(obj)[[sn_col]]>=sn_thresh,]
+  if(verbose) message_parse(fData(obj), master_protein_col, "S:N ratio filtering")
+  
+  obj
 }
