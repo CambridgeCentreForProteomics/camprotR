@@ -13,9 +13,9 @@ plot_quant(
 \arguments{
 \item{obj}{\code{MSnSet}.}
 
-\item{method}{\code{string} Plot style. Choice of box, density or histogramplot.}
+\item{method}{\code{string}. Plot style. Choice of box, density or histogram plot.}
 
-\item{facet_by_sample}{Facet the plot by sample}
+\item{facet_by_sample}{\code{logical}. Facet the plot by sample.}
 }
 \value{
 \code{ggplot} object.

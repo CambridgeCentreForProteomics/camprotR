@@ -4,9 +4,9 @@
 #' (aka periods) from the elements of a vector, e.g. will change `..` or `...`
 #' or `....` etc. to just `.` Mainly used to fix column names.
 #'
-#' @param x `character`. Contains duplicate full stops to be removed.
+#' @param x `character` or `string`. Contains duplicate full stops to be removed.
 #'
-#' @return Returns `character` with duplicate full stops removed.
+#' @return Returns `character` or `string` with duplicate full stops removed.
 #' @examples
 #'
 #' df <- data.frame(

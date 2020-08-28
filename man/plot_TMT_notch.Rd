@@ -14,11 +14,11 @@ plot_TMT_notch(
 \arguments{
 \item{obj}{\code{MSnSet}.}
 
-\item{notch_lower}{\code{numeric} Lower boundary of notch}
+\item{notch_lower}{\code{numeric}. Lower boundary of notch.}
 
-\item{notch_upper}{\code{numeric} Upper boundary of notch}
+\item{notch_upper}{\code{numeric}. Upper boundary of notch.}
 
-\item{facet_by_sample}{Facet the plot by sample}
+\item{facet_by_sample}{\code{logical}. Facet the plot by sample.}
 }
 \value{
 \code{ggplot} object.

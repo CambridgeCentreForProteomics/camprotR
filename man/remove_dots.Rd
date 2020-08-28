@@ -7,10 +7,10 @@
 remove_dots(x)
 }
 \arguments{
-\item{x}{\code{character}. Contains duplicate full stops to be removed.}
+\item{x}{\code{character} or \code{string}. Contains duplicate full stops to be removed.}
 }
 \value{
-Returns \code{character} with duplicate full stops removed.
+Returns \code{character} or \code{string} with duplicate full stops removed.
 }
 \description{
 A convenience function to remove any duplicated full stops
