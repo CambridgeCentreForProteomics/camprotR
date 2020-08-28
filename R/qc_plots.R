@@ -1,12 +1,12 @@
 #' Plot distributions for feature intensities per sample.
 #'
 #' @description Given an `MSnSet`, return a plot
-#' of the feature intensities per sample. 
+#' of the feature intensities per sample.
 #'
 #' @param obj `MSnSet`.
 #' @param method `string` Plot style. Choice of box, density or histogramplot.
 #' @param facet_by_sample Facet the plot by sample
-#' 
+#'
 #' @return `ggplot` object.
 #' @export
 plot_quant <- function(obj,
@@ -16,10 +16,10 @@ plot_quant <- function(obj,
 
   e_data[e_data==""] <- NA
   e_data <- e_data %>% gather(key='sample', value='intensity') %>%
-    mutate(sample=removeX(sample))
+    mutate(sample=remove_x(sample))
 
   p <- ggplot(e_data) + theme_bw()
-    
+
   if(method=='box'){
     p <- p +
       geom_boxplot(aes(sample, intensity)) +
@@ -40,7 +40,7 @@ plot_quant <- function(obj,
       xlab("Feature intensity") +
       ylab("Count")
   }
-  
+
   if(facet_by_sample){
     p <- p + facet_wrap(~sample)
   }
@@ -56,20 +56,20 @@ plot_quant <- function(obj,
 #' @param obj `MSnSet`.
 #' @param group_by_sample Group the summaries by sample
 #' @param threshold `numeric` Minimum intensity threshold
-#'  
+#'
 #' @return `data.frame` object.
 #' @export
 get_psm_metrics <- function(obj,
                             threshold=5.75,
                             group_by_sample=FALSE){
   e_data <- data.frame(exprs(obj))
-  
+
   e_data[e_data==""] <- NA
-  
+
   e_data <- e_data %>% gather(key='sample', value='intensity')
-  
+
   if(group_by_sample){
-    e_data_grouped <- e_data %>% group_by(sample=removeX(sample))
+    e_data_grouped <- e_data %>% group_by(sample=remove_x(sample))
     } else{
   e_data_grouped <- e_data
   }
@@ -97,13 +97,13 @@ get_psm_metrics <- function(obj,
 #' @param facet_by_sample Facet the plot by sample
 #' @param notch_lower `numeric` Lower boundary of notch
 #' @param notch_upper `numeric` Upper boundary of notch
-#'  
+#'
 #' @return `ggplot` object.
 #' @export
 plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sample=FALSE){
-  
+
   colours = get_cat_palette(2)
-  
+
   p <- obj %>%
     log(base=2) %>%
     plot_quant(method='histogram', facet_by_sample=facet_by_sample) +
@@ -111,7 +111,7 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
     xlab('PSM intensity (log2)') +
     geom_vline(xintercept=log2(notch_lower), size=0.5, colour=colours[2]) +
     geom_vline(xintercept=log2(notch_upper), size=0.5, colour=colours[1])
-  
+
   if(facet_by_sample){
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
       mutate(label=sprintf('%s %%  ', perc_below))
@@ -122,9 +122,9 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
                        vjust=2, hjust=1, size=4) +
       theme_camprot(border=FALSE, base_size=10)
   } else{
-    
+
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper)
-    
+
     p <- p + annotate(geom='text',
                       label=sprintf('%s %%  ', psm_metrics$perc_below),
                       family='serif',
@@ -132,6 +132,6 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
                       vjust=2, hjust=1, size=8) +
       theme_camprot(border=FALSE)
   }
-  
+
   invisible(p)
 }

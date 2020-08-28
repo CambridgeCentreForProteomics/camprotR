@@ -22,18 +22,19 @@ remove_dots <- function(x) {
 
 #' Remove leading X
 #'
-#' @description A convenience function to remove a leading X
+#' @description A convenience function to remove a leading capital X.
+#' Is case sensitive.
 #'
-#' @param x `character`.
-#' @return Returns `character` with leading X removed
+#' @param x `character` or `string`.
+#' @return Returns `character` or `string` with leading X removed.
 #' @examples
 #'
-#' df <- data.frame('1'=c(1,2))
+#' df <- data.frame('X1'=c(1,2))
 #'
 #' removeX(colnames(df))
 #'
 #' @export
-removeX <- function(x) {
+remove_x <- function(x) {
   gsub("^X", "", x)
 }
 
