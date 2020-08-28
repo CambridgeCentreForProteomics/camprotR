@@ -82,13 +82,13 @@ psm_to_peptide_style_modifications <- function(psm_style_modifications){
 #' @return `data.frame` indicating which SILAC peptides were MS2 sequenced and
 #' the maximum interference across all PSMs for the peptide
 #' @export
-silac_psm_seq_int <- function(obj,sequence_col='Annotated.Sequence'){
+silac_psm_seq_int <- function(obj, sequence_col='Annotated.Sequence'){
   
   obj <- obj %>%
     filter(Quan.Channel!='') %>%
     rowwise() %>%
     filter(is.finite(Precursor.Abundance)) %>%
-    mutate(sequence_col=make_annotated_upper(!!sym(sequence_col))) %>%
+    mutate(!!sequence_col:=make_annotated_upper(!!sym(sequence_col))) %>%
     remove_silac_modifications(level='psm') %>%
     mutate(Modifications=psm_to_peptide_style_modifications(Modifications))
   
