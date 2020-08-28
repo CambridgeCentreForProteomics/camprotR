@@ -4,8 +4,8 @@
 #' of the feature intensities per sample.
 #'
 #' @param obj `MSnSet`.
-#' @param method `string` Plot style. Choice of box, density or histogramplot.
-#' @param facet_by_sample Facet the plot by sample
+#' @param method `string`. Plot style. Choice of box, density or histogram plot.
+#' @param facet_by_sample `logical`. Facet the plot by sample.
 #'
 #' @return `ggplot` object.
 #' @export
@@ -54,8 +54,8 @@ plot_quant <- function(obj,
 #' and the median tag intensity
 #'
 #' @param obj `MSnSet`.
-#' @param group_by_sample Group the summaries by sample
-#' @param threshold `numeric` Minimum intensity threshold
+#' @param threshold `numeric`. Minimum intensity threshold
+#' @param group_by_sample `logical`. Group the summaries by sample
 #'
 #' @return `data.frame` object.
 #' @export
@@ -94,9 +94,9 @@ get_psm_metrics <- function(obj,
 #' intensities below the upper boundary of the notch region
 #'
 #' @param obj `MSnSet`.
-#' @param facet_by_sample Facet the plot by sample
-#' @param notch_lower `numeric` Lower boundary of notch
-#' @param notch_upper `numeric` Upper boundary of notch
+#' @param notch_lower `numeric`. Lower boundary of notch.
+#' @param notch_upper `numeric`. Upper boundary of notch.
+#' @param facet_by_sample `logical`. Facet the plot by sample.
 #'
 #' @return `ggplot` object.
 #' @export
@@ -122,7 +122,6 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
                        vjust=2, hjust=1, size=4) +
       theme_camprot(border=FALSE, base_size=10)
   } else{
-
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper)
 
     p <- p + annotate(geom='text',

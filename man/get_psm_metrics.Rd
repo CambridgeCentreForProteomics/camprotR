@@ -9,9 +9,9 @@ get_psm_metrics(obj, threshold = 5.75, group_by_sample = FALSE)
 \arguments{
 \item{obj}{\code{MSnSet}.}
 
-\item{threshold}{\code{numeric} Minimum intensity threshold}
+\item{threshold}{\code{numeric}. Minimum intensity threshold}
 
-\item{group_by_sample}{Group the summaries by sample}
+\item{group_by_sample}{\code{logical}. Group the summaries by sample}
 }
 \value{
 \code{data.frame} object.
