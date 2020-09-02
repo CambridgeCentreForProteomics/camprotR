@@ -5,7 +5,7 @@
 \title{Extract peptide sequencing and interference information from SILAC
 PSM-level output}
 \usage{
-silac_psm_seq_int(obj, sequence_col = "Annotated.Sequence")
+silac_psm_seq_int(obj, sequence_col = "Sequence")
 }
 \arguments{
 \item{obj}{\code{data.frame} PSM-level output from Proteome Discoverer}
