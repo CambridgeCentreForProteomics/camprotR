@@ -20,6 +20,6 @@ Is case sensitive.
 
 df <- data.frame('X1'=c(1,2))
 
-removeX(colnames(df))
+remove_x(colnames(df))
 
 }

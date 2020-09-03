@@ -16,7 +16,7 @@ plot_quant <- function(obj,
 
   e_data[e_data==""] <- NA
   e_data <- e_data %>% gather(key='sample', value='intensity') %>%
-    mutate(sample=factor(removeX(sample), levels=colnames(e_data)))
+    mutate(sample=factor(remove_x(sample), levels=colnames(e_data)))
 
   p <- ggplot(e_data) + theme_bw()
 

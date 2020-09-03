@@ -31,7 +31,7 @@ remove_dots <- function(x) {
 #'
 #' df <- data.frame('X1'=c(1,2))
 #'
-#' removeX(colnames(df))
+#' remove_x(colnames(df))
 #'
 #' @export
 remove_x <- function(x) {
