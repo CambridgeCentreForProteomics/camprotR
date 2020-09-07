@@ -4,7 +4,9 @@ warnings_are_errors: false
 
 #Define multiple R-versions, one from bioconductor
 r:
-  - oldrel
+# Error with oldrel, relating to get_ancestor_go test:
+# https://travis-ci.org/github/CambridgeCentreForProteomics/camprotR/jobs/725055118#L3281-L3301
+#  - oldrel
   - release
   - devel
 # Cannot use bioc-devel r:
