@@ -14,5 +14,10 @@ r_packages:
   
 notifications:
   email:
+    recipients: tss38@cam.ac.uk
     on_success: change
     on_failure: change
+
+# We don't need latex or pandoc (yet..)
+latex: false
+pandoc: false
