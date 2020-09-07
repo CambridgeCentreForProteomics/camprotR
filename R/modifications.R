@@ -39,31 +39,27 @@ psm_to_peptide_style_modifications <- function(psm_style_modifications){
 
 #' Remove SILAC labels from modifications
 #'
-#' @description This function removes SILAC heavy/light labels from the
+#' @description This function removes SILAC heavy/light labels from a PD
 #' Modifications column. When dealing with PSM level Proteome Discoverer output,
 #' this is required to match PSMs for the same peptide, or to transfer PSM-level
 #' features to peptide-level data.
 #'
-#' @param obj `data.frame` PSM or Peptide-level output from Proteome Discoverer
-#' @param level `string` Eiher 'psm' or 'peptide'
-#' @return `data.frame` with the updated Modifications column
+#' @param mod_col `character vector` Modification column from Proteome Discoverer
+#' @param level `character` Either 'psm' or 'peptide'
+#' @return `character vector` updated Modifications column
 #' @export
-remove_silac_modifications <- function(obj, level='psm'){
+remove_silac_modifications <- function(mod_col, level='psm'){
   if(!level %in% c('psm', 'peptide')) stop('level must be psm or peptide')
 
   if(level=='psm'){
-    obj <- obj %>%
-      mutate(Modifications=gsub(
-        '^(; )', '',
-        gsub('(; )?(K|R)\\d{1,2}\\(Label:13C\\(6\\)15N\\((2|4)\\)\\)', '',
-             Modifications)))
+    mod_col <- gsub('^(; )', '',
+                    gsub('(; )?(K|R)\\d{1,2}\\(Label:13C\\(6\\)15N\\((2|4)\\)\\)',
+                         '', mod_col))
   } else{
-    obj <- obj %>%
-      mutate(Modifications=gsub(
-        '^(; )', '',
-        gsub('(; )?\\dxLabel:\\S+ \\[.*]', '',
-             Modifications)))
+    mod_col <- gsub('^(; )', '',
+                    gsub('(; )?\\dxLabel:\\S+ \\[.*]',
+                         '', mod_col))
   }
 
-  return(obj)
+  return(mod_col)
 }

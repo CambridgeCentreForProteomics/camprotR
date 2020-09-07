@@ -36,17 +36,17 @@
 estimate_incorporation <- function(psm_infile,
                                    peptide_infile,
                                    crap_fasta,
-                                   master_protein_col="Master.Protein.Accessions",
-                                   protein_col="Protein.Accessions",
-                                   sequence_col='Sequence',
-                                   modifications_col='Modifications',
-                                   mix=0,
-                                   outdir){
-
-  if(!dir.exists(outdir)) dir.create(outdir)
+                                   master_protein_col = "Master.Protein.Accessions",
+                                   protein_col = "Protein.Accessions",
+                                   sequence_col = 'Sequence',
+                                   modifications_col = 'Modifications',
+                                   mix = 0,
+                                   outdir) {
+  if (!dir.exists(outdir)) dir.create(outdir)
 
   psm_sequenced_data <- silac_psm_seq_int(read.delim(psm_infile),
-                                          sequence_col=sequence_col)
+    sequence_col = sequence_col
+  )
 
   # Load the cRAP FASTA used for the PD search
   crap.fasta <- Biostrings::fasta.index(crap_fasta, seqtype = "AA")
@@ -58,46 +58,56 @@ estimate_incorporation <- function(psm_infile,
     unlist()
 
   peptide_data <- parse_features(read.delim(peptide_infile),
-                                 master_protein_col=master_protein_col,
-                                 protein_col=protein_col,
-                                 unique_master=FALSE,
-                                 silac=TRUE,
-                                 level="peptide",
-                                 filter_crap=TRUE,
-                                 crap_proteins=crap.accessions,
-                                 filter_associated_crap=TRUE) %>%
+    master_protein_col = master_protein_col,
+    protein_col = protein_col,
+    unique_master = FALSE,
+    silac = TRUE,
+    level = "peptide",
+    filter_crap = TRUE,
+    crap_proteins = crap.accessions,
+    filter_associated_crap = TRUE
+  ) %>%
     filter(grepl('K|R|k|r', !!sym(sequence_col))) %>%
-    filter(Quan.Info!='Redundant')
+    filter(Quan.Info != 'Redundant')
 
   light_col <- colnames(peptide_data)[
-    grepl('Abundances.Grouped.(F\\d*.)?Light', colnames(peptide_data))]
+    grepl('Abundances.Grouped.(F\\d*.)?Light', colnames(peptide_data))
+  ]
   heavy_col <- colnames(peptide_data)[
-    grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))]
+    grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))
+  ]
 
   peptide_data <- peptide_data %>%
     select(!!sym(sequence_col), !!sym(modifications_col),
-           !!sym(protein_col), !!sym(master_protein_col), Number.of.Missed.Cleavages,
-           'light'=all_of(light_col), 'heavy'=all_of(heavy_col)) %>%
-    mutate(corrected_light=light-(mix*heavy)) %>%
+      !!sym(protein_col), !!sym(master_protein_col), Number.of.Missed.Cleavages,
+      'light' = all_of(light_col), 'heavy' = all_of(heavy_col)
+    ) %>%
+    mutate(corrected_light = light - (mix * heavy)) %>%
     rowwise() %>%
-    mutate(incorporation=get_incorporation(light, heavy),
-           corrected_incorporation=get_incorporation(corrected_light, heavy))
+    mutate(
+      incorporation = get_incorporation(light, heavy),
+      corrected_incorporation = get_incorporation(corrected_light, heavy)
+    )
 
   peptide_data <- peptide_data %>%
-    remove_silac_modifications(level='peptide') %>%
-    merge(psm_sequenced_data, by=c(sequence_col, modifications_col)) %>%
-    mutate(found_light=ifelse(Sequenced_Light, 'Light: Spectrum matched', ifelse(
-      is.finite(light), 'Light: Detected by mass shift', 'Light: Not found')),
-      found_heavy=ifelse(Sequenced_Heavy, 'Heavy: Spectrum matched', ifelse(
-        is.finite(heavy), 'Heavy: Detected by mass shift', 'Heavy: Not found')))
+    remove_silac_modifications(level = 'peptide') %>%
+    merge(psm_sequenced_data, by = c(sequence_col, modifications_col)) %>%
+    mutate(
+      found_light = ifelse(Sequenced_Light, 'Light: Spectrum matched', ifelse(
+        is.finite(light), 'Light: Detected by mass shift', 'Light: Not found'
+      )),
+      found_heavy = ifelse(Sequenced_Heavy, 'Heavy: Spectrum matched', ifelse(
+        is.finite(heavy), 'Heavy: Detected by mass shift', 'Heavy: Not found'
+      ))
+    )
 
   p_cor <- peptide_data %>%
     filter(is.finite(light), is.finite(heavy)) %>%
     ggplot(aes(log10(heavy), log10(light))) +
-    geom_point(size=0.2) +
+    geom_point(size = 0.2) +
     theme_bw() +
-    theme(aspect.ratio=1) +
-    facet_wrap(found_heavy~found_light) +
+    theme(aspect.ratio = 1) +
+    facet_wrap(found_heavy ~ found_light) +
     xlab('Heavy intensity (log10)') +
     ylab('Light intensity (log10)') +
     xlim(3, NA) +
@@ -105,17 +115,18 @@ estimate_incorporation <- function(psm_infile,
 
   ggsave(file.path(outdir, 'heavy_light_correlation.png'), p_cor)
 
-  if(mix>0){
-    p_cor2 <- p_cor + geom_abline(slope=1, linetype=2,
-                                  intercept=log10((mix/2)/(1-(mix/2))),
-                                  colour=get_cat_palette(1))
+  if (mix > 0) {
+    p_cor2 <- p_cor + geom_abline(
+      slope = 1, linetype = 2,
+      intercept = log10((mix / 2) / (1 - (mix / 2))),
+      colour = get_cat_palette(1)
+    )
 
     ggsave(file.path(outdir, 'heavy_light_correlation2.png'), p_cor2)
 
     peptide_incorporation <- peptide_data %>%
       filter(is.finite(light), is.finite(heavy)) %>%
-      plot_incorporation(mix=mix)
-
+      plot_incorporation(mix = mix)
   } else {
     peptide_incorporation <- plot_incorporation(peptide_data)
   }
@@ -130,36 +141,43 @@ estimate_incorporation <- function(psm_infile,
     unique() %>%
     group_by(!!sym(master_protein_col)) %>%
     tally() %>%
-    filter(n>1)
+    filter(n > 1)
 
   # Use MsnSets here and make other combine methods available?
-  if(mix>0){
+  if (mix > 0) {
     protein_data <- peptide_data %>%
       filter(is.finite(light), is.finite(heavy)) %>%
       group_by(!!sym(master_protein_col)) %>%
-      summarise(corrected_incorporation=median(corrected_incorporation, na.rm=TRUE),
-                incorporation=median(incorporation, na.rm=TRUE)) %>%
-      merge(multi_peptide, by=master_protein_col)
-  } else{
+      summarise(
+        corrected_incorporation = median(corrected_incorporation, na.rm = TRUE),
+        incorporation = median(incorporation, na.rm = TRUE)
+      ) %>%
+      merge(multi_peptide, by = master_protein_col)
+  } else {
     protein_data <- peptide_data %>%
       group_by(!!sym(master_protein_col)) %>%
-      summarise(corrected_incorporation=median(corrected_incorporation, na.rm=TRUE),
-                incorporation=median(incorporation, na.rm=TRUE)) %>%
-      merge(multi_peptide, by=master_protein_col)
+      summarise(
+        corrected_incorporation = median(corrected_incorporation, na.rm = TRUE),
+        incorporation = median(incorporation, na.rm = TRUE)
+      ) %>%
+      merge(multi_peptide, by = master_protein_col)
   }
 
 
-  protein_incorporation <- plot_incorporation(protein_data, level='Protein', mix=mix)
+  protein_incorporation <- plot_incorporation(protein_data, level = 'Protein', mix = mix)
   ggsave(file.path(outdir, 'protein_incorporation.png'), protein_incorporation$p)
 
   incorporation_estimates <- data.frame(matrix(
-    unlist(c(peptide_incorporation$incorporation_estimates,
-             protein_incorporation$incorporation_estimates)),
-    ncol=length(peptide_incorporation$incorporation_estimates), byrow=TRUE)) %>%
+    unlist(c(
+      peptide_incorporation$incorporation_estimates,
+      protein_incorporation$incorporation_estimates
+    )),
+    ncol = length(peptide_incorporation$incorporation_estimates), byrow = TRUE
+  )) %>%
     setNames(names(peptide_incorporation$incorporation_estimates)) %>%
-    mutate('level'=c('peptide', 'protein'))#
+    mutate('level' = c('peptide', 'protein')) #
 
-  write.table(incorporation_estimates, file.path(outdir, 'incorporation.tsv'), sep='\t', row.name=FALSE)
+  write.table(incorporation_estimates, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
 
   invisible(NULL)
 }
