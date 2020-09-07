@@ -4,12 +4,18 @@
 \alias{addSiteSequence}
 \title{Add a column with amino acid sequence around a PTM}
 \usage{
-addSiteSequence(obj, proteome_fasta)
+addSiteSequence(
+  obj,
+  proteome_fasta,
+  master_protein_col = "Master.Protein.Accessions"
+)
 }
 \arguments{
 \item{obj}{\code{data.frame} with PD output at PSM/peptide level}
 
 \item{proteome_fasta}{\code{character} Filepath for proteome fasta}
+
+\item{master_protein_col}{\code{character} Column name for master protein}
 }
 \value{
 \code{data.frame}

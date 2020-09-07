@@ -258,16 +258,21 @@ getSequence <-function(proteome, protein, ptm_position, pad=7){
 #'
 #' @param obj `data.frame` with PD output at PSM/peptide level
 #' @param proteome_fasta `character` Filepath for proteome fasta
+#' @param master_protein_col `character` Column name for master protein
 #'
 #' @return `data.frame`
 #' @export
-addSiteSequence <- function(obj, proteome_fasta){
+addSiteSequence <- function(obj,
+                            proteome_fasta,
+                            master_protein_col="Master.Protein.Accessions"){
 
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split="\\|") , "[[", 2)
 
   obj <- obj %>% rowwise() %>%
-    mutate(site_seq = getSequence(proteome, Master.Protein.Accessions, ptm_position)) %>%
+    mutate(site_seq = getSequence(proteome,
+                                  !!sym(master_protein_col),
+                                  ptm_position)) %>%
     data.frame()
 
   return(obj)

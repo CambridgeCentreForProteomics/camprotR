@@ -51,7 +51,10 @@ restrict_features_per_protein <- function(
     mutate(retain=n>=min_features) %>%
     dplyr::select(sample, retain, feature_ID) %>%
     spread(key=sample, value=retain) %>%
-    tibble::column_to_rownames('feature_ID')
+    tibble::column_to_rownames('feature_ID') %>%
+    as.matrix.data.frame()
+
+  colnames(retain_mask) <- remove_x(colnames(retain_mask))
 
   retain_mask[is.na(retain_mask)] <- FALSE
   retain_mask <- retain_mask[rownames(obj),colnames(obj)]
