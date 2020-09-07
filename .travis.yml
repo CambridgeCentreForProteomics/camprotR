@@ -7,11 +7,15 @@ r:
   - oldrel
   - release
   - devel
-  - bioc-devel
+# Cannot use bioc-devel r:
+# Error in install.packages("BiocManager") : unable to install packages
+# See: https://travis-ci.community/t/in-r-version-4-0-0-library-path-not-writable/9744/9
+#  - bioc-devel
 
 r_packages:
   - testthat
-  
+  - covr
+
 notifications:
   email:
     recipients: tss38@cam.ac.uk
@@ -21,3 +25,8 @@ notifications:
 # We don't need latex or pandoc (yet..)
 latex: false
 pandoc: false
+
+
+# only report coverage after build is successful
+after_success:
+  - Rscript -e 'covr::codecov()'
