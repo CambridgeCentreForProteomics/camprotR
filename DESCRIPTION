@@ -17,6 +17,7 @@ biocViews:
 Imports: 
     AnnotationDbi,
     dplyr,
+    tidyr,
     ggplot2,
     GO.db,
     purrr,
