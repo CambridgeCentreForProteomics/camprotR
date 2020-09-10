@@ -173,7 +173,7 @@ plot_fraction_below_notch_per_prot <- function(notch_per_protein){
     #filter(fraction_below>0) %>%
     mutate(sample=remove_x(sample)) %>%
     ggplot(aes(fraction_below)) +
-    geom_histogram(bins=20) +
+    geom_histogram(bins=10) +
     theme_camprot(base_size=10) +
     facet_wrap(~sample) +
     xlab('Fraction at/below notch PSMs') +
