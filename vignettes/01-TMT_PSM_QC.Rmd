@@ -1,0 +1,151 @@
+---
+title: "TMT QC PSM-level quantification and summarisation to protein-level abundance"
+author: "Tom Smith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TMT QC PSM-level quantification and summarisation to protein-level abundance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Quantitative proteomics using isobaric tagging such as Tandem Mass Tags (TMT) has a considerable benefit over Label-Free Quantification (LFQ) in that up to 16 samples can be quantified for each Peptide Spectrum Match (PSM). This greatly reduces the extent of missing values that may be present between different MS runs due to the limited number of ions that can be fragmented in each run and the associated issue of peptides being identified in only a subset of runs (REF).
+
+To avoid ratio compression, quantification of TMT-labelled samples should be performed with SPS MS3 (REF). The TMT ions being quantified are therefore relatively low intensity and as such QC of the PSM-level quantification is recommended prior to summarisation to protein-level abundances.
+
+Here, we will assess the following:
+
+- The overall distribution of tag intensities, including the so-called 'notch' region (REF)
+
+- How signal:noise relates to missing values 
+
+We will then filter the PSMs and summarise to protein-level abundances.
+
+
+```{r}
+suppressMessages(library(camprotR))
+suppressMessages(library(MSnbase))
+suppressMessages(library(magrittr))
+suppressMessages(library(ggplot2))
+suppressMessages(library(tidyr))
+suppressMessages(library(dplyr))
+```
+
+We start by reading in a file containing PSM-level output from Proteome Discoverer (PD).
+```{r}
+psm_data <- read.delim('~/git_repos/phospho_lopit/raw/anja_lopit_total_rep1_PSMs.txt', stringsAsFactors=FALSE)
+```
+
+The first step is to remove contaminant proteins. These were defined using the cRAP database (REF). Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
+```{r}
+crap_fasta_inf <- '~/git_repos/phospho_lopit/shared_files/cRAP_FullIdentifiers.fasta'
+
+# Load the cRAP FASTA used for the PD search
+crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
+
+# Extract the non cRAP UniProt accessions associated with each cRAP protein
+crap.accessions <- crap.fasta %>% 
+pull(desc) %>% 
+stringr::str_extract_all("(?<=\\|).*?(?=\\|)") %>% 
+unlist()
+```
+
+We can then supply these cRAP protein IDs to `camprotR::parse_features` which will remove features which may originate from contaminates, as well as features which don't have a unique master protein. See `?parse_features` for further details, including the removal of 'associated cRAP'.
+```{r}
+psm_data_flt <-camprotR::parse_features(psm_data , crap_proteins=crap.accessions, TMT=TRUE, level='PSM')
+```
+We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R.
+```{r}
+# Abundance columns for TMT PD-output start with Abundance 
+abundance_cols <- colnames(psm_data_flt)[grepl('Abundance.', colnames(psm_data_flt))]
+
+.e <- as.matrix(psm_data_flt[,abundance_cols])
+.f <- psm_data_flt[,setdiff(colnames(psm_data_flt), abundance_cols)]
+
+# update the column names to remove the 'Abundance.` prefix
+colnames(.e) <- gsub('Abundance.', '', colnames(.e))
+
+# we don't have 'phenotype' data to add so we just define the 'expression' data and 'feature' data
+psm <- MSnbase::MSnSet(exprs=.e, fData=.f)
+```
+
+The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed (REF). This presence of the notch is dependent on the MS settings, most notably AGC and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
+```{r}
+p <- plot_TMT_notch(psm)
+print(p)
+
+```
+Sub-notch values are systematic under-estimates (Unpublished findings). The impact of sub-notch values on summarised protein-level abundances will depend on the number of sub-notch values and, more importantly, the proportion of PSMs below the notch for a given protein. We can obtain the per-protein notch metrics using `get_notch_per_protein` and plot the number and fraction with `plot_below_notch_per_prot` and `plot_fraction_below_notch_per_prot` respectively. 
+```{r}
+notch_per_protein <- get_notch_per_protein(psm)
+
+plot_below_notch_per_prot(notch_per_protein)
+
+plot_fraction_below_notch_per_prot(notch_per_protein)
+```
+
+We will want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
+
+```{r, fig.height=6, fig.width=6}
+p <- plot_missing_SN(psm, bins=25)
+print(p)
+```
+We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`.
+```{r}
+p <- plot_missing_SN_per_sample(psm, bins=25)
+print(p)
+```
+Based on the above, we will filter the PSMs to only retain those with S:N>10 using `filter_TMT_PSMs`. We will also remove PSMs with interference/co-isolation >50%.
+```{r}
+psm_filt_sn_int <- filter_TMT_PSMs(psm, inter_thresh=50, sn_thresh=10)
+```
+We can then re-plot to see how this affects the notch.
+```{r, fig.show='hold'}
+p <- plot_TMT_notch(psm) + ggtitle('Before filtering')
+print(p)
+
+p <- plot_TMT_notch(psm_filt_sn_int) + ggtitle('After filtering')
+print(p)
+
+
+p <- plot_fraction_below_notch_per_prot(notch_per_protein) +
+  ggtitle('Before filtering')
+print(p)
+
+notch_per_protein_post_filt <- get_notch_per_protein(psm_filt_sn_int)
+p <- plot_fraction_below_notch_per_prot(notch_per_protein_post_filt) +
+  ggtitle('After filtering')
+print(p)
+
+```
+
+Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances. For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method='robust')`. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.
+
+Here, we will use PSMs with at most 5/10 NAs and proteins with at least three finite quantification values in a given sample. Note that this means a protein may still have a mixture of finite and NA values: If a protein has 3 PSMs and PSMs have missing values such that some samples are still quantified in both PSMs, then the protein will be quantified in these samples, but NA where missing values are present.
+#### NOTE: below won't work until function below has been merged from {ts}_ptm branch into master and then into this branch.
+```{r}
+psm_filt_sn_int_missing <- psm_filt_sn_int %>% 
+  filterNA(pNA=0.5) %>%
+  restrict_features_per_protein(min_features=2)
+```
+
+Below, we perform the summarisation. Note that robust summarisation requires log-transformed intensities. Post summarisation, we exponeniate the protein-level intensities
+```{r}
+prot_group <- fData(psm_filt_sn_int_missing)$Master.Protein.Accessions
+
+protein <- psm_filt_sn_int_missing %>%
+  log(base=2) %>%
+  MSnbase::combineFeatures(groupBy=prot_group, method='robust', maxit=1000)
+
+exprs(protein) <- 2^exprs(protein)
+
+```
+
+

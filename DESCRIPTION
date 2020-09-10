@@ -20,6 +20,7 @@ Imports:
     GO.db,
     purrr,
     stats,
-    utils
+    utils,
+    Hmisc
 Suggests: 
     testthat
