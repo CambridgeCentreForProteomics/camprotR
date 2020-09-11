@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 #' @import dplyr
-#' @importFrom Biobase exprs fData
+#' @importFrom MSnbase exprs fData
 #' @importFrom rlang .data
 #' @import tidyr
 #' @import ggplot2

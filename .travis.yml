@@ -14,6 +14,13 @@ r:
 # See: https://travis-ci.community/t/in-r-version-4-0-0-library-path-not-writable/9744/9
 #  - bioc-devel
 
+addons:
+  apt:
+    packages:
+      - libnetcdf-dev
+      - netcdf-bin
+      - libxml2
+
 r_packages:
   - testthat
   - covr

@@ -16,12 +16,12 @@ RoxygenNote: 7.1.1
 biocViews:
 Imports: 
     AnnotationDbi,
-    Biobase,
     Biostrings,
     dplyr,
     tidyr,
     ggplot2,
     GO.db,
+    MSnbase,
     purrr,
     rlang,
     stats,
