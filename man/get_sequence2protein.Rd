@@ -8,7 +8,7 @@ across multiple samples}
 get_sequence2protein(seq2prot, seq_col, prot_col)
 }
 \arguments{
-\item{seq2prot}{\code{data}. Output from \code{\link{readInfiles}}}
+\item{seq2prot}{\code{data}. Output from \code{\link{read_infiles}}}
 
 \item{seq_col}{\code{string} Column name for peptide sequence}
 

@@ -4,18 +4,18 @@
 \alias{remove_silac_modifications}
 \title{Remove SILAC labels from modifications}
 \usage{
-remove_silac_modifications(obj, level = "psm")
+remove_silac_modifications(mod_col, level = "psm")
 }
 \arguments{
-\item{obj}{\code{data.frame} PSM or Peptide-level output from Proteome Discoverer}
+\item{mod_col}{\verb{character vector} Modification column from Proteome Discoverer}
 
-\item{level}{\code{string} Eiher 'psm' or 'peptide'}
+\item{level}{\code{character} Either 'psm' or 'peptide'}
 }
 \value{
-\code{data.frame} with the updated Modifications column
+\verb{character vector} updated Modifications column
 }
 \description{
-This function removes SILAC heavy/light labels from the
+This function removes SILAC heavy/light labels from a PD
 Modifications column. When dealing with PSM level Proteome Discoverer output,
 this is required to match PSMs for the same peptide, or to transfer PSM-level
 features to peptide-level data.

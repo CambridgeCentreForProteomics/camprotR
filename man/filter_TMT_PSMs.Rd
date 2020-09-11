@@ -37,6 +37,8 @@ proteins.}
 \item{inter_col}{\code{string} Name of column containing the interference value}
 
 \item{sn_col}{\code{string} Name of column containing the signal:noise value}
+
+\item{verbose}{\code{boolean}. Default is TRUE, use verbose output messages.}
 }
 \value{
 Returns an \code{MSnSet} with the filtered PSMs.

@@ -7,7 +7,7 @@
 psm_to_peptide_style_modifications(psm_style_modifications)
 }
 \arguments{
-\item{obj}{\code{vector} of PSM-style modification annotations}
+\item{psm_style_modifications}{\code{vector} of PSM-style modification annotations}
 }
 \value{
 \code{vector} of Peptide-style modification annotations
@@ -20,5 +20,10 @@ after the position. In peptide-level output, the modifications are summarised
 more succintly, with the number of each modification followed by the positions
 For example:
 PSM: N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)
-Peptide:1xAcetyl \link{N-Term}; 2xCarbamidomethyl \link{C2; C16}
+Peptide:1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]
+}
+\examples{
+psm_mod <- "N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)"
+target <- "1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]"
+psm_to_peptide_style_modifications(psm_mod)==target
 }

@@ -15,21 +15,21 @@
 silac_psm_seq_int <- function(obj, sequence_col='Sequence'){
 
   obj <- obj %>%
-    filter(Quan.Channel!='') %>%
+    filter(.data$Quan.Channel!='') %>%
     rowwise() %>%
-    filter(is.finite(Precursor.Abundance)) %>%
+    filter(is.finite(.data$Precursor.Abundance)) %>%
     remove_silac_modifications(level='psm') %>%
-    mutate(Modifications=psm_to_peptide_style_modifications(Modifications))
+    mutate(Modifications=psm_to_peptide_style_modifications(.data$Modifications))
 
   obj_seq <- obj %>%
-    group_by(!!sym(sequence_col), Quan.Channel, Modifications) %>%
-    summarise(sequenced=any(is.finite(Precursor.Abundance))) %>%
-    mutate(Quan.Channel=paste0('Sequenced_', Quan.Channel)) %>%
-    spread(key=Quan.Channel, value=sequenced, fill=FALSE)
+    group_by(!!sym(sequence_col), .data$Quan.Channel, .data$Modifications) %>%
+    summarise(sequenced=any(is.finite(.data$Precursor.Abundance))) %>%
+    mutate(Quan.Channel=paste0('Sequenced_', .data$Quan.Channel)) %>%
+    spread(key=.data$Quan.Channel, value=.data$sequenced, fill=FALSE)
 
   obj_int <- obj %>%
-    group_by(!!sym(sequence_col), Modifications) %>%
-    summarise(max_interference=max(Isolation.Interference.in.Percent))
+    group_by(!!sym(sequence_col), .data$Modifications) %>%
+    summarise(max_interference=max(.data$Isolation.Interference.in.Percent))
 
   obj_seq_int<- merge(obj_seq, obj_int, by=c(sequence_col, 'Modifications'))
 

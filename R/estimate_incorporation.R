@@ -44,7 +44,7 @@ estimate_incorporation <- function(psm_infile,
                                    outdir) {
   if (!dir.exists(outdir)) dir.create(outdir)
 
-  psm_sequenced_data <- silac_psm_seq_int(read.delim(psm_infile),
+  psm_sequenced_data <- silac_psm_seq_int(utils::read.delim(psm_infile),
     sequence_col = sequence_col
   )
 
@@ -57,7 +57,7 @@ estimate_incorporation <- function(psm_infile,
     stringr::str_extract_all("(?<=\\|).*?(?=\\|)") %>%
     unlist()
 
-  peptide_data <- parse_features(read.delim(peptide_infile),
+  peptide_data <- parse_features(utils::read.delim(peptide_infile),
     master_protein_col = master_protein_col,
     protein_col = protein_col,
     unique_master = FALSE,
@@ -68,7 +68,7 @@ estimate_incorporation <- function(psm_infile,
     filter_associated_crap = TRUE
   ) %>%
     filter(grepl('K|R|k|r', !!sym(sequence_col))) %>%
-    filter(Quan.Info != 'Redundant')
+    filter(.data$Quan.Info != 'Redundant')
 
   light_col <- colnames(peptide_data)[
     grepl('Abundances.Grouped.(F\\d*.)?Light', colnames(peptide_data))
@@ -79,31 +79,31 @@ estimate_incorporation <- function(psm_infile,
 
   peptide_data <- peptide_data %>%
     select(!!sym(sequence_col), !!sym(modifications_col),
-      !!sym(protein_col), !!sym(master_protein_col), Number.of.Missed.Cleavages,
+      !!sym(protein_col), !!sym(master_protein_col), .data$Number.of.Missed.Cleavages,
       'light' = all_of(light_col), 'heavy' = all_of(heavy_col)
     ) %>%
-    mutate(corrected_light = light - (mix * heavy)) %>%
+    mutate(corrected_light = .data$light - (mix * .data$heavy)) %>%
     rowwise() %>%
     mutate(
-      incorporation = get_incorporation(light, heavy),
-      corrected_incorporation = get_incorporation(corrected_light, heavy)
+      incorporation = get_incorporation(.data$light, .data$heavy),
+      corrected_incorporation = get_incorporation(.data$corrected_light, .data$heavy)
     )
 
   peptide_data <- peptide_data %>%
     remove_silac_modifications(level = 'peptide') %>%
     merge(psm_sequenced_data, by = c(sequence_col, modifications_col)) %>%
     mutate(
-      found_light = ifelse(Sequenced_Light, 'Light: Spectrum matched', ifelse(
-        is.finite(light), 'Light: Detected by mass shift', 'Light: Not found'
+      found_light = ifelse(.data$Sequenced_Light, 'Light: Spectrum matched', ifelse(
+        is.finite(.data$light), 'Light: Detected by mass shift', 'Light: Not found'
       )),
-      found_heavy = ifelse(Sequenced_Heavy, 'Heavy: Spectrum matched', ifelse(
-        is.finite(heavy), 'Heavy: Detected by mass shift', 'Heavy: Not found'
+      found_heavy = ifelse(.data$Sequenced_Heavy, 'Heavy: Spectrum matched', ifelse(
+        is.finite(.data$heavy), 'Heavy: Detected by mass shift', 'Heavy: Not found'
       ))
     )
 
   p_cor <- peptide_data %>%
-    filter(is.finite(light), is.finite(heavy)) %>%
-    ggplot(aes(log10(heavy), log10(light))) +
+    filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
+    ggplot(aes(log10(.data$heavy), log10(.data$light))) +
     geom_point(size = 0.2) +
     theme_bw() +
     theme(aspect.ratio = 1) +
@@ -125,7 +125,7 @@ estimate_incorporation <- function(psm_infile,
     ggsave(file.path(outdir, 'heavy_light_correlation2.png'), p_cor2)
 
     peptide_incorporation <- peptide_data %>%
-      filter(is.finite(light), is.finite(heavy)) %>%
+      filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
       plot_incorporation(mix = mix)
   } else {
     peptide_incorporation <- plot_incorporation(peptide_data)
@@ -137,7 +137,7 @@ estimate_incorporation <- function(psm_infile,
   multi_peptide <- peptide_data %>%
     # first run unique on the protein, sequence columns so each peptide sequence is
     # only counted once
-    select(!!sym(master_protein_col), Sequence) %>% #
+    select(!!sym(master_protein_col), .data$Sequence) %>% #
     unique() %>%
     group_by(!!sym(master_protein_col)) %>%
     tally() %>%
@@ -146,19 +146,19 @@ estimate_incorporation <- function(psm_infile,
   # Use MsnSets here and make other combine methods available?
   if (mix > 0) {
     protein_data <- peptide_data %>%
-      filter(is.finite(light), is.finite(heavy)) %>%
+      filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
       group_by(!!sym(master_protein_col)) %>%
       summarise(
-        corrected_incorporation = median(corrected_incorporation, na.rm = TRUE),
-        incorporation = median(incorporation, na.rm = TRUE)
+        corrected_incorporation = stats::median(.data$corrected_incorporation, na.rm = TRUE),
+        incorporation = stats::median(.data$incorporation, na.rm = TRUE)
       ) %>%
       merge(multi_peptide, by = master_protein_col)
   } else {
     protein_data <- peptide_data %>%
       group_by(!!sym(master_protein_col)) %>%
       summarise(
-        corrected_incorporation = median(corrected_incorporation, na.rm = TRUE),
-        incorporation = median(incorporation, na.rm = TRUE)
+        corrected_incorporation = stats::median(.data$corrected_incorporation, na.rm = TRUE),
+        incorporation = stats::median(.data$incorporation, na.rm = TRUE)
       ) %>%
       merge(multi_peptide, by = master_protein_col)
   }
@@ -177,7 +177,7 @@ estimate_incorporation <- function(psm_infile,
     setNames(names(peptide_incorporation$incorporation_estimates)) %>%
     mutate('level' = c('peptide', 'protein')) #
 
-  write.table(incorporation_estimates, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
+  utils::write.table(incorporation_estimates, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
 
   invisible(NULL)
 }

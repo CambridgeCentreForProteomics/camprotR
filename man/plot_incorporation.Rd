@@ -11,7 +11,10 @@ plot_incorporation(obj, level = "Peptide", mix = 0)
 If mix>0, must also contain column 'corrected_incorporation' where incorporation
 is calculated using the corrected light peptide intensity}
 
-\item{level}{\code{string} Name for feature level. e.g 'Peptide' or 'Protein'}
+\item{level}{\code{string}. Name for feature level. e.g 'Peptide' or 'Protein'}
+
+\item{mix}{\code{numeric}. Default is 0. Otherwise use a number greater than zero
+(i.e. the 'Heavy' to 'Light' mix ratio).}
 }
 \value{
 \code{list} with \code{p}=\code{ggplot} plot and \code{incorporation_estimates}=\code{list} of

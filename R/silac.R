@@ -42,7 +42,9 @@ get_incorporation <- function(light, heavy){
 #' @param obj `data.frame` containing features with column 'incorporation'.
 #' If mix>0, must also contain column 'corrected_incorporation' where incorporation
 #' is calculated using the corrected light peptide intensity
-#' @param level `string` Name for feature level. e.g 'Peptide' or 'Protein'
+#' @param level `string`. Name for feature level. e.g 'Peptide' or 'Protein'
+#' @param mix `numeric`. Default is 0. Otherwise use a number greater than zero
+#' (i.e. the 'Heavy' to 'Light' mix ratio).
 #' @return `list` with `p`=`ggplot` plot and `incorporation_estimates`=`list` of
 #' incorporation estimates
 #' @export
@@ -50,7 +52,7 @@ plot_incorporation <- function(obj, level='Peptide', mix=0){
 
   p <- obj %>%
     ggplot() +
-    geom_histogram(aes(100*incorporation), fill='grey') +
+    geom_histogram(aes(100*.data$incorporation), fill='grey') +
     theme_camprot(base_size=10) +
     xlab('Observed incorporation (%)') +
     ylab('Count')
@@ -60,13 +62,13 @@ plot_incorporation <- function(obj, level='Peptide', mix=0){
   if(mix>0){
 
     median_incorporation <- obj %>%
-      pull(incorporation) %>%
-      median(na.rm=TRUE) %>%
+      pull(.data$incorporation) %>%
+      stats::median(na.rm=TRUE) %>%
       "*"(100)
 
     median_corrected_incorporation <- obj %>%
-      pull(corrected_incorporation) %>%
-      median(na.rm=TRUE) %>%
+      pull(.data$corrected_incorporation) %>%
+      stats::median(na.rm=TRUE) %>%
       "*"(100)
 
     incorporation_estimates <- list(
@@ -82,12 +84,12 @@ plot_incorporation <- function(obj, level='Peptide', mix=0){
 
   } else{
     median_incorporation <- obj %>%
-      pull(incorporation) %>%
-      median(na.rm=TRUE) %>%
+      pull(.data$incorporation) %>%
+      stats::median(na.rm=TRUE) %>%
       "*"(100)
 
     mean_incorporation <- obj %>%
-      pull(incorporation) %>%
+      pull(.data$incorporation) %>%
       mean(na.rm=TRUE) %>%
       "*"(100)
 

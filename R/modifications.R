@@ -7,11 +7,11 @@
 #' more succintly, with the number of each modification followed by the positions
 #' For example:
 #' PSM: N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)
-#' Peptide:1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]
+#' Peptide:1xAcetyl \[N-Term\]; 2xCarbamidomethyl \[C2; C16\]
 #'
-#' @param obj `vector` of PSM-style modification annotations
+#' @param psm_style_modifications `vector` of PSM-style modification annotations
 #' @return `vector` of Peptide-style modification annotations
-#' @example
+#' @examples
 #' psm_mod <- "N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)"
 #' target <- "1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]"
 #' psm_to_peptide_style_modifications(psm_mod)==target
