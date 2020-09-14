@@ -13,6 +13,7 @@
 #' proteins.
 #' @param inter_col `string`. Name of column containing the interference value.
 #' @param sn_col `string`. Name of column containing the signal:noise value.
+#' @param verbose `boolean`. Default is TRUE, use verbose output messages.
 #'
 #' @return Returns an `MSnSet` with the filtered PSMs.
 #' @export
