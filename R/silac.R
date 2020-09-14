@@ -9,22 +9,20 @@
 #' @param heavy `numeric` Heavy peptide intensity
 #' @return `incorporation`
 #' @export
-get_incorporation <- function(light, heavy){
-
-  if (is.na(light)|is.na(heavy)){
-
-    if (is.na(light) & is.na(heavy)){
+get_incorporation <- function(light, heavy) {
+  if (is.na(light) | is.na(heavy)) {
+    if (is.na(light) & is.na(heavy)) {
       incorporation = NA
     }
-    else if (is.na(heavy)){
+    else if (is.na(heavy)) {
       incorporation = 0
     }
     else {
       incorporation = 1
     }
   }
-  else{
-    incorporation = heavy/(light+heavy)
+  else {
+    incorporation = heavy / (light + heavy)
   }
   return(incorporation)
 }
@@ -48,67 +46,75 @@ get_incorporation <- function(light, heavy){
 #' @return `list` with `p`=`ggplot` plot and `incorporation_estimates`=`list` of
 #' incorporation estimates
 #' @export
-plot_incorporation <- function(obj, level='Peptide', mix=0){
-
+plot_incorporation <- function(obj, level = 'Peptide', mix = 0) {
   p <- obj %>%
     ggplot() +
-    geom_histogram(aes(100*.data$incorporation), fill='grey') +
-    theme_camprot(base_size=10) +
+    geom_histogram(aes(100 * .data$incorporation), fill = 'grey') +
+    theme_camprot(base_size = 10) +
     xlab('Observed incorporation (%)') +
     ylab('Count')
 
   total_count <- nrow(obj)
 
-  if(mix>0){
-
+  if (mix > 0) {
     median_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      stats::median(na.rm=TRUE) %>%
+      stats::median(na.rm = TRUE) %>%
       "*"(100)
 
     median_corrected_incorporation <- obj %>%
       pull(.data$corrected_incorporation) %>%
-      stats::median(na.rm=TRUE) %>%
+      stats::median(na.rm = TRUE) %>%
       "*"(100)
 
     incorporation_estimates <- list(
       'Median incorporation' = median_incorporation,
-      'Median incorporation (corrected)' = median_corrected_incorporation)
-    text <- paste0('%ss: %s\n',
-                   'Median incorporation: %#.2f %%\n',
-                   'Corrected median incorporation:%#.2f %%')
+      'Median incorporation (corrected)' = median_corrected_incorporation
+    )
+    text <- paste0(
+      '%ss: %s\n',
+      'Median incorporation: %#.2f %%\n',
+      'Corrected median incorporation:%#.2f %%'
+    )
 
-    sprintf_values <- list(text, level, total_count,
-                           median_incorporation,
-                           median_corrected_incorporation)
-
-  } else{
+    sprintf_values <- list(
+      text, level, total_count,
+      median_incorporation,
+      median_corrected_incorporation
+    )
+  } else {
     median_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      stats::median(na.rm=TRUE) %>%
+      stats::median(na.rm = TRUE) %>%
       "*"(100)
 
     mean_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      mean(na.rm=TRUE) %>%
+      mean(na.rm = TRUE) %>%
       "*"(100)
 
 
     incorporation_estimates <- list(
       'Median incorporation' = median_incorporation,
-      'Mean incorporation' = mean_incorporation)
+      'Mean incorporation' = mean_incorporation
+    )
 
-    text <- paste0('%ss: %s\n',
-                   'Median incorporation: %.2f %%\n',
-                   'Mean incorporation:%.2f %%')
-    sprintf_values <- list(text, level, total_count,
-                           median_incorporation, mean_incorporation)
+    text <- paste0(
+      '%ss: %s\n',
+      'Median incorporation: %.2f %%\n',
+      'Mean incorporation:%.2f %%'
+    )
+    sprintf_values <- list(
+      text, level, total_count,
+      median_incorporation, mean_incorporation
+    )
   }
 
   label <- do.call('sprintf', sprintf_values)
-  p <- p + annotate(geom='text', x=0, y = Inf, label=label, vjust=1.5, hjust=0,
-                    size=3, colour=get_cat_palette(1))
+  p <- p + annotate(
+    geom = 'text', x = 0, y = Inf, label = label, vjust = 1.5, hjust = 0,
+    size = 3, colour = get_cat_palette(1)
+  )
 
-  invisible(list('p'=p, 'incorporation_estimates'=incorporation_estimates))
+  invisible(list('p' = p, 'incorporation_estimates' = incorporation_estimates))
 }
-

@@ -25,5 +25,5 @@ Peptide:1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]
 \examples{
 psm_mod <- "N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)"
 target <- "1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]"
-psm_to_peptide_style_modifications(psm_mod)==target
+psm_to_peptide_style_modifications(psm_mod) == target
 }
