@@ -16,26 +16,26 @@ plot_quant <- function(obj,
 
   e_data[e_data==""] <- NA
   e_data <- e_data %>% gather(key='sample', value='intensity') %>%
-    mutate(sample=remove_x(sample))
+    mutate(sample=factor(remove_x(sample), levels=colnames(e_data)))
 
   p <- ggplot(e_data) + theme_bw()
 
   if(method=='box'){
     p <- p +
-      geom_boxplot(aes(sample, intensity)) +
+      geom_boxplot(aes(sample, .data$intensity)) +
       theme(axis.text.x=element_text(angle=45, vjust=1, hjust=1)) +
       ylab("Feature intensity") +
       xlab("")
   }
   else if(method=='density'){
     p <- p +
-      geom_density(aes(intensity, col=sample)) +
+      geom_density(aes(.data$intensity, col=sample)) +
       xlab("Feature intensity") +
       ylab("Density")
   }
   else if(method=='histogram'){
     p <- p +
-      geom_histogram(aes(intensity), bins=100) +
+      geom_histogram(aes(.data$intensity), bins=100) +
       scale_y_continuous(expand = c(0, 0)) +
       xlab("Feature intensity") +
       ylab("Count")
@@ -76,15 +76,15 @@ get_psm_metrics <- function(obj,
 
   e_data_grouped %>%
     summarise(
-      missing=sum(is.na(intensity), na.rm=TRUE),
-      not_missing=sum(!is.na(intensity), na.rm=TRUE),
-      below_thresh=sum(intensity<threshold, na.rm=TRUE),
-      above_thresh=sum(intensity>=threshold, na.rm=TRUE),
-      total=missing+not_missing,
-      perc_below=round(100*below_thresh/(total),1),
-      perc_missing=round(100*missing/(total),1),
-      median_intensity=median(intensity, na.rm=TRUE)) %>%
-    ungroup
+      missing=sum(is.na(.data$intensity), na.rm=TRUE),
+      not_missing=sum(!is.na(.data$intensity), na.rm=TRUE),
+      below_thresh=sum(.data$intensity<threshold, na.rm=TRUE),
+      above_thresh=sum(.data$intensity>=threshold, na.rm=TRUE),
+      total=.data$missing+.data$not_missing,
+      perc_below=round(100*.data$below_thresh/(.data$total),1),
+      perc_missing=round(100*.data$missing/(.data$total),1),
+      median_intensity=stats::median(.data$intensity, na.rm=TRUE)) %>%
+    ungroup()
 }
 
 #' Plot histograms for TMT tag intensities per sample
@@ -114,9 +114,9 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
 
   if(facet_by_sample){
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
-      mutate(label=sprintf('%s %%  ', perc_below))
+      mutate(label=sprintf('%s %%  ', .data$perc_below))
 
-    p <- p + geom_text(aes(label=label), data=psm_metrics,
+    p <- p + geom_text(aes(label=.data$label), data=psm_metrics,
                        family='serif',
                        x=log2(notch_lower), y=Inf,
                        vjust=2, hjust=1, size=4) +
