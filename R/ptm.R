@@ -6,6 +6,7 @@
 #' threshold
 #'
 #' @param obj `data.frame` with PD output at PSM/peptide level
+#' @param threshold `numeric` If any score is below a set threshold, disregard all putative PTM sites
 #' @param ptm_col `character` Columm name for PTM probabilities
 #' @param prob_split `character` regex to split PTM probabilities
 #' @param collapse_delimiter `character` delimiter for multiple values in output columns
@@ -165,7 +166,7 @@ add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.
       return("")
     }
 
-    peptide_starts <- start(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_starts <- stats::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
 
     for (p_start in peptide_starts) {
       position_string <- NULL
@@ -281,7 +282,7 @@ add_site_sequence <- function(obj,
     mutate(site_seq = get_sequence(
       proteome,
       !!sym(master_protein_col),
-      ptm_position
+      .data$ptm_position
     )) %>%
     data.frame()
 
@@ -320,8 +321,8 @@ add_peptide_positions <- function(obj,
     if (!protein %in% names(proteome)) {
       return(c(NA, NA))
     }
-    peptide_start <- start(Biostrings::matchPattern(sequence, proteome[[protein]]))
-    peptide_end <- end(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_start <- stats::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_end <- stats::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
 
     if (length(peptide_start) != 1) {
       return(c(NA, NA))

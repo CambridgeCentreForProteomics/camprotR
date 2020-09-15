@@ -2,9 +2,9 @@
 #' features in total
 #'
 #' @description For summarisation of PSM or peptide to protein, we need a
-#' minimum number of finite values per protein per sample. Where there are two
+#' minimum number of finite values per protein per sample. Where there are too
 #' few finite values for a given protein in a given sample, this function will
-#' replace all values for the protein features with NA. Proteins with two few
+#' replace all values for the protein features with NA. Proteins with too few
 #' finite values in all samples will be removed entirely.
 #'
 #' This function is useful for Label-Free Quantification but also when using
@@ -17,8 +17,7 @@
 #'
 #' @return `MSnSet`
 #' @export
-restrict_features_per_protein <- function(
-                                          obj,
+restrict_features_per_protein <- function(obj,
                                           min_features,
                                           master_protein_col = "Master.Protein.Accessions",
                                           plot = TRUE) {
@@ -29,9 +28,9 @@ restrict_features_per_protein <- function(
   n_feature_per_prot <- exprs(obj) %>%
     data.frame() %>%
     tibble::rownames_to_column('feature_ID') %>%
-    gather(key = 'sample', value = 'value', -feature_ID) %>%
+    gather(key = 'sample', value = 'value', -.data$feature_ID) %>%
     merge(feature2protein, by = "feature_ID") %>%
-    filter(is.finite(value)) %>%
+    filter(is.finite(.data$value)) %>%
     group_by(!!sym(master_protein_col), sample) %>%
     tally()
 
@@ -49,8 +48,8 @@ restrict_features_per_protein <- function(
       by = master_protein_col
     ) %>%
     mutate(retain = n >= min_features) %>%
-    dplyr::select(sample, retain, feature_ID) %>%
-    spread(key = sample, value = retain) %>%
+    dplyr::select(sample, .data$retain, .data$feature_ID) %>%
+    spread(key = sample, value = .data$retain) %>%
     tibble::column_to_rownames('feature_ID') %>%
     as.matrix.data.frame()
 

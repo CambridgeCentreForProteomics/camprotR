@@ -16,6 +16,8 @@ parse_PTM_scores(
 \arguments{
 \item{obj}{\code{data.frame} with PD output at PSM/peptide level}
 
+\item{threshold}{\code{numeric} If any score is below a set threshold, disregard all putative PTM sites}
+
 \item{ptm_col}{\code{character} Columm name for PTM probabilities}
 
 \item{prob_split}{\code{character} regex to split PTM probabilities}

@@ -26,9 +26,9 @@ restrict_features_per_protein(
 }
 \description{
 For summarisation of PSM or peptide to protein, we need a
-minimum number of finite values per protein per sample. Where there are two
+minimum number of finite values per protein per sample. Where there are too
 few finite values for a given protein in a given sample, this function will
-replace all values for the protein features with NA. Proteins with two few
+replace all values for the protein features with NA. Proteins with too few
 finite values in all samples will be removed entirely.
 
 This function is useful for Label-Free Quantification but also when using
