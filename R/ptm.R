@@ -13,7 +13,7 @@
 #'
 #' @return `data.frame`
 #' @export
-parsePTMScores <- function(obj,
+parse_PTM_scores <- function(obj,
                            threshold = 95,
                            ptm_col = "PhosphoRS.Best.Site.Probabilities",
                            prob_split = '; |: ',
@@ -139,7 +139,7 @@ parsePTMScores <- function(obj,
 #' and using the position(s) of the PTM(s) in the peptide sequence. Where a sequence
 #' has multiple master proteins or the position(s) of the PTM(s) are unknown, the
 #' position(s) of the PTM(s) with respect to the protein is undefined (NA). Input
-#' is PD output at PSM/peptide level having been passed through `parsePTMScores`
+#' is PD output at PSM/peptide level having been passed through `parse_PTM_scores`
 #' to add 'filtered_pos' column
 #'
 #' @param obj `data.frame` with PD output at PSM/peptide level
@@ -148,7 +148,7 @@ parsePTMScores <- function(obj,
 #'
 #' @return `data.frame`
 #' @export
-addPTMPositions <- function(obj, proteome_fasta, master_protein_col = "Master.Protein.Accessions") {
+add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.Protein.Accessions") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
@@ -202,7 +202,7 @@ addPTMPositions <- function(obj, proteome_fasta, master_protein_col = "Master.Pr
 #'
 #' @return `character` PSM-centered amino acid sequence
 #' @export
-getSequence <- function(proteome, protein, ptm_position, pad = 7) {
+get_sequence <- function(proteome, protein, ptm_position, pad = 7) {
   ptm_position <- suppressWarnings(as.numeric(as.character(ptm_position)))
 
   if (is.na(ptm_position)) {
@@ -261,7 +261,7 @@ getSequence <- function(proteome, protein, ptm_position, pad = 7) {
 #' NA if peptide maps to multiple proteins or has multiple PTMs. If padding extends
 #' outside the protein AA sequence, padding will be extended with '_'. The PTM-
 #' centered AA sequence is useful to integrate external databases. Input
-#' is PD output at PSM/peptide level having been passed through `parsePTMScores`
+#' is PD output at PSM/peptide level having been passed through `parse_PTM_scores`
 #' to add 'filtered_pos' column
 #'
 #' @param obj `data.frame` with PD output at PSM/peptide level
@@ -270,7 +270,7 @@ getSequence <- function(proteome, protein, ptm_position, pad = 7) {
 #'
 #' @return `data.frame`
 #' @export
-addSiteSequence <- function(obj,
+add_site_sequence <- function(obj,
                             proteome_fasta,
                             master_protein_col = "Master.Protein.Accessions") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
@@ -278,7 +278,7 @@ addSiteSequence <- function(obj,
 
   obj <- obj %>%
     rowwise() %>%
-    mutate(site_seq = getSequence(
+    mutate(site_seq = get_sequence(
       proteome,
       !!sym(master_protein_col),
       ptm_position
@@ -301,7 +301,7 @@ addSiteSequence <- function(obj,
 #'
 #' @return `data.frame`
 #' @export
-addPeptidePositions <- function(obj,
+add_peptide_positions <- function(obj,
                                 proteome_fasta,
                                 master_protein_col = "Master.Protein.Accessions") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
