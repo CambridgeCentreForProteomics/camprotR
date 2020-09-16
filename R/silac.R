@@ -59,13 +59,13 @@ plot_incorporation <- function(obj, level = 'Peptide', mix = 0) {
   if (mix > 0) {
     median_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      stats::median(na.rm = TRUE) %>%
-      "*"(100)
+      stats::median(na.rm = TRUE)
+    median_incorporation <- median_incorporation * 100
 
     median_corrected_incorporation <- obj %>%
       pull(.data$corrected_incorporation) %>%
-      stats::median(na.rm = TRUE) %>%
-      "*"(100)
+      stats::median(na.rm = TRUE)
+    median_corrected_incorporation <- median_corrected_incorporation * 100
 
     incorporation_estimates <- list(
       'Median incorporation' = median_incorporation,
@@ -85,13 +85,13 @@ plot_incorporation <- function(obj, level = 'Peptide', mix = 0) {
   } else {
     median_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      stats::median(na.rm = TRUE) %>%
-      "*"(100)
+      stats::median(na.rm = TRUE)
+    median_incorporation <- median_incorporation * 100
 
     mean_incorporation <- obj %>%
       pull(.data$incorporation) %>%
-      mean(na.rm = TRUE) %>%
-      "*"(100)
+      mean(na.rm = TRUE)
+    mean_incorporation <- mean_incorporation * 100
 
 
     incorporation_estimates <- list(
