@@ -75,29 +75,33 @@ parse_features <- function(data,
 
   # remove crap proteins
   if (filter_crap) {
-    message(sprintf("%s cRAP proteins supplied",
-                    length(crap_proteins)))
+    message(sprintf(
+      "%s cRAP proteins supplied",
+      length(crap_proteins)
+    ))
 
     # identify associated crap proteins first if necessary
     if (filter_associated_crap) {
       associated_crap <- data %>%
         filter(!!sym(master_protein_col) %in% crap_proteins |
-                 grepl("cRAP", data[[protein_col]], ignore.case = FALSE)) %>%
+          grepl("cRAP", data[[protein_col]], ignore.case = FALSE)) %>%
         pull(protein_col) %>%
         strsplit("; ") %>%
         unlist()
       associated_crap <- associated_crap[!grepl("cRAP", associated_crap)]
 
-      message(sprintf("%s proteins identified as 'cRAP associated'",
-                      length(associated_crap)))
+      message(sprintf(
+        "%s proteins identified as 'cRAP associated'",
+        length(associated_crap)
+      ))
     }
 
     # then remove normal crap proteins
     data <- data %>%
       filter(!(!!sym(master_protein_col)) %in% crap_proteins &
-               !grepl("cRAP", data[[protein_col]], ignore.case = FALSE))
+        !grepl("cRAP", data[[protein_col]], ignore.case = FALSE))
     message_parse(data, master_protein_col, "cRAP features removed")
-    
+
     # then remove associated crap proteins if necessary
     if (filter_associated_crap) {
       if (length(associated_crap) > 0) {
@@ -112,8 +116,10 @@ parse_features <- function(data,
   }
 
   # remove features without a master protein
-  if (any(is.na(data[[master_protein_col]]))) {
+  if (any(is.na(data[[master_protein_col]])) |
+    any(data[[master_protein_col]] == '')) {
     data <- data[!is.na(data[[master_protein_col]]), ]
+    data <- data[data[[master_protein_col]] != '', ]
     message_parse(data, master_protein_col, "features without a master protein removed")
   }
 
@@ -125,7 +131,7 @@ parse_features <- function(data,
 
   # remove features with quantification warnings if necessary
   if (silac | TMT & level == "peptide") {
-    data <- data[(is.na(data[["Quan.Info"]]) | data[["Quan.Info"]]==''), ]
+    data <- data[(is.na(data[["Quan.Info"]]) | data[["Quan.Info"]] == ''), ]
     message_parse(data, master_protein_col, "features without quantification removed")
   }
   data
@@ -138,7 +144,7 @@ parse_features <- function(data,
 #' 1. Missing values (NA) for all tags
 #' 2. Interference/co-isolation above a set value (default=100, e.g no filtering)
 #' 3. Signal:noise ratio below a set value (default=0, e.g no filtering)
-#' 
+#'
 #' @param obj `MSnSet` PSMs
 #' @param inter_thresh `numeric` Maximum allowed interference/co-isolation
 #' @param sn_thresh `numeric` Minimum allowed signal:noise threshold
@@ -146,27 +152,26 @@ parse_features <- function(data,
 #' proteins.
 #' @param inter_col `string` Name of column containing the interference value
 #' @param sn_col `string` Name of column containing the signal:noise value
-#' 
+#'
 #' @return `MSnSet` with the filtered PSMs.
 #' @export
 filter_TMT_PSMs <- function(obj,
-                        inter_thresh=100,
-                        sn_thresh=0,
-                        master_protein_col='Master.Protein.Accessions',
-                        inter_col='Isolation.Interference.in.Percent',
-                        sn_col='Average.Reporter.SN',
-                        verbose=TRUE){
-  
-  if(verbose) message("Filtering PSMs...")
-  
-  obj <- obj[rowSums(is.finite(exprs(obj)))>0,]
-  if(verbose) message_parse(fData(obj), master_protein_col, "No quant filtering")
-  
-  obj <- obj[fData(obj)[[inter_col]]<=inter_thresh,]
-  if(verbose) message_parse(fData(obj), master_protein_col, "Co-isolation filtering")
-  
-  obj <- obj[fData(obj)[[sn_col]]>=sn_thresh,]
-  if(verbose) message_parse(fData(obj), master_protein_col, "S:N ratio filtering")
-  
+                            inter_thresh = 100,
+                            sn_thresh = 0,
+                            master_protein_col = 'Master.Protein.Accessions',
+                            inter_col = 'Isolation.Interference.in.Percent',
+                            sn_col = 'Average.Reporter.SN',
+                            verbose = TRUE) {
+  if (verbose) message("Filtering PSMs...")
+
+  obj <- obj[rowSums(is.finite(exprs(obj))) > 0, ]
+  if (verbose) message_parse(fData(obj), master_protein_col, "No quant filtering")
+
+  obj <- obj[fData(obj)[[inter_col]] <= inter_thresh, ]
+  if (verbose) message_parse(fData(obj), master_protein_col, "Co-isolation filtering")
+
+  obj <- obj[fData(obj)[[sn_col]] >= sn_thresh, ]
+  if (verbose) message_parse(fData(obj), master_protein_col, "S:N ratio filtering")
+
   obj
 }
