@@ -28,10 +28,11 @@ silac_psm_seq_int <- function(
     mutate(mod_col=psm_to_peptide_style_modifications(!!sym(mod_col)))
 
   obj_seq <- obj %>%
-    group_by(!!sym(sequence_col), Quan.Channel, !!sym(mod_col)) %>%
+    group_by(!!sym(sequence_col), .data$Quan.Channel, !!sym(mod_col)) %>%
     summarise(sequenced=any(is.finite(.data$Precursor.Abundance))) %>%
+    ungroup() %>%
     mutate(Quan.Channel=paste0('Sequenced_', .data$Quan.Channel)) %>%
-    spread(key=Quan.Channel, value=sequenced, fill=FALSE)
+    spread(key=.data$Quan.Channel, value=.data$sequenced, fill=FALSE)
 
   obj_int <- obj %>%
     group_by(!!sym(sequence_col), !!sym(mod_col)) %>%
