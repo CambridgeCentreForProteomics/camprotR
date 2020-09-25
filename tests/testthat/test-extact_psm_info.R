@@ -9,7 +9,7 @@ test_that("Extract info", {
   ref <- readRDS(ref_file)
   print(nrow(ref))
   print(nrow(dplyr::arrange(output, Annotated.Sequence, Modifications)))
-  print(dplyr::arrange(output, Annotated.Sequence(ref)[1,]))
+  print(dplyr::arrange(output, Annotated.Sequence(ref))[1,])
   print(dplyr::arrange(output, Annotated.Sequence, Modifications)[1,])
   stop()
 
