@@ -28,7 +28,7 @@ Imports:
     purrr,
     rlang,
     stats,
-    Hmisc
+    Hmisc,
     stringr,
     tibble,
     utils
