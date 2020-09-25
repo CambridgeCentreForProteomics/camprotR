@@ -25,9 +25,6 @@ r_packages:
   - testthat
   - covr
 
-script:
- - Rscript -e "library(testthat); testthat::test_dir('tests/testthat', reporter = c('progress', 'fail'))"
-
 notifications:
   email:
     recipients: tss38@cam.ac.uk
