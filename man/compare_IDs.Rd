@@ -13,7 +13,7 @@ compare_IDs(seq2new_master_prot, master_prot_col)
 \item{master_prot_col}{\code{string} Column name for master protein(s)}
 }
 \value{
-
+Prints the proportion of exact matches in the console.
 }
 \description{
 With object containing original and updated master protein

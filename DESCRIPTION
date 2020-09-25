@@ -13,14 +13,24 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+biocViews:
+Depends: 
+    R (>= 2.10)
 Imports: 
     AnnotationDbi,
+    Biobase,
+    Biostrings,
     dplyr,
+    tidyr,
     ggplot2,
     GO.db,
+    MSnbase,
     purrr,
+    rlang,
     stats,
-    utils,
     Hmisc
+    stringr,
+    tibble,
+    utils
 Suggests: 
     testthat
