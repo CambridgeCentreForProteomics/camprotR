@@ -26,7 +26,11 @@ Here, we will assess the following:
 
 - How signal:noise relates to missing values 
 
-We will then filter the PSMs and summarise to protein-level abundances.
+We will then:
+
+- Filter the PSMs based on signal:noise and co-isolation/interference
+
+- Summarise to protein-level abundances
 
 
 ```{r}
@@ -92,14 +96,14 @@ plot_below_notch_per_prot(notch_per_protein)
 plot_fraction_below_notch_per_prot(notch_per_protein)
 ```
 
-We will want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
+We will still want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
 
 Note that where the signal:noise>10, there are far fewer missing values
 ```{r, fig.height=6, fig.width=6}
 p <- plot_missing_SN(psm, bins=25)
 print(p)
 ```
-We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`. In this case, there is no particular tag which appears to have a high proportion of missing values when signal:noise > 10.
+We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`. In this case, there is no tag which appears to have a high proportion of missing values when signal:noise > 10.
 ```{r}
 p <- plot_missing_SN_per_sample(psm, bins=25)
 print(p)
@@ -129,6 +133,7 @@ print(p)
 ```
 
 Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances. 
+
 For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method='robust')`. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.
 
 Here, we will use PSMs with at most 5/10 NAs and proteins with at least three finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and NA values. For example, if a protein has 3 PSMs and the PSMs have missing values such that some samples are still quantified in all 3 PSMs, then the protein will be quantified in these samples, but NA where missing values are present. Thus, each protein-level quantification will be derived from at least 3 PSM intensities, where each PSM was quantified in at least 5 samples.
@@ -140,7 +145,7 @@ psm_filt_sn_int_missing <- psm_filt_sn_int %>%
   restrict_features_per_protein(min_features=2)
 ```
 
-Below, we perform the summarisation. Note that robust summarisation requires log-transformed intensities. Post summarisation, we exponeniate the protein-level intensities
+Below, we perform the summarisation. Note that robust summarisation requires log-transformed intensities. If desired, one can exponeniate the protein-level intensities post-summarisation, as shown below 
 ```{r}
 prot_group <- fData(psm_filt_sn_int_missing)$Master.Protein.Accessions
 
