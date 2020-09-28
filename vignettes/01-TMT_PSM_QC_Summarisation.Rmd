@@ -82,27 +82,29 @@ p <- plot_TMT_notch(psm)
 print(p)
 
 ```
-Sub-notch values are systematic under-estimates (Unpublished findings). The impact of sub-notch values on summarised protein-level abundances will depend on the number of sub-notch values and, more importantly, the proportion of PSMs below the notch for a given protein. We can obtain the per-protein notch metrics using `get_notch_per_protein` and plot the number and fraction with `plot_below_notch_per_prot` and `plot_fraction_below_notch_per_prot` respectively. 
+Sub-notch values are systematic under-estimates (Currently unpublished findings). The impact of sub-notch values on summarised protein-level abundances will depend on the number of sub-notch values and, more importantly, the proportion of PSMs below the notch for a given protein. We can obtain the per-protein notch metrics using `get_notch_per_protein` and plot the number and fraction with `plot_below_notch_per_prot` and `plot_fraction_below_notch_per_prot` respectively. 
+
+In the case, we see that most proteins have zero PSM intensities below the notch and very few have more than 3. The vast majority of protein have <10% PSMs at/below the notch, indicating the notch is unlikely to be problematic with this dataset.
 ```{r}
 notch_per_protein <- get_notch_per_protein(psm)
 
 plot_below_notch_per_prot(notch_per_protein)
-
 plot_fraction_below_notch_per_prot(notch_per_protein)
 ```
 
 We will want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
 
+Note that where the signal:noise>10, there are far fewer missing values
 ```{r, fig.height=6, fig.width=6}
 p <- plot_missing_SN(psm, bins=25)
 print(p)
 ```
-We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`.
+We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`. In this case, there is no particular tag which appears to have a high proportion of missing values when signal:noise > 10.
 ```{r}
 p <- plot_missing_SN_per_sample(psm, bins=25)
 print(p)
 ```
-Based on the above, we will filter the PSMs to only retain those with S:N>10 using `filter_TMT_PSMs`. We will also remove PSMs with interference/co-isolation >50%.
+Based on the above, we will filter the PSMs to only retain those with S:N>10 using `filter_TMT_PSMs`. Using the same function, we will also remove PSMs with interference/co-isolation >50%.
 ```{r}
 psm_filt_sn_int <- filter_TMT_PSMs(psm, inter_thresh=50, sn_thresh=10)
 ```
@@ -126,13 +128,15 @@ print(p)
 
 ```
 
-Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances. For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method='robust')`. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.
+Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances. 
+For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method='robust')`. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.
 
-Here, we will use PSMs with at most 5/10 NAs and proteins with at least three finite quantification values in a given sample. Note that this means a protein may still have a mixture of finite and NA values: If a protein has 3 PSMs and PSMs have missing values such that some samples are still quantified in both PSMs, then the protein will be quantified in these samples, but NA where missing values are present.
-#### NOTE: below won't work until function below has been merged from {ts}_ptm branch into master and then into this branch.
+Here, we will use PSMs with at most 5/10 NAs and proteins with at least three finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and NA values. For example, if a protein has 3 PSMs and the PSMs have missing values such that some samples are still quantified in all 3 PSMs, then the protein will be quantified in these samples, but NA where missing values are present. Thus, each protein-level quantification will be derived from at least 3 PSM intensities, where each PSM was quantified in at least 5 samples.
+
+
 ```{r}
 psm_filt_sn_int_missing <- psm_filt_sn_int %>% 
-  filterNA(pNA=0.5) %>%
+  filterNA(pNA=0.5) %>% # remove features observed in fewer than 
   restrict_features_per_protein(min_features=2)
 ```
 
