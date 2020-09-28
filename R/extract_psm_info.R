@@ -23,9 +23,12 @@ silac_psm_seq_int <- function(
   obj <- obj %>%
     filter(.data$Quan.Channel!='') %>%
     rowwise() %>%
-    filter(is.finite(.data$Precursor.Abundance)) %>%
-    # mutate(mod_col=remove_silac_modifications(!!sym(mod_col), level='psm')) %>%
-    mutate(mod_col=psm_to_peptide_style_modifications(!!sym(mod_col)))
+    filter(is.finite(.data$Precursor.Abundance))
+
+  obj[[mod_col]] <- remove_silac_modifications(obj[[mod_col]])
+  obj[[mod_col]] <- psm_to_peptide_style_modifications(obj[[mod_col]])
+
+  obj[[sequence_col]] <- toupper(obj[[sequence_col]])
 
   obj_seq <- obj %>%
     group_by(!!sym(sequence_col), .data$Quan.Channel, !!sym(mod_col)) %>%
@@ -42,5 +45,4 @@ silac_psm_seq_int <- function(
 
   return(obj_seq_int)
 }
-
 
