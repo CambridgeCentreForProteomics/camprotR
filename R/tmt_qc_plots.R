@@ -110,8 +110,8 @@ get_notch_per_protein <- function(obj,
     filter(n>1) %>%
     pull(!!sym(master_prot_col))
 
-  notch_per_protein <- data.frame(exprs(.psm)<log2(notch_upper)) %>%
-    merge(fData(.psm)[,master_prot_col, drop=FALSE], by='row.names') %>%
+  notch_per_protein <- data.frame(exprs(obj)<log2(notch_upper)) %>%
+    merge(fData(obj)[,master_prot_col, drop=FALSE], by='row.names') %>%
     gather(key='sample', value='below_notch', -c(.data$Row.names, !!sym(master_prot_col))) %>%
     filter(!!sym(master_prot_col) %in% retain_prot) %>%
     filter(!is.na(.data$below_notch)) %>%
