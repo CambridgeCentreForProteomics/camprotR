@@ -5,17 +5,17 @@
 \title{Summarise the number of sub-notch PSM intensities per protein}
 \usage{
 get_notch_per_protein(
-  .psm,
+  obj,
   master_prot_col = "Master.Protein.Accessions",
   notch_upper = 5.75
 )
 }
 \arguments{
+\item{obj}{\code{MSnSet} containing PSM-level TMT intensities.}
+
+\item{master_prot_col}{\code{character}. Column name for master proteins.}
+
 \item{notch_upper}{\code{numeric}. Upper boundary of notch.}
-
-\item{obj}{\code{MSnSet} containing PSM level TMT intensities.}
-
-\item{master_protein_col}{\code{character}. Column name for master proteins.}
 }
 \value{
 \code{data.frame} Summarises # PSMs above/below notch for each protein
