@@ -93,17 +93,17 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
 #' been observed to have a 'notch' where few values are observed. This function
 #' summarises the number of sub-notch values observed per protein
 #'
-#' @param obj `MSnSet` containing PSM level TMT intensities.
+#' @param obj `MSnSet` containing PSM-level TMT intensities.
 #' @param notch_upper `numeric`. Upper boundary of notch.
-#' @param master_protein_col `character`. Column name for master proteins.
+#' @param master_prot_col `character`. Column name for master proteins.
 #'
 #' @return `data.frame` Summarises # PSMs above/below notch for each protein
 #' @export
-get_notch_per_protein <- function(.psm,
+get_notch_per_protein <- function(obj,
                                   master_prot_col='Master.Protein.Accessions',
                                   notch_upper=5.75){
 
-  retain_prot <- .psm %>%
+  retain_prot <- obj %>%
     fData() %>%
     group_by_at(master_prot_col) %>%
     tally() %>%
@@ -112,15 +112,15 @@ get_notch_per_protein <- function(.psm,
 
   notch_per_protein <- data.frame(exprs(.psm)<log2(notch_upper)) %>%
     merge(fData(.psm)[,master_prot_col, drop=FALSE], by='row.names') %>%
-    gather(key='sample', value='below_notch', -c(Row.names, !!sym(master_prot_col))) %>%
+    gather(key='sample', value='below_notch', -c(.data$Row.names, !!sym(master_prot_col))) %>%
     filter(!!sym(master_prot_col) %in% retain_prot) %>%
-    filter(!is.na(below_notch)) %>%
+    filter(!is.na(.data$below_notch)) %>%
     #tibble::rownames_to_column('sample') %>%
     group_by(!!sym(master_prot_col), sample) %>%
-    summarise(n_psm=length(below_notch),
-              n_below=sum(below_notch),
-              fraction_below=n_below/n_psm) %>%
-    arrange(desc(fraction_below))
+    summarise(n_psm=length(.data$below_notch),
+              n_below=sum(.data$below_notch),
+              fraction_below=.data$n_below/.data$n_psm) %>%
+    arrange(desc(.data$fraction_below))
 
   return(notch_per_protein)
 }
@@ -235,27 +235,28 @@ plot_missing_SN <- function(obj,
 #'
 #' @return `ggplot` tile plot to show S:N vs # missing values for each sample
 #' @export
+#' @importFrom rlang .data
 plot_missing_SN_per_sample <- function(obj,
                                        sn_column="Average.Reporter.SN",
                                        bins=20){
 
-  .data <- obj %>%
+  sn_per_sample <- obj %>%
     exprs() %>%
     data.frame() %>%
     tibble::rownames_to_column('PSM_id') %>%
-    gather(key='sample', value="value", -PSM_id) %>%
+    gather(key='sample', value="value", -.data$PSM_id) %>%
     merge(fData(obj)[,sn_column, drop=FALSE], by.x='PSM_id', by.y='row.names') %>%
-    filter(is.finite(Average.Reporter.SN))
+    filter(is.finite(.data$Average.Reporter.SN))
 
-  .data$binned_sn <- Hmisc::cut2(.data[[sn_column]], g=bins, digits=1)
+  sn_per_sample$binned_sn <- Hmisc::cut2(sn_per_sample[[sn_column]], g=bins, digits=1)
 
-  p <- .data %>%
-    group_by(sample, binned_sn,
+  p <- sn_per_sample %>%
+    group_by(.data$sample, .data$binned_sn,
              missing=ifelse(is.na(value), 'missing', 'present')) %>%
     tally() %>%
     spread(key=missing, value=n, fill=0) %>%
-    mutate(percentage_missing=(100*missing)/(missing+present),
-           sample=remove_x(sample)) %>%
+    mutate(percentage_missing=(100*.data$missing)/(.data$missing+.data$present),
+           sample=remove_x(.data$sample)) %>%
     ggplot(aes(binned_sn, sample, fill=percentage_missing)) +
     geom_tile(colour='grey20', lwd=0.1) +
     scale_fill_gradient(low='grey97', high=get_cat_palette(1), name='Missing (%)',
