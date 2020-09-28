@@ -6,7 +6,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{TMT QC PSM-level quantification and summarisation to protein-level abundance}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include = FALSE}
@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-Quantitative proteomics using isobaric tagging such as Tandem Mass Tags (TMT) has a considerable benefit over Label-Free Quantification (LFQ) in that up to 16 samples can be quantified for each Peptide Spectrum Match (PSM). This greatly reduces the extent of missing values that may be present between different MS runs due to the limited number of ions that can be fragmented in each run and the associated issue of peptides being identified in only a subset of runs (REF).
+Quantitative proteomics using isobaric tagging such as Tandem Mass Tags (TMT) has a considerable benefit over Label-Free Quantification (LFQ) in that up to 16 samples can be quantified for each Peptide Spectrum Match (PSM). This greatly reduces the extent of missing values that may be present between different MS runs due to the limited number of ions that can be fragmented in each run and the associated issue of peptides being identified in only a subset of runs (REF). It also standardises the features quantified in each sample, simplifying the comparison between samples and increasing quantification accuracy of summarised features such as proteins.
 
-To avoid ratio compression, quantification of TMT-labelled samples should be performed with SPS MS3 (REF). The TMT ions being quantified are therefore relatively low intensity and as such QC of the PSM-level quantification is recommended prior to summarisation to protein-level abundances.
+However, TMT does suffer from ratio compression, which should be avoiding by perfomring quantification with SPS MS3 (REF). Since quantification is performed in MS3, the TMT ions being quantified are therefore relatively low intensity and as such, careful QC of the PSM-level quantification is recommended prior to summarisation to protein-level abundances.
 
 Here, we will assess the following:
 
