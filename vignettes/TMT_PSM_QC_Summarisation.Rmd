@@ -42,14 +42,14 @@ suppressMessages(library(tidyr))
 suppressMessages(library(dplyr))
 ```
 
-We start by reading in a file containing PSM-level output from Proteome Discoverer (PD).
+We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 1,000 PSMs only.
 ```{r}
-psm_data <- read.delim('~/git_repos/phospho_lopit/raw/anja_lopit_total_rep1_PSMs.txt', stringsAsFactors=FALSE)
+psm_data <- read.delim(system.file("extdata", "TMT_PSMs.txt.gz", package = "camprotR"), stringsAsFactors=FALSE)
 ```
 
 The first step is to remove contaminant proteins. These were defined using the cRAP database (REF). Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
 ```{r}
-crap_fasta_inf <- '~/git_repos/phospho_lopit/shared_files/cRAP_FullIdentifiers.fasta'
+crap_fasta_inf <- system.file("extdata", "cRAP_FullIdentifiers.fasta.gz", package = "camprotR")
 
 # Load the cRAP FASTA used for the PD search
 crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
@@ -88,7 +88,7 @@ print(p)
 ```
 Sub-notch values are systematic under-estimates (Currently unpublished findings). The impact of sub-notch values on summarised protein-level abundances will depend on the number of sub-notch values and, more importantly, the proportion of PSMs below the notch for a given protein. We can obtain the per-protein notch metrics using `get_notch_per_protein` and plot the number and fraction with `plot_below_notch_per_prot` and `plot_fraction_below_notch_per_prot` respectively. 
 
-In the case, we see that most proteins have zero PSM intensities below the notch and very few have more than 3. The vast majority of protein have <10% PSMs at/below the notch, indicating the notch is unlikely to be problematic with this dataset.
+In the case, we see that most proteins have zero PSM intensities below the notch. The vast majority of protein have <10% PSMs at/below the notch, indicating the notch is unlikely to be problematic with this dataset.
 ```{r}
 notch_per_protein <- get_notch_per_protein(psm)
 
@@ -100,12 +100,12 @@ We will still want to remove low Signal:Noise (S:N) PSMs, since the quantificati
 
 Note that where the signal:noise>10, there are far fewer missing values
 ```{r, fig.height=6, fig.width=6}
-p <- plot_missing_SN(psm, bins=25)
+p <- plot_missing_SN(psm, bins=27)
 print(p)
 ```
 We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`. In this case, there is no tag which appears to have a high proportion of missing values when signal:noise > 10.
 ```{r}
-p <- plot_missing_SN_per_sample(psm, bins=25)
+p <- plot_missing_SN_per_sample(psm, bins=27)
 print(p)
 ```
 Based on the above, we will filter the PSMs to only retain those with S:N>10 using `filter_TMT_PSMs`. Using the same function, we will also remove PSMs with interference/co-isolation >50%.
