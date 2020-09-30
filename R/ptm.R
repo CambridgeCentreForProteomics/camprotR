@@ -166,7 +166,7 @@ add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.
       return("")
     }
 
-    peptide_starts <- stats::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_starts <- Biostrings::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
 
     for (p_start in peptide_starts) {
       position_string <- NULL
@@ -321,8 +321,8 @@ add_peptide_positions <- function(obj,
     if (!protein %in% names(proteome)) {
       return(c(NA, NA))
     }
-    peptide_start <- stats::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
-    peptide_end <- stats::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_start <- Biostrings::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_end <- Biostrings::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
 
     if (length(peptide_start) != 1) {
       return(c(NA, NA))
