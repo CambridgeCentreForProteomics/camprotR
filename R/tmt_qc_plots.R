@@ -27,14 +27,14 @@ get_psm_metrics <- function(obj,
 
   e_data_grouped %>%
     summarise(
-      missing=sum(is.na(intensity), na.rm=TRUE),
-      not_missing=sum(!is.na(intensity), na.rm=TRUE),
-      below_thresh=sum(intensity<threshold, na.rm=TRUE),
-      above_thresh=sum(intensity>=threshold, na.rm=TRUE),
-      total=missing+not_missing,
-      perc_below=round(100*below_thresh/(total),1),
-      perc_missing=round(100*missing/(total),1),
-      median_intensity=median(intensity, na.rm=TRUE)) %>%
+      missing=sum(is.na(.data$intensity), na.rm=TRUE),
+      not_missing=sum(!is.na(.data$intensity), na.rm=TRUE),
+      below_thresh=sum(.data$intensity<threshold, na.rm=TRUE),
+      above_thresh=sum(.data$intensity>=threshold, na.rm=TRUE),
+      total=.data$missing+.data$not_missing,
+      perc_below=round(100*.data$below_thresh/(.data$total),1),
+      perc_missing=round(100*.data$missing/(.data$total),1),
+      median_intensity=stats::median(.data$intensity, na.rm=TRUE)) %>%
     ungroup
 }
 
@@ -66,7 +66,7 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
 
   if(facet_by_sample){
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
-      mutate(label=sprintf('%s %%  ', perc_below))
+      mutate('label'=sprintf('%s %%  ', .data$perc_below))
 
     p <- p + geom_text(aes(label=label), data=psm_metrics,
                        family='serif',
@@ -141,10 +141,10 @@ get_notch_per_protein <- function(obj,
 plot_below_notch_per_prot <- function(notch_per_protein){
 
   p_notch_per_protein <- notch_per_protein %>%
-    group_by(n_below, sample=remove_x(sample)) %>%
+    group_by(.data$n_below, sample=remove_x(.data$sample)) %>%
     tally() %>%
     ggplot(aes(sample, n, fill=Hmisc::cut2(
-      n_below, cuts=c(0, 1, 3, 5, 8, 12, 20, 43)))) +
+      .data$n_below, cuts=c(0, 1, 3, 5, 8, 12, 20, 43)))) +
     geom_bar(stat='identity', position='fill') +
     scale_fill_manual(name='# PSMs below notch', values=c('grey', get_cat_palette(6))) +
     xlab('Tag') +
@@ -170,9 +170,8 @@ plot_below_notch_per_prot <- function(notch_per_protein){
 #' @export
 plot_fraction_below_notch_per_prot <- function(notch_per_protein){
   p_fraction_psm_below_notch <- notch_per_protein %>%
-    #filter(fraction_below>0) %>%
     mutate(sample=remove_x(sample)) %>%
-    ggplot(aes(fraction_below)) +
+    ggplot(aes(.data$fraction_below)) +
     geom_histogram(bins=10) +
     theme_camprot(base_size=10) +
     facet_wrap(~sample) +
@@ -235,7 +234,6 @@ plot_missing_SN <- function(obj,
 #'
 #' @return `ggplot` tile plot to show S:N vs # missing values for each sample
 #' @export
-#' @importFrom rlang .data
 plot_missing_SN_per_sample <- function(obj,
                                        sn_column="Average.Reporter.SN",
                                        bins=20){
