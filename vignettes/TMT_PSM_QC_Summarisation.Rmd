@@ -3,6 +3,7 @@ title: "TMT QC PSM-level quantification and summarisation to protein-level abund
 author: "Tom Smith"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: camprot_references.json
 vignette: >
   %\VignetteIndexEntry{TMT QC PSM-level quantification and summarisation to protein-level abundance}
   %\VignetteEngine{knitr::rmarkdown}
@@ -16,13 +17,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-Quantitative proteomics using isobaric tagging such as Tandem Mass Tags (TMT) has a considerable benefit over Label-Free Quantification (LFQ) in that up to 16 samples can be quantified for each Peptide Spectrum Match (PSM). This greatly reduces the extent of missing values that may be present between different MS runs due to the limited number of ions that can be fragmented in each run and the associated issue of peptides being identified in only a subset of runs (REF). It also standardises the features quantified in each sample, simplifying the comparison between samples and increasing quantification accuracy of summarised features such as proteins.
+Quantitative proteomics using isobaric tagging such as Tandem Mass Tags (TMT) has a considerable benefit over Label-Free Quantification (LFQ) in that up to 16 samples can be quantified for each Peptide Spectrum Match (PSM). This greatly reduces the extent of missing values that may be present between different MS runs due to the limited number of ions that can be fragmented in each run and the associated issue of peptides being identified in only a subset of runs [@http://zotero.org/users/5634351/items/ME322P2A]. As such, it standardises the features quantified in each sample, simplifying the comparison between samples and increasing quantification accuracy of summarised features such as proteins.
 
-However, TMT does suffer from ratio compression, which should be avoiding by perfomring quantification with SPS MS3 (REF). Since quantification is performed in MS3, the TMT ions being quantified are therefore relatively low intensity and as such, careful QC of the PSM-level quantification is recommended prior to summarisation to protein-level abundances.
+However, TMT does suffer from ratio compression, which should be avoiding by perfomring quantification with SPS MS3 [@http://zotero.org/users/5634351/items/ZK69WYZ2]. Since quantification is performed in MS3, the TMT ions being quantified are therefore relatively low intensity and as such, careful QC of the PSM-level quantification is recommended prior to summarisation to protein-level abundances.
 
 Here, we will assess the following:
 
-- The overall distribution of tag intensities, including the so-called 'notch' region (REF)
+- The overall distribution of tag intensities, including the so-called 'notch' region [@http://zotero.org/users/5634351/items/DLWEN74B]
 
 - How signal:noise relates to missing values 
 
@@ -80,7 +81,7 @@ colnames(.e) <- gsub('Abundance.', '', colnames(.e))
 psm <- MSnbase::MSnSet(exprs=.e, fData=.f)
 ```
 
-The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed (REF). This presence of the notch is dependent on the MS settings, most notably AGC and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
+The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed [@http://zotero.org/users/5634351/items/DLWEN74B]. This presence of the notch is dependent on the MS settings, most notably AGC and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
 ```{r}
 p <- plot_TMT_notch(psm)
 print(p)
@@ -156,5 +157,5 @@ protein <- psm_filt_sn_int_missing %>%
 exprs(protein) <- 2^exprs(protein)
 
 ```
-
+# References
 
