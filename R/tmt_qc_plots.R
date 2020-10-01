@@ -66,9 +66,9 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
 
   if(facet_by_sample){
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
-      mutate('label'=sprintf('%s %%  ', .data$perc_below))
+      mutate(label=sprintf('%s %%  ', .data$perc_below))
 
-    p <- p + geom_text(aes(label=label), data=psm_metrics,
+    p <- p + geom_text(aes(label=.data$label), data=psm_metrics,
                        family='serif',
                        x=log2(notch_lower), y=Inf,
                        vjust=2, hjust=1, size=4) +
@@ -194,6 +194,7 @@ plot_fraction_below_notch_per_prot <- function(notch_per_protein){
 #'
 #' @return `ggplot` stacked bar plot to show S:N vs # missing values
 #' @export
+#' @importFrom grDevices colorRampPalette
 plot_missing_SN <- function(obj,
                           sn_column="Average.Reporter.SN",
                           bins=20){
@@ -204,11 +205,11 @@ plot_missing_SN <- function(obj,
 
   p <- data.frame('n_missing'=n_missing,
                   'sn'=fData(obj)[[sn_column]]) %>%
-    mutate(binned_sn=Hmisc::cut2(sn, g=bins, digits=1)) %>%
-    filter(is.finite(sn)) %>%
-    group_by(n_missing, binned_sn) %>%
+    mutate(binned_sn=Hmisc::cut2(.data$sn, g=bins, digits=1)) %>%
+    filter(is.finite(.data$sn)) %>%
+    group_by(.data$n_missing, .data$binned_sn) %>%
     tally() %>%
-    ggplot(aes(binned_sn, n, fill=factor(n_missing))) +
+    ggplot(aes(.data$binned_sn, n, fill=factor(n_missing))) +
     geom_bar(stat='identity', position='fill', colour='grey20', lwd=0.1) +
     scale_fill_manual(values=c('grey70', pal(max(n_missing))), name='Missing values') +
     guides(colour=guide_legend(override.aes = list(size = 1.5))) +
@@ -250,12 +251,12 @@ plot_missing_SN_per_sample <- function(obj,
 
   p <- sn_per_sample %>%
     group_by(.data$sample, .data$binned_sn,
-             missing=ifelse(is.na(value), 'missing', 'present')) %>%
+             missing=ifelse(is.na(.data$value), 'missing', 'present')) %>%
     tally() %>%
-    spread(key=missing, value=n, fill=0) %>%
+    spread(key=.data$missing, value=.data$n, fill=0) %>%
     mutate(percentage_missing=(100*.data$missing)/(.data$missing+.data$present),
            sample=remove_x(.data$sample)) %>%
-    ggplot(aes(binned_sn, sample, fill=percentage_missing)) +
+    ggplot(aes(.data$binned_sn, sample, fill=.data$percentage_missing)) +
     geom_tile(colour='grey20', lwd=0.1) +
     scale_fill_gradient(low='grey97', high=get_cat_palette(1), name='Missing (%)',
                         limits=c(0,100)) +

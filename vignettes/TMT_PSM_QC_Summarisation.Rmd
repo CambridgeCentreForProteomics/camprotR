@@ -37,7 +37,6 @@ We will then:
 ```{r}
 suppressMessages(library(camprotR))
 suppressMessages(library(MSnbase))
-suppressMessages(library(magrittr))
 suppressMessages(library(ggplot2))
 suppressMessages(library(tidyr))
 suppressMessages(library(dplyr))
