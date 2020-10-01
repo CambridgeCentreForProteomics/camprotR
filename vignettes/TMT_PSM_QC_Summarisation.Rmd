@@ -82,54 +82,56 @@ psm <- MSnbase::MSnSet(exprs=.e, fData=.f)
 ```
 
 The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed [@http://zotero.org/users/5634351/items/DLWEN74B]. This presence of the notch is dependent on the MS settings, most notably AGC and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
-```{r}
+
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="TMT intensities, with notch region denoted by vertical lines"}
 p <- plot_TMT_notch(psm)
 print(p)
 
 ```
+
 Sub-notch values are systematic under-estimates (Currently unpublished findings). The impact of sub-notch values on summarised protein-level abundances will depend on the number of sub-notch values and, more importantly, the proportion of PSMs below the notch for a given protein. We can obtain the per-protein notch metrics using `get_notch_per_protein` and plot the number and fraction with `plot_below_notch_per_prot` and `plot_fraction_below_notch_per_prot` respectively. 
 
 In the case, we see that most proteins have zero PSM intensities below the notch. The vast majority of protein have <10% PSMs at/below the notch, indicating the notch is unlikely to be problematic with this dataset.
-```{r}
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="Count of TMT intensities below the notch per protein"}
 notch_per_protein <- get_notch_per_protein(psm)
 
 plot_below_notch_per_prot(notch_per_protein)
+```
+
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="Fraction of TMT intensities below the notch per protein"}
 plot_fraction_below_notch_per_prot(notch_per_protein)
 ```
 
 We will still want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
 
 Note that where the signal:noise>10, there are far fewer missing values
-```{r, fig.height=6, fig.width=6}
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="Missing values per PSM, in relation to the signal:noise ratio"}
 p <- plot_missing_SN(psm, bins=27)
 print(p)
 ```
+
 We can also look into this relationship at the tag level using `plot_missing_SN_per_sample`. In this case, there is no tag which appears to have a high proportion of missing values when signal:noise > 10.
-```{r}
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="Missing values per tag, in relation to the signal:noise ratio"}
 p <- plot_missing_SN_per_sample(psm, bins=27)
 print(p)
 ```
+
 Based on the above, we will filter the PSMs to only retain those with S:N>10 using `filter_TMT_PSMs`. Using the same function, we will also remove PSMs with interference/co-isolation >50%.
 ```{r}
 psm_filt_sn_int <- filter_TMT_PSMs(psm, inter_thresh=50, sn_thresh=10)
 ```
 We can then re-plot to see how this affects the notch.
-```{r, fig.show='hold'}
-p <- plot_TMT_notch(psm) + ggtitle('Before filtering')
+```{r, fig.height=3.5, fig.width=3.5, fig.fullwidth=TRUE, fig.cap="Notch plots after filtering", fig.show='hold'}
+p <- plot_TMT_notch(psm) +
+  ggtitle('Before filtering') +
+  theme_camprot(base_size=10)
 print(p)
 
-p <- plot_TMT_notch(psm_filt_sn_int) + ggtitle('After filtering')
+p <- plot_TMT_notch(psm_filt_sn_int) +
+  ggtitle('After filtering') +
+  theme_camprot(base_size=10)
 print(p)
 
-
-p <- plot_fraction_below_notch_per_prot(notch_per_protein) +
-  ggtitle('Before filtering')
-print(p)
-
-notch_per_protein_post_filt <- get_notch_per_protein(psm_filt_sn_int)
-p <- plot_fraction_below_notch_per_prot(notch_per_protein_post_filt) +
-  ggtitle('After filtering')
-print(p)
 
 ```
 
@@ -140,7 +142,7 @@ For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method='
 Here, we will use PSMs with at most 5/10 NAs and proteins with at least three finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and NA values. For example, if a protein has 3 PSMs and the PSMs have missing values such that some samples are still quantified in all 3 PSMs, then the protein will be quantified in these samples, but NA where missing values are present. Thus, each protein-level quantification will be derived from at least 3 PSM intensities, where each PSM was quantified in at least 5 samples.
 
 
-```{r}
+```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="Tally of PSMs per protein"}
 psm_filt_sn_int_missing <- psm_filt_sn_int %>% 
   filterNA(pNA=0.5) %>% # remove features observed in fewer than 
   restrict_features_per_protein(min_features=2)
