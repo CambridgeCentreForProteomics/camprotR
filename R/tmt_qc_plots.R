@@ -79,8 +79,8 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
     p <- p + annotate(geom='text',
                       label=sprintf('%s %%  ', psm_metrics$perc_below),
                       family='serif',
-                      x=log2(notch_lower), y=Inf,
-                      vjust=2, hjust=1, size=8) +
+                      x=log2(max(exprs(obj), na.rm=TRUE)), y=Inf,
+                      vjust=2, hjust=1, size=5) +
       theme_camprot(border=FALSE)
   }
 
