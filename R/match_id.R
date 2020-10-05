@@ -13,7 +13,8 @@
 #' @param match `string`. Name of column in `ref` to use for
 #' matching.
 #' @param new `character vector`. Name of column(s) in `ref` to bind
-#' to `data`.
+#' to `data`. If not character columns, they will be coerced to class character
+#' with a warning.
 #' @param regex `string`. Regular expression to use for extracting the IDs
 #' from the `to_match` column in `data`.
 #' @param collapse `string`. If there are multiple IDs in the
@@ -110,6 +111,14 @@ match_id_ <- function(to_match, ref, match, new,
       Map("[", list(as.character(ref[[x]])), matched_list)
     }, simplify = FALSE
   )
+
+  # compare class of columns from reference to columns of result to identify
+  # any unwanted type conversion i.e. numeric to character.
+  class_ref <- lapply(new, function(x) class(ref[[x]]))
+
+  if(any(class_ref != "character")) {
+    warning("Some of the column(s) specified by 'new' have been coerced to class 'character'")
+  }
 
   # collapse multiple matches so the length is the same as match_col
   result <- lapply(new_cols, function(x) sapply(x, function(y) paste(y, collapse = ";")))
