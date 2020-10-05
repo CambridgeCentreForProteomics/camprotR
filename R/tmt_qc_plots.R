@@ -59,7 +59,6 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
   p <- obj %>%
     log(base=2) %>%
     plot_quant(method='histogram', facet_by_sample=facet_by_sample) +
-    scale_y_continuous(expand = c(0, 0)) +
     xlab('PSM intensity (log2)') +
     geom_vline(xintercept=log2(notch_lower), size=0.5, colour=colours[2]) +
     geom_vline(xintercept=log2(notch_upper), size=0.5, colour=colours[1])
@@ -84,7 +83,7 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
       theme_camprot(border=FALSE)
   }
 
-  invisible(p)
+  return(p)
 }
 
 #' Summarise the number of sub-notch PSM intensities per protein
@@ -218,7 +217,7 @@ plot_missing_SN <- function(obj,
     theme_camprot(base_size=12, border=FALSE) +
     theme(axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1))
 
-  invisible(p)
+  return(p)
 
 }
 
