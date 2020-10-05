@@ -82,15 +82,15 @@ We now store the filtered PSM data in an MSnSet, the standard data object for pr
 # Abundance columns for TMT PD-output start with Abundance 
 abundance_cols <- colnames(psm_data_flt)[grepl('Abundance.', colnames(psm_data_flt))]
 
-.e <- as.matrix(psm_data_flt[, abundance_cols])
-.f <- psm_data_flt[, setdiff(colnames(psm_data_flt), abundance_cols)]
+psm.e <- as.matrix(psm_data_flt[, abundance_cols])
+psm.f <- psm_data_flt[, setdiff(colnames(psm_data_flt), abundance_cols)]
 
 # update the column names to remove the 'Abundance.` prefix
-colnames(.e) <- gsub('Abundance.', '', colnames(.e))
+colnames(psm.e) <- gsub('Abundance.', '', colnames(psm.e))
 
 # we don't have 'phenotype' data to add so we just define the 
 # 'expression' data and 'feature' data
-psm <- MSnbase::MSnSet(exprs = .e, fData = .f)
+psm <- MSnbase::MSnSet(exprs = psm.e, fData = psm.f)
 ```
 
 The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed [@http://zotero.org/users/5634351/items/DLWEN74B]. This presence of the notch is dependent on the MS settings, most notably automatic gain control (AGC) target and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
