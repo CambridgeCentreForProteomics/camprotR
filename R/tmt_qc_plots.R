@@ -69,8 +69,8 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
 
     p <- p + geom_text(aes(label=.data$label), data=psm_metrics,
                        family='serif',
-                       x=log2(notch_lower), y=Inf,
-                       vjust=2, hjust=1, size=4) +
+                       x=log2(max(exprs(obj), na.rm=TRUE)), y=Inf,
+                       vjust=2, hjust=1, size=3) +
       theme_camprot(border=FALSE, base_size=10)
   } else{
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper)
