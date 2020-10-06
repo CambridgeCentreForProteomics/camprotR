@@ -31,11 +31,6 @@ notifications:
     on_success: change
     on_failure: change
 
-# We don't need latex or pandoc (yet..)
-latex: false
-pandoc: false
-
-
 # only report coverage after build is successful
 after_success:
   - Rscript -e 'covr::codecov()'
