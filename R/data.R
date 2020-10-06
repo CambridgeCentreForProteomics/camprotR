@@ -28,3 +28,17 @@
 #'  tmt_psm
 #' }
 "tmt_psm"
+
+
+#' PSM-level PD output from TMT experiment
+#'
+#' @format An MSnSet with fVarLabels:
+#' \describe{
+#'  \item{Master.Protein.Accessions}{Protein Accessions}
+#' }
+#' @examples
+#' \dontrun{
+#'  psm_data_notch_count
+#' }
+"psm_data_notch_count"
+
