@@ -32,7 +32,8 @@ Imports:
     Hmisc,
     stringr,
     tibble,
-    utils
+    utils,
+    robustbase
 Suggests: 
     testthat,
     knitr,
