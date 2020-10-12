@@ -10,10 +10,11 @@
 #'
 #' @return Returns an `MSnSet` with the average SN included as a new feature column.
 #' @export
+#' @importFrom MSnbase fData
 update_average_sn <- function(obj,
                               sn_col='Average.Reporter.SN'){
 
-  fData(obj)[[sn_col]] <- rowMeans(exprs(obj), na.rm=TRUE)
+  MSnbase::fData(obj)[[sn_col]] <- rowMeans(exprs(obj), na.rm=TRUE)
   obj
 }
 
