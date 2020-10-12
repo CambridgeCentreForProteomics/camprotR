@@ -1,6 +1,6 @@
 context('Update average S/N')
 
-test_that("Filter TMT PSMs", {
+test_that("Update average S/N", {
   data('tmt_psm', package='camprotR')
   filtered <-  update_average_sn(tmt_psm)
   expect_equal_to_reference(
