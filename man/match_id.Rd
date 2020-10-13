@@ -19,7 +19,8 @@ matching and the new columns to add to \code{data}.}
 matching.}
 
 \item{new}{\verb{character vector}. Name of column(s) in \code{ref} to bind
-to \code{data}.}
+to \code{data}. If not character columns, they will be coerced to class character
+with a warning.}
 
 \item{regex}{\code{string}. Regular expression to use for extracting the IDs
 from the \code{to_match} column in \code{data}.}
