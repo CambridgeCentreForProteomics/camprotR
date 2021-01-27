@@ -16,7 +16,7 @@ RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 biocViews:
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Imports: 
     AnnotationDbi,
     Biobase,
@@ -30,11 +30,11 @@ Imports:
     rlang,
     stats,
     Hmisc,
-    stringr,
     tibble,
     utils,
     robustbase
 Suggests: 
-    testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    stringr,
+    testthat
