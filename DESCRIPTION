@@ -14,6 +14,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
+Remotes: moodymudskipper/cutr
 biocViews:
 Depends: 
     R (>= 3.5.0)
@@ -21,6 +22,7 @@ Imports:
     AnnotationDbi,
     Biobase,
     Biostrings,
+    cutr,
     dplyr,
     tidyr,
     ggplot2,
@@ -28,11 +30,10 @@ Imports:
     MSnbase,
     purrr,
     rlang,
+    robustbase,
     stats,
-    Hmisc,
     tibble,
-    utils,
-    robustbase
+    utils
 Suggests: 
     knitr,
     rmarkdown,
