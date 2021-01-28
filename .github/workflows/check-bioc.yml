@@ -160,6 +160,7 @@ jobs:
       - name: Install rmarkdown
         run: |
           remotes::install_cran("rmarkdown")
+        shell: Rscript {0}
 
       - name: Install dependencies pass 1
         run: |
