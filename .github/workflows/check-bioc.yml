@@ -191,7 +191,6 @@ jobs:
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
-          BiocManager::install("BiocCheck")
         shell: Rscript {0}
 
       - name: Install BiocGenerics
@@ -241,16 +240,6 @@ jobs:
         if:  env.has_RUnit == 'true'
         run: |
           BiocGenerics:::testPackage()
-        shell: Rscript {0}
-
-      - name: Run BiocCheck
-        run: |
-          BiocCheck::BiocCheck(
-              dir('check', 'tar.gz$', full.names = TRUE),
-              `quit-with-status` = TRUE,
-              `no-check-R-ver` = TRUE,
-              `no-check-bioc-help` = TRUE
-          )
         shell: Rscript {0}
 
       - name: Test coverage
