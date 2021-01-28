@@ -157,6 +157,10 @@ jobs:
           BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE)
         shell: Rscript {0}
 
+      - name: Install rmarkdown
+        run: |
+          remotes::install_cran("rmarkdown")
+
       - name: Install dependencies pass 1
         run: |
           ## Try installing the package dependencies in steps. First the local
