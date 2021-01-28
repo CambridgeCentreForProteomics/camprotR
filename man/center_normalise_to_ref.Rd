@@ -19,7 +19,7 @@ normalised
 \description{
 Center-median normalisation is a simple normalisation method
 that is appropriate for relative abundance proteomics such as isobaric tagging.
-This can be achieved with \code{MSnbase::normalise(method='diff.center')}. However,
+This can be achieved with \code{MSnbase::normalise(method='diff.median')}. However,
 for some experimental designs, the normalisation should be against the medians
 in another dataset. For example, for PTM studies, one may wish to isobaric
 tag samples, pool, and then PTM-enriched, with the enriched sample quantified

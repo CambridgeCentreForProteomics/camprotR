@@ -54,7 +54,7 @@ estimate_incorporation <- function(psm_infile,
   # Extract the non cRAP UniProt accessions associated with each cRAP protein
   crap.accessions <- crap.fasta %>%
     pull(desc) %>%
-    stringr::str_extract_all("(?<=\\|).*?(?=\\|)") %>%
+    regmatches(.data, gregexpr("(?<=\\|).*?(?=\\|)", .data, perl = TRUE)) %>%
     unlist()
 
   peptide_data <- parse_features(utils::read.delim(peptide_infile),

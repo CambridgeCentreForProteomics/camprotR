@@ -142,7 +142,7 @@ plot_below_notch_per_prot <- function(notch_per_protein){
   p_notch_per_protein <- notch_per_protein %>%
     group_by(.data$n_below, sample=remove_x(.data$sample)) %>%
     tally() %>%
-    ggplot(aes(sample, n, fill=Hmisc::cut2(
+    ggplot(aes(sample, n, fill=cutr::cutf2(
       .data$n_below, cuts=c(0, 1, 3, 5, 8, 12, 20, 43)))) +
     geom_bar(stat='identity', position='fill') +
     scale_fill_manual(name='# PSMs below notch', values=c('grey', get_cat_palette(6))) +
@@ -204,7 +204,7 @@ plot_missing_SN <- function(obj,
 
   p <- data.frame('n_missing'=n_missing,
                   'sn'=fData(obj)[[sn_column]]) %>%
-    mutate(binned_sn=Hmisc::cut2(.data$sn, g=bins, digits=1)) %>%
+    mutate(binned_sn=cutr::cutf2(.data$sn, g=bins, digits=1)) %>%
     filter(is.finite(.data$sn)) %>%
     group_by(.data$n_missing, .data$binned_sn) %>%
     tally() %>%
@@ -246,7 +246,7 @@ plot_missing_SN_per_sample <- function(obj,
     merge(fData(obj)[,sn_column, drop=FALSE], by.x='PSM_id', by.y='row.names') %>%
     filter(is.finite(.data$Average.Reporter.SN))
 
-  sn_per_sample$binned_sn <- Hmisc::cut2(sn_per_sample[[sn_column]], g=bins, digits=1)
+  sn_per_sample$binned_sn <- cutr::cutf2(sn_per_sample[[sn_column]], g=bins, digits=1)
 
   p <- sn_per_sample %>%
     group_by(.data$sample, .data$binned_sn,
