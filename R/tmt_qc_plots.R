@@ -188,7 +188,7 @@ plot_fraction_below_notch_per_prot <- function(notch_per_protein){
 #' minimal S:N filtering
 #'
 #' @param obj `MSnSet` containing PSM level TMT intensities
-#' @param sn_column `character` column name for Signal:noise values
+#' @param sn_column `character` column name for signal:noise values
 #' @param bins `numeric` Number of bins to plot
 #'
 #' @return `ggplot` stacked bar plot to show S:N vs # missing values
