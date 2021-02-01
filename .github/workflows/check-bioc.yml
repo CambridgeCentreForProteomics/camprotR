@@ -24,6 +24,7 @@ on:
   push:
     branches:
       - master
+      - {ts}_test_test_test
   pull_request:
     branches:
       - master
