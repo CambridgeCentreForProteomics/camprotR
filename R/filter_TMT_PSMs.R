@@ -1,3 +1,24 @@
+#' Adds new feature describing the average reporter Signal/Noise ratio.
+#'
+#' @description PD column `Average.Reporter.SN` is NA when any tags have missing
+#' values. This function adds an average reporter SN column which ignores missing
+#' values. The assumption is that the intensity values in the `exprs` matrix
+#' are Signal/Noise ratios, as reported by PD by default
+#'
+#' @param obj `MSnSet`. Contains PSMs for TMT quantification
+#' @param sn_col `string`. Name of output column containing the average signal:noise.
+#'
+#' @return Returns an `MSnSet` with the average SN included as a new feature column.
+#' @export
+#' @importFrom MSnbase fData
+update_average_sn <- function(obj,
+                              sn_col='Average.Reporter.SN'){
+
+  MSnbase::fData(obj)[[sn_col]] <- rowMeans(exprs(obj), na.rm=TRUE)
+  obj
+}
+
+
 #' Filter a PSM-level MSnSet to remove low quality PSMs
 #'
 #' @description Filter PSMs from TMT quantification to remove the following:

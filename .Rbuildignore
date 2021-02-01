@@ -1,4 +1,5 @@
 ^camprotR\.Rproj$
 ^\.Rproj\.user$
 ^README.Rmd$
-^\.travis\.yml$
+^\.github$
+^codecov\.yml$

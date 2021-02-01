@@ -1,8 +1,8 @@
 camprotR
 ================
 
-
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/CambridgeCentreForProteomics/camprotR.svg?branch=master)](https://travis-ci.org/CambridgeCentreForProteomics/camprotR)
-[![codecov](https://codecov.io/gh/CambridgeCentreForProteomics/camprotR/branch/master/graph/badge.svg)](https://codecov.io/gh/CambridgeCentreForProteomics/camprotR)
+
+[![R-CMD-check](https://github.com/CambridgeCentreForProteomics/camprotR/workflows/R-CMD-check/badge.svg)](https://github.com/CambridgeCentreForProteomics/camprotR/actions)
+[![codecov](https://codecov.io/gh/CambridgeCentreForProteomics/camprotR/branch/master/graph/badge.svg)](https://codecov.io/gh/CambridgeCentreForProteomics/camprotR?branch=master)
 <!-- badges: end -->
