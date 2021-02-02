@@ -107,7 +107,7 @@ get_all_mappings <- function(go_ids, ontologies, verbose = TRUE, direction = "an
         go2relations[[x]] <- go_relations
       } else {
         if (verbose) {
-          cat(sprintf("Could not get %ss for GO.ID=%s\n", "ancestor", x))
+          cat(sprintf("Could not get %s GO terms for GO.ID=%s\n", direction, x))
         }
         go2relations[[x]] <- c(NA)
       }
@@ -192,7 +192,7 @@ get_ancestor_go <- function(go_df, feature_col = "UNIPROTKB", go_col = "GO.ID",
     bad.terms <- names(ontologies[is.na(ontologies) == TRUE])
 
     warning(
-      "Warning: the following GO terms failed to match to a primary ontology",
+      "Warning: the following GO terms failed to match to a primary ontology ",
       "in GO.db and were removed: ",
       paste(bad.terms, collapse = ", ")
     )
