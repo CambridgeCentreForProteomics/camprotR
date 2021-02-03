@@ -1,5 +1,8 @@
-context('Matching protein IDs')
+context('combine_runs')
 
+#### Setup ---------------------------------------------------------------------
+
+#### Tests ---------------------------------------------------------------------
 test_that("single protein, matched", {
   expect_true(camprotR:::match_proteins('prot1', 'prot1'))
 })
@@ -24,3 +27,5 @@ test_that("multiple proteins, matched, different sep ", {
 test_that("multiple proteins, unmatched", {
   expect_false(camprotR:::match_proteins('prot1; prot2', 'prot2; prot3'))
 })
+
+#### Sanity checks -------------------------------------------------------------
