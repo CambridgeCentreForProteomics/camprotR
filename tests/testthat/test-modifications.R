@@ -23,7 +23,6 @@ test_that("Peptide style SILAC modifications can be removed", {
 })
 
 #### Sanity checks -------------------------------------------------------------
-
 test_that("remove_silac_modifications errors if level is nonsense", {
   expect_error(remove_silac_modifications(
     "1xCarbamidomethyl [C9]; 1xLabel:13C(6)15N(2) [K12]", level='banana'),
