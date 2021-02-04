@@ -11,7 +11,7 @@ test_that("Extracting sequenced and interference data from PSM", {
   #expect_equal_to_reference(
   #  dplyr::arrange(output, Annotated.Sequence, Modifications), # sort order appears to be env-specific
   #  file='psm_sequenced.rds')
-  ref <- readRDS('psm_sequenced.rds') %>%
+  ref <- readRDS('reference/psm_sequenced.rds') %>%
     dplyr::arrange(Annotated.Sequence, Modifications)
   expect_equal(out, ref)
 })

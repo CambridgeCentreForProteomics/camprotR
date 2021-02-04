@@ -6,7 +6,7 @@ context('count_features_per_protein')
 test_that("Count PSMs", {
   data('tmt_psm', package='camprotR')
   expect_equal_to_reference(count_features_per_protein(tmt_psm),
-                            file='tmt_feature_counts.rds')
+                            file='reference/tmt_feature_counts.rds')
 })
 
 #### Sanity checks -------------------------------------------------------------
