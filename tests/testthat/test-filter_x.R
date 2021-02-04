@@ -100,3 +100,4 @@ test_that("filter_val with multiple regex works", {
   expect_equal(nrow(data_filt), 7)
 })
 
+#### Sanity checks -------------------------------------------------------------

@@ -1,6 +1,9 @@
-context('Extracting sequenced and interference data from PSM')
+context('extract_psm_info')
 
-test_that("Extract info", {
+#### Setup ---------------------------------------------------------------------
+
+#### Tests ---------------------------------------------------------------------
+test_that("Extracting sequenced and interference data from PSM", {
   data('silac_psm_data', package='camprotR')
   out <-  silac_psm_seq_int(silac_psm_data, sequence_col='Annotated.Sequence') %>%
     dplyr::arrange(Annotated.Sequence, Modifications)
@@ -12,3 +15,5 @@ test_that("Extract info", {
     dplyr::arrange(Annotated.Sequence, Modifications)
   expect_equal(out, ref)
 })
+
+#### Sanity checks -------------------------------------------------------------

@@ -55,3 +55,5 @@ test_that("match_id_ simplify argument outputs character", {
   expect_type(match_id_(my_df$accession, ref_df, "entry", "gene.name", simplify = TRUE),
               "character")
 })
+
+#### Sanity checks -------------------------------------------------------------

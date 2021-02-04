@@ -1,5 +1,8 @@
-context('Categorical colour palette')
+context('get_cat_palette')
 
+#### Setup ---------------------------------------------------------------------
+
+#### Tests ---------------------------------------------------------------------
 test_that("zero colours", {
   expect_error(get_cat_palette(0))
 })
@@ -33,3 +36,4 @@ test_that("12 colours", {
                  "#A40122", "#E20134", "#FF6E3A", "#FFC33B"))
 })
 
+#### Sanity checks -------------------------------------------------------------
