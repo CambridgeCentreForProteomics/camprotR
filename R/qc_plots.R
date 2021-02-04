@@ -12,6 +12,9 @@
 plot_quant <- function(obj,
                        method=c('box', 'density', 'histogram'),
                        facet_by_sample=FALSE){
+  # check method argument
+  method = match.arg(method)
+
   e_data <- data.frame(exprs(obj))
 
   e_data[e_data==""] <- NA
@@ -46,7 +49,3 @@ plot_quant <- function(obj,
   }
   return(p)
 }
-
-
-
-
