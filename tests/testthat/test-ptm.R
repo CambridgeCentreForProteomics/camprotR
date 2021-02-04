@@ -62,3 +62,11 @@ test_that("get_sequence produces NA for protein with multiple PTMs", {
 test_that("get_sequence warns if the PTM position is outside protein length", {
   expect_warning(get_sequence(proteome, 'L0R819', '200', pad=7))
 })
+
+test_that("combine_peptide_ptm_positions produces NA if protein is not unique", {
+  expect_equal(camprotR:::combine_peptide_ptm_positions(proteome, "L0R819; A0R819", "S"), c(NA, NA))
+})
+
+test_that("combine_peptide_ptm_positions produces NA if peptide position not unique", {
+  expect_equal(camprotR:::combine_peptide_ptm_positions(proteome, "L0R819", "SS"), c(NA, NA))
+})
