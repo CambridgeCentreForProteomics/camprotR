@@ -12,3 +12,5 @@ test_that("remove_dots works", {
   colnames(df) <- remove_dots(colnames(df))
   expect_equal(grep("\\.", colnames(df)), 1)
 })
+
+#### Sanity checks -------------------------------------------------------------
