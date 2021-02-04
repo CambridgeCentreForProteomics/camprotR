@@ -210,9 +210,9 @@ get_sequence <- function(proteome, protein, ptm_position, pad = 7) {
     return(NA)
   }
 
-  if (grepl("; ", ptm_position)) {
-    return(NA)
-  }
+  # if (grepl("; ", ptm_position)) {
+  #   return(NA)
+  # }
 
   if (!protein %in% names(proteome)) {
     return(NA)
