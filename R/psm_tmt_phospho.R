@@ -1,4 +1,4 @@
-#' PSM-level PD output for total proteome TMT10-plex data
+#' PSM-level PD output for phospho TMT10-plex data
 #'
 #' @description Description.
 #'
@@ -9,4 +9,4 @@
 #' @references Insert reference here when published.
 #'
 #' @keywords datasets
-"psm_tmt_total"
+"psm_tmt_phospho"
