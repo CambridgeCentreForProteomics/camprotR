@@ -44,10 +44,7 @@ library(dplyr)
 
 We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 1,000 PSMs only.
 ```{r}
-psm_data <- read.delim(
-  system.file("extdata", "TMT_PSMs.txt.gz", package = "camprotR"), 
-  stringsAsFactors = FALSE
-)
+psm_data <- psm_tmt_total
 ```
 
 The first step is to remove contaminant proteins. These were defined using the cRAP database (REF). Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
