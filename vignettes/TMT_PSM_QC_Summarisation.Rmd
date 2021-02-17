@@ -42,7 +42,7 @@ library(tidyr)
 library(dplyr)
 ```
 
-We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 1,000 PSMs only.
+We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 5,000 PSMs only.
 ```{r}
 psm_data <- psm_tmt_total
 ```

@@ -1,11 +1,12 @@
 context('count_features_per_protein')
 
 #### Setup ---------------------------------------------------------------------
+load(system.file("tests", "testthat", "data-test", "small_psm_tmt_total.rda",
+                 package = "camprotR"))
 
 #### Tests ---------------------------------------------------------------------
 test_that("Count PSMs", {
-  data('tmt_psm', package='camprotR')
-  expect_equal_to_reference(count_features_per_protein(tmt_psm),
+  expect_equal_to_reference(count_features_per_protein(small_psm_tmt_total),
                             file='reference/tmt_feature_counts.rds')
 })
 

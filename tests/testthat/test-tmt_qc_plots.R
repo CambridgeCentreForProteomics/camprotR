@@ -4,7 +4,8 @@ context("tmt_qc_plots")
 
 # Load some TMT PSM level data for tests
 data('psm_data_notch_count', package = 'camprotR')
-data("tmt_psm", package = "camprotR")
+load(system.file("tests", "testthat", "data-test", "small_psm_tmt_total.rda",
+                 package = "camprotR"))
 
 #### Tests ---------------------------------------------------------------------
 # bit of a hacky test because can't use expect_equal_to_reference as the
@@ -46,14 +47,14 @@ test_that("plot_fraction_below_notch_per_prot works", {
 
 test_that("plot_missing_SN works", {
   expect_equal_to_reference(
-    plot_missing_SN(tmt_psm),
+    plot_missing_SN(small_psm_tmt_total),
     "reference/plot_missing_SN.rds"
   )
 })
 
 test_that("plot_missing_SN_per_sample works", {
   expect_equal_to_reference(
-    plot_missing_SN_per_sample(tmt_psm),
+    plot_missing_SN_per_sample(small_psm_tmt_total),
     "reference/plot_missing_SN_per_sample.rds"
   )
 })
