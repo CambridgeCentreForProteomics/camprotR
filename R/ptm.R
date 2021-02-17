@@ -308,7 +308,7 @@ add_peptide_positions <- function(obj,
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
-  combine_peptide_ptm_positions <- function(proteome, protein, sequence) {
+  combine_protein_peptide_positions <- function(proteome, protein, sequence) {
 
     # Given a master protein(s) and AA sequence,
     # return the AA position with respect to protein sequence
@@ -336,7 +336,7 @@ add_peptide_positions <- function(obj,
 
   obj[, c('peptide_start', 'peptide_end')] <- t(apply(
     obj,
-    MARGIN = 1, function(x) combine_peptide_ptm_positions(
+    MARGIN = 1, function(x) combine_protein_peptide_positions(
       proteome, x[[master_protein_col]], x[["Sequence"]]
     )
   ))
