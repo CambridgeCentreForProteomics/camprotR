@@ -1,9 +1,7 @@
 context("parse_features")
 
 #### Setup ---------------------------------------------------------------------
-psm_data <- read.delim(
-  system.file("extdata", "TMT_PSMs.txt.gz", package = "camprotR"),
-  stringsAsFactors=FALSE)
+psm_data <- psm_tmt_total
 
 crap_fasta_inf <- system.file("extdata", "cRAP_FullIdentifiers.fasta.gz",
                               package = "camprotR")
