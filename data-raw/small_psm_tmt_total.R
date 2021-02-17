@@ -23,4 +23,4 @@ f_data <- tmt_total_filt[, c("Master.Protein.Accessions",
 small_psm_tmt_total <- MSnbase::MSnSet(exprs = e_data, fData = f_data)
 
 # Output .rda file
-save(small_psm_tmt_total, compress = "bzip2", file = here::here("inst/testdata/small_psm_tmt_total.rda"))
+save(small_psm_tmt_total, compress = "bzip2", file = "inst/testdata/small_psm_tmt_total.rda")

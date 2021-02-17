@@ -23,4 +23,4 @@ f_data <- tmt_phospho_filt[, c("Master.Protein.Accessions"), drop = FALSE]
 small_psm_tmt_phospho <- MSnbase::MSnSet(exprs = e_data, fData = f_data)
 
 # Output .rda file
-save(small_psm_tmt_phospho, compress = "bzip2", file = here::here("inst/testdata/small_psm_tmt_phospho.rda"))
+save(small_psm_tmt_phospho, compress = "bzip2", file = "inst/testdata/small_psm_tmt_phospho.rda")
