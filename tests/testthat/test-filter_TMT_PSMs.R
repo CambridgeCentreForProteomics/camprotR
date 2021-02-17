@@ -1,7 +1,7 @@
 context('filter_TMT_PSMs')
 
 #### Setup ---------------------------------------------------------------------
-load(system.file("tests", "testthat", "data-test", "small_psm_tmt_total.rda",
+load(system.file("testdata", "small_psm_tmt_total.rda",
                  package = "camprotR"))
 
 #### Tests ---------------------------------------------------------------------

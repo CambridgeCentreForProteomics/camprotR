@@ -1,9 +1,8 @@
 context('normalise')
 
 #### Setup ---------------------------------------------------------------------
-load(system.file("tests", "testthat", "data-test", "small_psm_tmt_total.rda",
+load(system.file("testdata", "small_psm_tmt_total.rda",
                  package = "camprotR"))
-
 #### Tests ---------------------------------------------------------------------
 test_that("Center-normalise, no reference", {
   expect_equal_to_reference(center_normalise_to_ref(small_psm_tmt_total,

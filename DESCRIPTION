@@ -35,6 +35,7 @@ Imports:
     tidyr,
     utils
 Suggests: 
+    here,
     knitr,
     rmarkdown,
     stringr,

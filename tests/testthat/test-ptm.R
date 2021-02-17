@@ -3,7 +3,7 @@ context("ptm")
 #### Setup ---------------------------------------------------------------------
 # Objects for testing get_sequence()
 proteome <- Biostrings::readAAStringSet(
-  system.file("tests", "testthat", "data-test", "reference.fasta",
+  system.file("testdata", "reference.fasta",
               package = "camprotR")
 )
 
@@ -16,7 +16,7 @@ ass_input <- data.frame('protein'=c('L0R819', 'P98196', 'P14618'),
 ass_expected_output <- ass_input
 ass_expected_output$site_seq <- c('VLIPTDNsTPHKEDL', 'PVTSGLPlFFVITVT', NA)
 
-fasta <- system.file("tests", "testthat", "data-test", "reference.fasta",
+fasta <- system.file("testdata", "reference.fasta",
                      package = "camprotR")
 
 # Objects for testing add_peptide_positions()

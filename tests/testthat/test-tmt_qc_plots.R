@@ -3,9 +3,9 @@ context("tmt_qc_plots")
 #### Setup ---------------------------------------------------------------------
 
 # Load some TMT PSM level data for tests
-load(system.file("tests", "testthat", "data-test", "small_psm_tmt_phospho.rda",
+load(system.file("testdata", "small_psm_tmt_phospho.rda",
                  package = "camprotR"))
-load(system.file("tests", "testthat", "data-test", "small_psm_tmt_total.rda",
+load(system.file("testdata", "small_psm_tmt_total.rda",
                  package = "camprotR"))
 
 #### Tests ---------------------------------------------------------------------
