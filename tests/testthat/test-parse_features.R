@@ -20,7 +20,7 @@ test_that("parse_features works", {
   expect_equal_to_reference(
     parse_features(psm_data, TMT=TRUE, level='PSM',
                    crap_proteins=crap.accessions),
-    file='reference/parsed_tmt_psm.rds'
+    file='reference/parsed_psm_tmt_total.rds'
   )
 })
 
