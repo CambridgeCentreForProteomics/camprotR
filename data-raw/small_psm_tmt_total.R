@@ -20,7 +20,7 @@ f_data <- tmt_total_filt[, c("Master.Protein.Accessions",
                                "Average.Reporter.SN")]
 
 # Construct MSnSet
-small_psm_tmt_total <- MSnbase::MSnSet(exprs = output_e, fData = output_f)
+small_psm_tmt_total <- MSnbase::MSnSet(exprs = e_data, fData = f_data)
 
 # Output .rda file
 save(small_psm_tmt_total, compress = "bzip2", file = here::here("tests/testthat/data-test/small_psm_tmt_total.rda"))
