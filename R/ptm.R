@@ -308,6 +308,32 @@ add_peptide_positions <- function(obj,
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
+  combine_peptide_ptm_positions <- function(proteome, protein, sequence) {
+
+    # Given a master protein(s) and AA sequence,
+    # return the AA position with respect to protein sequence
+    # If more than one position, possible, return NA
+
+    if (length(strsplit(protein, '; ')[[1]]) > 1) {
+      return(c(NA, NA))
+    }
+
+    if (!protein %in% names(proteome)) {
+      return(c(NA, NA))
+    }
+    peptide_start <- Biostrings::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
+    peptide_end <- Biostrings::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
+
+    if (length(peptide_start) != 1) {
+      return(c(NA, NA))
+    }
+
+    else {
+      return(c(peptide_start, peptide_end))
+    }
+  }
+
+
   obj[, c('peptide_start', 'peptide_end')] <- t(apply(
     obj,
     MARGIN = 1, function(x) combine_peptide_ptm_positions(
@@ -319,30 +345,4 @@ add_peptide_positions <- function(obj,
   obj$peptide_end <- as.numeric(obj$peptide_end)
 
   return(obj)
-}
-
-#' @noRd
-combine_peptide_ptm_positions <- function(proteome, protein, sequence) {
-
-  # Given a master protein(s) and AA sequence,
-  # return the AA position with respect to protein sequence
-  # If more than one position, possible, return NA
-
-  if (length(strsplit(protein, '; ')[[1]]) > 1) {
-    return(c(NA, NA))
-  }
-
-  if (!protein %in% names(proteome)) {
-    return(c(NA, NA))
-  }
-  peptide_start <- Biostrings::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
-  peptide_end <- Biostrings::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
-
-  if (length(peptide_start) != 1) {
-    return(c(NA, NA))
-  }
-
-  else {
-    return(c(peptide_start, peptide_end))
-  }
 }
