@@ -2,7 +2,7 @@ context('extract_psm_info')
 
 #### Setup ---------------------------------------------------------------------
 
-small_silac_psm <- read.delim(
+small_psm_silac <- read.delim(
   system.file("testdata", "small_psm_silac.txt", package = "camprotR")
 )
 
