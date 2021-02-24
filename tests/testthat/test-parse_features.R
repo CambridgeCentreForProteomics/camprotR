@@ -15,12 +15,24 @@ crap.accessions <- regmatches(
   gregexpr("(?<=\\|).*?(?=\\|)", crap.fasta$desc, perl = TRUE)
 ) %>% unlist()
 
+silac <- read.delim(
+  system.file("testdata", "small_pep_silac.txt", package = "camprotR")
+)
+
 #### Tests ---------------------------------------------------------------------
-test_that("parse_features works", {
+test_that("parse_features works with TMT PSM data", {
   expect_equal_to_reference(
     parse_features(psm_data, TMT=TRUE, level='PSM',
                    crap_proteins=crap.accessions),
     file='reference/parsed_psm_tmt_total.rds'
+  )
+})
+
+test_that("parse_features works with SILAC peptide data", {
+  expect_equal_to_reference(
+    parse_features(silac, silac = TRUE, level='peptide',
+                   crap_proteins=crap.accessions),
+    file='reference/parsed_small_pep_silac.rds'
   )
 })
 
