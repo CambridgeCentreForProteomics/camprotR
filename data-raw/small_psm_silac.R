@@ -10,7 +10,7 @@ set.seed(2021)
 silac_filt <- silac[sample(nrow(silac), 1000), ]
 
 # Select the columns we need
-small_psm_silac <- silac_filt %>%
+output <- silac_filt %>%
   select(
     Annotated.Sequence,
     Modifications,
@@ -19,5 +19,5 @@ small_psm_silac <- silac_filt %>%
     Precursor.Abundance
   )
 
-# Output .rda file
-save(small_psm_silac, compress = "bzip2", file = "inst/testdata/small_psm_silac.rda")
+# Output text file
+readr::write_delim(output, "inst/testdata/small_psm_silac.txt", delim = "\t")
