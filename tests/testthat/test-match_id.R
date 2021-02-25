@@ -50,3 +50,10 @@ test_that("match_id alternative regex and type coercion warning works", {
     as.numeric(my_df3$sample4), c(4, 4, 4)
   )
 })
+
+test_that("match_id_ simplify argument outputs character", {
+  expect_type(match_id_(my_df$accession, ref_df, "entry", "gene.name", simplify = TRUE),
+              "character")
+})
+
+#### Sanity checks -------------------------------------------------------------
