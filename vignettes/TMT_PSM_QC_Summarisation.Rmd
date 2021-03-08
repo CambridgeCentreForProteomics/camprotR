@@ -57,10 +57,18 @@ crap_fasta_inf <- system.file(
 # Load the cRAP FASTA used for the PD search
 crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
 
+# Define a base R version of stringr::str_extract_all()
+# base R str_extract
+str_extract_all <- function(pattern, string) {
+  gregexpr(pattern, string, perl = TRUE) %>% 
+    regmatches(string, .) %>% 
+    unlist()
+}
+
 # Extract the non cRAP UniProt accessions associated with each cRAP protein
 crap.accessions <- crap.fasta %>% 
   pull(desc) %>% 
-  stringr::str_extract_all("(?<=\\|).*?(?=\\|)") %>% 
+  str_extract_all("(?<=\\|).*?(?=\\|)", .) %>% 
   unlist()
 ```
 

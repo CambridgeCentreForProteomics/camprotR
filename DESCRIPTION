@@ -37,5 +37,4 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    stringr,
     testthat
