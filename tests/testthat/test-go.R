@@ -117,22 +117,22 @@ test_that("get_ancestor_go early debug works", {
 
 #### Sanity checks -------------------------------------------------------------
 
-test_that("determine_ancestor_function produces NA is ontology is NA", {
+test_that("determine_ancestor_function produces NA if ontology is NA", {
   result <- determine_ancestor_function(rbp_terms[1], NA)
   expect_identical(result, NA)
 })
 
-test_that("determine_ancestor_function produces NA is ontology is nonsense", {
+test_that("determine_ancestor_function produces NA if ontology is nonsense", {
   result <- determine_ancestor_function(rbp_terms[1], "banana")
   expect_identical(result, NA)
 })
 
-test_that("determine_offspring_function produces NA is ontology is NA", {
+test_that("determine_offspring_function produces NA if ontology is NA", {
   result <- determine_offspring_function(rbp_terms[1], NA)
   expect_identical(result, NA)
 })
 
-test_that("determine_offspring_function produces NA is ontology is nonsense", {
+test_that("determine_offspring_function produces NA if ontology is nonsense", {
   result <- determine_offspring_function(rbp_terms[1], "banana")
   expect_identical(result, NA)
 })

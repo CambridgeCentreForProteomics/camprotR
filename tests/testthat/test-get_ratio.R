@@ -27,5 +27,3 @@ test_that("there are no NAs in the new 'missing' column", {
 
   expect_false(any(is.na(df2$missing)))
 })
-
-#### Sanity checks -------------------------------------------------------------
