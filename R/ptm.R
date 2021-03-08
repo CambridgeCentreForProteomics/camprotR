@@ -15,11 +15,11 @@
 #' @return `data.frame`
 #' @export
 parse_PTM_scores <- function(obj,
-                           threshold = 95,
-                           ptm_col = "PhosphoRS.Best.Site.Probabilities",
-                           prob_split = '; |: ',
-                           collapse_delimiter = ";",
-                           verbose = TRUE) {
+                             threshold = 95,
+                             ptm_col = "PhosphoRS.Best.Site.Probabilities",
+                             prob_split = '; |: ',
+                             collapse_delimiter = ";",
+                             verbose = TRUE) {
   if (class(obj) != "data.frame") {
     stop("'obj' must be a data.frame")
   }
@@ -81,7 +81,7 @@ parse_PTM_scores <- function(obj,
       log[["Features failing filter"]] <- log[["Features failing filter"]] + 1
       if (any(as.numeric(scores) >= threshold)) {
         log[["BiPTM/multiPTM Features where some sites fail filter"]] <- log[[
-        "BiPTM/multiPTM Features where some sites fail filter"]] + 1
+          "BiPTM/multiPTM Features where some sites fail filter"]] + 1
       }
       # if we want to handle this differently, can implement an alternative approach here
       # and move the rest of the code below into an else clause
@@ -210,9 +210,9 @@ get_sequence <- function(proteome, protein, ptm_position, pad = 7) {
     return(NA)
   }
 
-  if (grepl("; ", ptm_position)) {
-    return(NA)
-  }
+  # if (grepl("; ", ptm_position)) {
+  #   return(NA)
+  # }
 
   if (!protein %in% names(proteome)) {
     return(NA)
@@ -248,9 +248,9 @@ get_sequence <- function(proteome, protein, ptm_position, pad = 7) {
   sequence <- paste0(start_pad, sequence, end_pad)
 
   sequence <- paste(base::substr(sequence, 1, pad),
-    tolower(base::substr(sequence, pad + 1, pad + 1)),
-    base::substr(sequence, pad + 2, pad + pad + 1),
-    sep = ""
+                    tolower(base::substr(sequence, pad + 1, pad + 1)),
+                    base::substr(sequence, pad + 2, pad + pad + 1),
+                    sep = ""
   )
 
   return(sequence)
@@ -272,8 +272,8 @@ get_sequence <- function(proteome, protein, ptm_position, pad = 7) {
 #' @return `data.frame`
 #' @export
 add_site_sequence <- function(obj,
-                            proteome_fasta,
-                            master_protein_col = "Master.Protein.Accessions") {
+                              proteome_fasta,
+                              master_protein_col = "Master.Protein.Accessions") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
@@ -303,12 +303,12 @@ add_site_sequence <- function(obj,
 #' @return `data.frame`
 #' @export
 add_peptide_positions <- function(obj,
-                                proteome_fasta,
-                                master_protein_col = "Master.Protein.Accessions") {
+                                  proteome_fasta,
+                                  master_protein_col = "Master.Protein.Accessions") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
-  combine_peptide_ptm_positions <- function(proteome, protein, sequence) {
+  combine_protein_peptide_positions <- function(proteome, protein, sequence) {
 
     # Given a master protein(s) and AA sequence,
     # return the AA position with respect to protein sequence
@@ -333,9 +333,10 @@ add_peptide_positions <- function(obj,
     }
   }
 
+
   obj[, c('peptide_start', 'peptide_end')] <- t(apply(
     obj,
-    MARGIN = 1, function(x) combine_peptide_ptm_positions(
+    MARGIN = 1, function(x) combine_protein_peptide_positions(
       proteome, x[[master_protein_col]], x[["Sequence"]]
     )
   ))

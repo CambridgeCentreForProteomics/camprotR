@@ -24,7 +24,6 @@ Imports:
     Biostrings,
     cutr,
     dplyr,
-    tidyr,
     ggplot2,
     GO.db,
     MSnbase,
@@ -33,6 +32,7 @@ Imports:
     robustbase,
     stats,
     tibble,
+    tidyr,
     utils
 Suggests: 
     knitr,
