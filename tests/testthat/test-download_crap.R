@@ -25,3 +25,9 @@ test_that('download_crap(type = "ccp") works', {
     "reference/download_crap.rds"
   )
 })
+
+test_that("sub_crap works", {
+  expect_equal(sub_crap("|text|"), "|cRAP001|text|")
+  expect_equal(sub_crap("|text|", 77), "|cRAP077|text|")
+  expect_equal(sub_crap("|text|", 111, 4), "|cRAP0111|text|")
+})

@@ -244,28 +244,11 @@ a look at what the last number was in the CCP cRAP FASTA.
 tail(names(ccp_crap))
 ```
 
-Using the `annotate_crap()` function we can add the cRAP numbers to the sequence
+Using the `sub_crap()` function we can add the cRAP numbers to the sequence
 headers, starting at `cRAP128`.
 
 ```{r}
-annotate_crap <- function(x, start = 1, width = 3) {
-  # check input
-  if (!all(grepl("\\|.*\\|", x))) {
-    stop("This function only works when each element of x is a character of the
-         form '|anything|'")
-  }
-  
-  output <- mapply(
-    function(input, num) {sub("\\|", paste0("|cRAP", num, "|"), input)},
-    x,
-    formatC(seq.int(from = start, to = start + length(x) - 1, by = 1), 
-            width = width, format = "d", flag = "0"),
-    USE.NAMES = FALSE
-  )
-  output
-}
-
-names(proteases) <- annotate_crap(names(proteases), start = 128)
+names(proteases) <- sub_crap(names(proteases), start = 128)
 proteases
 ```
 

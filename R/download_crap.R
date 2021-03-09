@@ -65,14 +65,7 @@ download_crap <- function(file, type = "ccp", add_crap = TRUE,
 
   if (add_crap) {
     crap <- Biostrings::readAAStringSet(filepath = file)
-    old_names <- names(crap)
-    new_names <- mapply(
-      function(on, num) {sub("\\|", paste0("|cRAP", num, "|"), on)},
-      old_names,
-      formatC(seq.int(old_names), width = 3, format = "d", flag = "0"),
-      USE.NAMES = FALSE
-    )
-    names(crap) <- new_names
+    names(crap) <- sub_crap(names(crap))
     Biostrings::writeXStringSet(crap, filepath = file)
   }
 }
@@ -120,4 +113,46 @@ download_ccp_crap <- function(file, overwrite = FALSE, verbose = TRUE) {
     filepath = system.file("extdata", "commercial_reagents.fasta", package = "camprotR")
   )
   Biostrings::writeXStringSet(com_seqs, filepath = file, append = TRUE)
+}
+
+#' Insert cRAP numbers into a character vector
+#'
+#' @description This function takes a character vector where each element is
+#' roughly in the form of a UniProt header e.g. `"sp|XXXXXX|YYYY_YYYY Text goes here"`
+#' and substitutes a cRAP number in place of the first `|` symbol, e.g.
+#' `"sp|cRAP001|XXXXXX|YYYY_YYYY Text goes here"`.
+#'
+#' @param x `character vector`, each element must have two `|` symbols with
+#' some text in between e.g. `|sometext|`.
+#' @param start `numeric`, the number to increment from, default is `1`
+#' @param width `numeric`, how many digits the cRAP number should be, default is `3`
+#'
+#' @return Returns a `character vector` the same length as x.
+#'
+#' @examples
+#' # basic use
+#' sub_crap(c("|sometext|", "|moretext|"))
+#'
+#' # start from a different number
+#' sub_crap(c("|sometext|", "|moretext|"), start = 88)
+#'
+#' # increase number width
+#' sub_crap(c("|sometext|", "|moretext|"), start = 1111, width = 4)
+#'
+#' @export
+sub_crap <- function(x, start = 1, width = 3) {
+  # check input
+  if (!all(grepl("\\|.*\\|", x))) {
+    stop("This function only works when each element of x is a character of the
+         form '|anything|'")
+  }
+
+  output <- mapply(
+    function(input, num) {sub("\\|", paste0("|cRAP", num, "|"), input)},
+    x,
+    formatC(seq.int(from = start, to = start + length(x) - 1, by = 1),
+            width = width, format = "d", flag = "0"),
+    USE.NAMES = FALSE
+  )
+  output
 }
