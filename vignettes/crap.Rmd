@@ -1,0 +1,281 @@
+---
+title: "cRAP databases"
+author: "Charlotte Dawson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: camprot_references.json
+vignette: >
+  %\VignetteIndexEntry{cRAP databases}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message=FALSE}
+library(Biostrings)
+library(camprotR)
+library(httr)
+```
+
+## Introduction
+
+Peptide-spectrum matching requires 2 main inputs: a collection of MS2 spectra 
+and a FASTA database of protein/peptide sequences. Search algorithms are then
+used to match the supplied MS2 spectra to theoretical spectra generated from
+an in-silico digest of the supplied FASTA database (typically we use the 
+SwissProt protein database for the organism of interest). The selection of
+the FASTA database should be done carefully as it can have a 
+[significant effect on protein quantification](https://pwilmart.github.io/blog/2020/09/19/shotgun-quantification-part2)
+in shotgun proteomics.
+
+Furthermore, there are certain proteinaceous contaminants that are commonly, 
+accidentally introduced during sample preparation for proteomics. In order
+to avoid misidentification of MS2 spectra that have come from these contaminants
+we use an additional (much smaller) FASTA database containing the sequences of
+these common contaminants. This is generally called a contaminants database, or
+is colloquially known as a cRAP database in our lab.
+
+**It is very important that you know what proteins are
+in your contaminants database as PSMs/peptides from these proteins are 
+deliberately filtered out in many of the functions in `camprotR`**. See this
+[blog post](http://proteomicsnews.blogspot.com/2020/12/is-one-of-your-proteins-of-interest-in.html)
+some experimental situations where you may be interested in proteins that are
+usually deemed contaminants.
+
+## The 3 cRAP databases
+
+There are two widely used FASTA databases containing common contaminants: 
+
+1. The Global Proteome Machine (GPM) common Repository of Adventitious Proteins 
+(cRAP)
+1. The `contaminants.fasta` file which is distributed in every single 
+installation of MaxQuant.
+
+In addition, in the CCP we use our own cRAP database which is similar but
+not identical to the GPM cRAP. **I highly recommend you use the CCP cRAP database,
+as the other two are quite out of date**. The `download_crap()` function in
+`camprotR` provides an easy and quick way to download the CCP cRAP database 
+(see the section below).
+
+### common Repository of Adventitious Proteins (cRAP)
+
+This list of proteins was collated by the Global Proteome Machine (GPM) 
+organisation. To quote the [cRAP website](https://www.thegpm.org/crap/), 
+
+>cRAP is an attempt to create a list of proteins commonly found in proteomics
+experiments either by accident or through unavoidable contamination of protein
+samples.
+
+cRAP includes 5 main categories of proteins:
+
+1. Laboratory proteins used somewhere in the sample preparation process.
+1. Proteins added from dust or accidental contact with the sample
+1. Proteins used as molecular weight markers
+1. Proteins in the Sigma Universal Protein Standard (UPS)
+1. Common viral contaminants
+
+According to the cRAP website, it has not been updated since 2012. Therefore,
+I would not recommend using this FASTA for your peptide searches.
+
+Nevertheless, we can download this FASTA database through R.
+
+```{r}
+# download cRAP
+crap_tmp <- tempfile(fileext = ".fasta")
+download.file("ftp://ftp.thegpm.org/fasta/cRAP/crap.fasta",
+              destfile = crap_tmp)
+```
+
+Then we can take a look at it using the useful `Biostrings` package. 
+With `Biostrings` we can load FASTA files into R and easily compare and 
+manipulate them.
+
+```{r}
+# load cRAP FASTA
+crap <- Biostrings::readAAStringSet(crap_tmp)
+crap
+```
+
+We can see that there are `r length(crap)` sequences in cRAP.
+
+```{r}
+head(names(crap))
+```
+
+We can see that the headers for each sequence in the FASTA file have very
+little information in them. Another reason not to use this cRAP database as
+your contaminants database.
+
+### Cambridge Centre for Proteomics cRAP (CCP cRAP)
+
+The cRAP database we use in the CCP is largely based off of the GPM cRAP 
+database, with a few extra sequences added on the end. It also has much
+more informative headers and
+the sequences for the commercial proteases Endoproteinase GluC (NEB, P8100S) 
+and recombinant Lys-C (Promega, V167A) have been added.
+
+You can download the latest version of the CCP cRAP using the `download_crap()`
+function. It is **important** to take a note of what date you download the CCP
+cRAP database and what the current UniProt release is, as the sequences and
+accessions can change (slightly) over time.
+
+```{r}
+ccp_tmp <- tempfile(fileext = ".fasta")
+download_crap(ccp_tmp, type = "ccp", add_crap = TRUE, verbose = TRUE)
+```
+
+We can load this FASTA file into R and take a look.
+
+```{r}
+ccp_crap <- Biostrings::readAAStringSet(ccp_tmp)
+ccp_crap
+```
+
+We can see there are `r length(ccp_crap)` sequences. Now lets have a look 
+at some of the sequence headers.
+
+```{r}
+head(names(ccp_crap))
+```
+
+These sequence headers are actually complete, and follow the standard structure
+of UniProt FASTA headers. **Importantly** they contain both the UniProt 
+accession e.g. P00330 **and** the sequence version e.g. SV=5. Each time the 
+amino acid sequence of a UniProt entry is modified, the sequence version is
+incremented by 1. With the UniProt accession and the SV number, one can know 
+exactly which sequence is being referred to in the FASTA file.
+
+This isn't exactly important for everyday use, but may prove important when
+reanalysing a proteomics experiment after a long time has passed.
+
+### MaxQuant contaminants.fasta
+
+Included in every installation of MaxQuant there is a file called 
+`contaminants.fasta`. This is the contaminants database that MaxQuant will use
+be default for peptide searches, however it is possible to provide your own
+contaminants FASTA in MaxQuant if you want.
+
+This is conjecture, but I'm fairly sure this FASTA database hasn't changed
+since the MaxQuant paper was released in 2008, making it possibly even older 
+than the GPM cRAP database. Therefore, I also 
+would not recommend using this FASTA for your peptide searches.
+
+Nevertheless, we can download this FASTA database through R.
+
+```{r}
+# download cRAP
+mq_tmp <- tempfile(fileext = ".fasta")
+download.file("http://lotus1.gwdg.de/mpg/mmbc/maxquant_input.nsf/7994124a4298328fc125748d0048fee2/$FILE/contaminants.fasta",
+              destfile = mq_tmp)
+```
+
+Then we can take a look at it using the useful `Biostrings` package. 
+With `Biostrings` we can load FASTA files into R and easily compare and 
+manipulate them.
+
+```{r}
+# load cRAP FASTA
+mq <- Biostrings::readAAStringSet(mq_tmp)
+mq
+```
+
+We can see that there are `r length(mq)` sequences in cRAP.
+
+```{r}
+head(names(mq))
+```
+
+We can see that the headers for each sequence in the FASTA file have a bit
+more information than the GPM cRAP headers, however they are not in a standard,
+consistent format. Another reason not to use this contaminants database.
+
+## Make your own cRAP database
+
+You can add sequences easily enough to a FASTA database by just copying and
+pasting. However, for reproducibility purposes it is better to use an R script
+to generate your own custom cRAP database.
+
+Here we will generate a cRAP database based off of the CCP cRAP, but with
+some extra commercial protease sequences added to the end.
+
+First you would download the CCP cRAP FASTA. The following chunk is not run by
+default as we have already downloaded it above.
+
+```{r, eval=FALSE}
+# download CCP cRAP
+download_crap(paste0(Sys.Date(), "_CCP_cRAP.fasta"), type = "ccp")
+```
+
+Then you download the sequences you want to add into a FASTA file. 
+Here we'll get some protease sequences from the bacteria _Streptomyces griseus_. 
+We can download sequences from UniProt programmatically using the `httr` package.
+
+```{r}
+payload <- list(
+  query = paste(c("P00776", "P00777", "P80561"), collapse = " "),
+  from = "ACC+ID",
+  to = "ACC",
+  format = "fasta"
+)
+
+tmp <- tempfile()
+response <- httr::GET(url = "https://www.uniprot.org/uploadlists/", 
+                      query = payload, 
+                      config = httr::write_disk(tmp))
+```
+
+Then we load the sequences into memory so we can adjust their headers.
+
+```{r}
+proteases <- Biostrings::readAAStringSet(tmp)
+proteases
+```
+
+We want to add cRAPXXX, where XXX is a number, to the headers. We can have
+a look at what the last number was in the CCP cRAP FASTA.
+
+```{r}
+tail(names(ccp_crap))
+```
+
+Using the `annotate_crap()` function we can add the cRAP numbers to the sequence
+headers, starting at `cRAP128`.
+
+```{r}
+annotate_crap <- function(x, start = 1, width = 3) {
+  # check input
+  if (!all(grepl("\\|.*\\|", x))) {
+    stop("This function only works when each element of x is a character of the
+         form '|anything|'")
+  }
+  
+  output <- mapply(
+    function(input, num) {sub("\\|", paste0("|cRAP", num, "|"), input)},
+    x,
+    formatC(seq.int(from = start, to = start + length(x) - 1, by = 1), 
+            width = width, format = "d", flag = "0"),
+    USE.NAMES = FALSE
+  )
+  output
+}
+
+names(proteases) <- annotate_crap(names(proteases), start = 128)
+proteases
+```
+
+Lastly we use the `Biostrings` package to add the sequences onto the end of
+our CCP cRAP database. This chunk is not run by default.
+
+```{r, eval=FALSE}
+Biostrings::writeXStringSet(
+  proteases,
+  filepath = paste0(Sys.Date(), "_CCP_cRAP.fasta"),
+  append = TRUE
+)
+```
