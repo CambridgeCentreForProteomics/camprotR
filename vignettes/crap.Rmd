@@ -170,7 +170,7 @@ Nevertheless, we can download this FASTA database through R and explore it
 like the GPM cRAP FASTA above. The following chunk is not run by default as
 the URL is not always stable.
 
-```{r}
+```{r, eval=FALSE}
 # download cRAP
 mq_tmp <- tempfile(fileext = ".fasta")
 download.file("http://lotus1.gwdg.de/mpg/mmbc/maxquant_input.nsf/7994124a4298328fc125748d0048fee2/$FILE/contaminants.fasta",
