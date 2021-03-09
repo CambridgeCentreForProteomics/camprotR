@@ -166,34 +166,22 @@ since the MaxQuant paper was released in 2008, making it possibly even older
 than the GPM cRAP database. Therefore, I also 
 would not recommend using this FASTA for your peptide searches.
 
-Nevertheless, we can download this FASTA database through R.
+Nevertheless, we can download this FASTA database through R and explore it
+like the GPM cRAP FASTA above. The following chunk is not run by default as
+the URL is not always stable.
 
 ```{r}
 # download cRAP
 mq_tmp <- tempfile(fileext = ".fasta")
 download.file("http://lotus1.gwdg.de/mpg/mmbc/maxquant_input.nsf/7994124a4298328fc125748d0048fee2/$FILE/contaminants.fasta",
               destfile = mq_tmp)
-```
 
-Then we can take a look at it using the useful `Biostrings` package. 
-With `Biostrings` we can load FASTA files into R and easily compare and 
-manipulate them.
-
-```{r}
 # load cRAP FASTA
 mq <- Biostrings::readAAStringSet(mq_tmp)
 mq
-```
 
-We can see that there are `r length(mq)` sequences in cRAP.
-
-```{r}
 head(names(mq))
 ```
-
-We can see that the headers for each sequence in the FASTA file have a bit
-more information than the GPM cRAP headers, however they are not in a standard,
-consistent format. Another reason not to use this contaminants database.
 
 ## Make your own cRAP database
 
