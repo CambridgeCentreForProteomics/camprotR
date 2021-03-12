@@ -13,6 +13,9 @@ append_crap_fasta(file, crap_file, add_crap = TRUE, add_crap_start = 1)
 
 \item{add_crap}{add_crap \code{logical}, should cRAP001, cRAP002, etc. be appended to the
 sequence headers in the FASTA to append? Default is \code{TRUE}}
+
+\item{add_crap_start}{\code{numeric}, what number should the cRAP00x start at?
+Default is 1.}
 }
 \value{
 Returns the existing cRAP FASTA file with some more sequences added

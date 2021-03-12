@@ -86,6 +86,8 @@ make_crap_fasta <- function(accessions, file, add_crap = TRUE, overwrite = FALSE
 #' @param crap_file `character`, file path of existing cRAP FASTA to append to
 #' @param add_crap add_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
 #' sequence headers in the FASTA to append? Default is `TRUE`
+#' @param add_crap_start `numeric`, what number should the cRAP00x start at?
+#' Default is 1.
 #'
 #' @return Returns the existing cRAP FASTA file with some more sequences added
 #' to the end.
