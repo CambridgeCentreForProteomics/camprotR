@@ -203,20 +203,16 @@ download_ccp_crap(paste0(check_uniprot_release(), "_CCP_cRAP.fasta"), type = "cc
 
 Then you download the sequences you want to add and save them into a FASTA file. 
 Here we'll get some protease sequences from the bacteria _Streptomyces griseus_. 
-We can download sequences from UniProt programmatically using the `httr` package.
+
+We can download sequences from UniProt automatically using the 
+`make_crap_fasta()` function. We don't want to add the `cRAP00X` numbering to 
+the sequence headers just yet so we set `add_crap = FALSE`.
 
 ```{r}
-payload <- list(
-  query = paste(c("P00776", "P00777", "P80561"), collapse = " "),
-  from = "ACC+ID",
-  to = "ACC",
-  format = "fasta"
-)
-
 griseus_tmp <- tempfile(fileext = ".fasta")
-response <- httr::GET(url = "https://www.uniprot.org/uploadlists/", 
-                      query = payload, 
-                      config = httr::write_disk(griseus_tmp))
+make_crap_fasta(accessions = c("P00776", "P00777", "P80561"),
+                file = griseus_tmp,
+                add_crap = FALSE)
 ```
 
 Before we add these to our CCP cRAP FASTA, we just need to take note of what
