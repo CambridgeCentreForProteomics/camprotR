@@ -4,7 +4,7 @@
 #' Proteomics cRAP FASTA database using sequences from the lastest UniProt release.
 #'
 #' @param file `character`, filepath to save the fasta to e.g. `"crap.fasta"`
-#' @param add_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
+#' @param is_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
 #' sequence headers in the FASTA file? Default is `TRUE`
 #' @param overwrite `logical`, if the FASTA file already exists should it be
 #' overwritten? Default is `FALSE`
@@ -14,24 +14,24 @@
 #' @return Returns a FASTA saved to disk at the specified file path.
 #' @examples
 #' \dontrun{
-#' download_ccp_crap("path/to/file/crap_2021_01.fasta")
+#' download_ccp_crap("path/to/file/2021-01_CCP_cRAP.fasta")
 #' }
 #'
 #' @export
-download_ccp_crap <- function(file, add_crap = TRUE, overwrite = FALSE, verbose = TRUE) {
+download_ccp_crap <- function(file, is_crap = TRUE, overwrite = FALSE, verbose = TRUE) {
   accessions <- get_ccp_crap()
 
-  make_crap_fasta(accessions = accessions,
+  make_fasta(accessions = accessions,
                   file = file,
-                  add_crap = add_crap,
+                  is_crap = is_crap,
                   overwrite = overwrite,
                   verbose = verbose)
 
   # Add commercial sequences on the end
-  append_crap_fasta(
-    file = system.file("extdata", "commercial_reagents.fasta", package = "camprotR"),
-    crap_file = file,
-    add_crap = add_crap,
-    add_crap_start = 126
+  append_fasta(
+    file1 = system.file("extdata", "commercial_reagents.fasta", package = "camprotR"),
+    file2 = file,
+    is_crap = is_crap,
+    crap_start = 126
   )
 }

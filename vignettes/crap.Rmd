@@ -120,14 +120,17 @@ more informative headers and
 the sequences for the commercial proteases Endoproteinase GluC (NEB, P8100S) 
 and recombinant Lys-C (Promega, V167A) have been added.
 
-You can download the latest version of the CCP cRAP using the `download_crap()`
+You can download the latest version of the CCP cRAP using the 
+`download_ccp_crap()`
 function. It is **important** to take a note of what date you download the CCP
 cRAP database and what the current UniProt release is, as the sequences and
-accessions can change (slightly) over time.
+accessions can change (slightly) over time. Generally I like to include the
+UniProt release in the file name e.g. `2021-01_CCP_cRAP.fasta`, but hfor this 
+example we'll just use a temporary file.
 
 ```{r}
 ccp_tmp <- tempfile(fileext = ".fasta")
-download_ccp_crap(ccp_tmp, add_crap = TRUE, verbose = TRUE)
+download_ccp_crap(ccp_tmp, is_crap = TRUE, verbose = TRUE)
 ```
 
 We can load this FASTA file into R and take a look.
@@ -198,21 +201,23 @@ default as we have already downloaded it above. In this chunk we show the
 
 ```{r, eval=FALSE}
 # download CCP cRAP
-download_ccp_crap(paste0(check_uniprot_release(), "_CCP_cRAP.fasta"), type = "ccp")
+download_ccp_crap(paste0(check_uniprot_release(), "_CCP_cRAP.fasta"))
 ```
 
 Then you download the sequences you want to add and save them into a FASTA file. 
 Here we'll get some protease sequences from the bacteria _Streptomyces griseus_. 
 
 We can download sequences from UniProt automatically using the 
-`make_crap_fasta()` function. We don't want to add the `cRAP00X` numbering to 
-the sequence headers just yet so we set `add_crap = FALSE`.
+`make_fasta()` function. This function takes a character vector of UniProt
+accessions, downloads their sequences, and then saves the sequences into a 
+FASTA file. We don't want to add the `cRAP00X` numbering to 
+the sequence headers just yet so we set `is_crap = FALSE`.
 
 ```{r}
 griseus_tmp <- tempfile(fileext = ".fasta")
-make_crap_fasta(accessions = c("P00776", "P00777", "P80561"),
+make_fasta(accessions = c("P00776", "P00777", "P80561"),
                 file = griseus_tmp,
-                add_crap = FALSE)
+                is_crap = FALSE)
 ```
 
 Before we add these to our CCP cRAP FASTA, we just need to take note of what
@@ -223,15 +228,17 @@ tail(names(ccp_crap))
 ```
 
 The final number is 127, so we want the cRAP numbering of the additional
-sequences to start at 128. Finally, we use the `append_crap_fasta()` function 
-from camprotR to add our _S. griseus_ sequences to our CCP cRAP FASTA.  
+sequences to start at 128. Finally, we use the `append_fasta()` function 
+from camprotR to add our _S. griseus_ sequences to our CCP cRAP FASTA. This 
+function is used to add the sequences from one FASTA (file1) onto the end of
+another FASTA (file2).
 
 ```{r}
-append_crap_fasta(
-  file = griseus_tmp,
-  crap_file = ccp_tmp,
-  add_crap = TRUE,
-  add_crap_start = 128
+append_fasta(
+  file1 = griseus_tmp,
+  file2 = ccp_tmp,
+  is_crap = TRUE,
+  crap_start = 128
 )
 ```
 

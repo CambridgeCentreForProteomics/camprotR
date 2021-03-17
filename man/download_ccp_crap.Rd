@@ -9,14 +9,14 @@ download_ccp_crap(file, is_crap = TRUE, overwrite = FALSE, verbose = TRUE)
 \arguments{
 \item{file}{\code{character}, filepath to save the fasta to e.g. \code{"crap.fasta"}}
 
+\item{is_crap}{\code{logical}, should cRAP001, cRAP002, etc. be appended to the
+sequence headers in the FASTA file? Default is \code{TRUE}}
+
 \item{overwrite}{\code{logical}, if the FASTA file already exists should it be
 overwritten? Default is \code{FALSE}}
 
 \item{verbose}{\code{logical}, should the function send messages to the console?
 Default is \code{TRUE}}
-
-\item{add_crap}{\code{logical}, should cRAP001, cRAP002, etc. be appended to the
-sequence headers in the FASTA file? Default is \code{TRUE}}
 }
 \value{
 Returns a FASTA saved to disk at the specified file path.
@@ -27,7 +27,7 @@ Proteomics cRAP FASTA database using sequences from the lastest UniProt release.
 }
 \examples{
 \dontrun{
-download_ccp_crap("path/to/file/crap_2021_01.fasta")
+download_ccp_crap("path/to/file/2021-01_CCP_cRAP.fasta")
 }
 
 }
