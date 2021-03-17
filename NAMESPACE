@@ -3,7 +3,7 @@
 export(add_PTM_positions)
 export(add_peptide_positions)
 export(add_site_sequence)
-export(append_crap_fasta)
+export(append_fasta)
 export(center_normalise_to_ref)
 export(check_uniprot_release)
 export(count_features_per_protein)

@@ -1,37 +1,42 @@
-#' Append sequences to end of cRAP FASTA
+#' Append sequences to end of a FASTA
 #'
-#' @description This function is used to add sequences from a FASTA file onto
-#' the end of an existing cRAP FASTA file.
+#' @description This function is used to add sequences from a FASTA file (file1)
+#' onto the end of another FASTA file (file2).
 #'
-#' @param file `character`, file path of FASTA to append
-#' @param crap_file `character`, file path of existing cRAP FASTA to append to
-#' @param add_crap add_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
-#' sequence headers in the FASTA to append? Default is `TRUE`
-#' @param add_crap_start `numeric`, what number should the cRAP00x start at?
+#' If file2 is a cRAP database, then you can optionally add cRAP numbers to the
+#' headers of file1, starting at the desired number e.g. cRAP127.
+#'
+#' @param file1 `character`, file path of FASTA to append
+#' @param file2 `character`, file path of FASTA to append to
+#' @param is_crap `logical`, should cRAP numbers e.g. cRAP001, cRAP002, etc.
+#' be added to sequence headers of file1? Default is `FALSE`
+#' @param crap_start `numeric`, what number should the cRAP00x start at?
 #' Default is 1.
 #'
-#' @return Returns the existing cRAP FASTA file with some more sequences added
+#' @return Overwrites FASTA file2 with some more sequences added
 #' to the end.
+#'
 #' @examples
-#' # Add some commerical protease sequences onto the end of CCP cRAP FASTA
+#' # Add some commercial protease sequences onto the end of CCP cRAP FASTA
 #' \dontrun{
-#' append_crap_fasta(
-#'   file = "commercial-proteases.fasta",
-#'   crap_file = "ccp_crap_2021-01.fasta",
-#'   add_crap = TRUE
+#' append_fasta(
+#'   file1 = "commercial-proteases.fasta",
+#'   file2 = "2021-01_CCP_cRAP.fasta",
+#'   is_crap = TRUE,
+#'   crap_start = 128
 #' )
 #' }
 #'
 #' @export
-append_crap_fasta <- function(file, crap_file, add_crap = TRUE, add_crap_start = 1) {
+append_fasta <- function(file1, file2, is_crap = FALSE, crap_start = 1) {
   # read in file to append
-  to_append <- Biostrings::readAAStringSet(file)
+  to_append <- Biostrings::readAAStringSet(file1)
 
   # add cRAP to headers if specified
-  if (add_crap) {
-    names(to_append) <- sub_crap(names(to_append), start = add_crap_start)
+  if (is_crap) {
+    names(to_append) <- sub_crap(names(to_append), start = crap_start)
   }
 
   # append sequences
-  Biostrings::writeXStringSet(to_append, filepath = crap_file, append = TRUE)
+  Biostrings::writeXStringSet(to_append, filepath = file2, append = TRUE)
 }
