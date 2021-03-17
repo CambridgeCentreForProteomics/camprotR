@@ -20,7 +20,7 @@ get_ccp_crap <- function() {
   accessions[!accessions %in% "000000"]
 }
 
-#' Make a cRAP FASTA using UniProt accessions
+#' Make a FASTA using UniProt accessions
 #'
 #' @description Given a vector of UniProt accessions, this function will:
 #' 1. Download the sequences
@@ -30,8 +30,9 @@ get_ccp_crap <- function() {
 #'
 #' @param accessions `character vector`, the UniProt accessions to use
 #' @param file `character`, filepath to save the fasta to e.g. `"crap.fasta"`
-#' @param add_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
-#' sequence headers in the FASTA file? Default is `TRUE`
+#' @param is_crap `logical`, Is the output going to be a cRAP database? If `TRUE`
+#' cRAP001, cRAP002, etc. is appended to the sequence headers in the FASTA file.
+#' Default is `FALSE`
 #' @param overwrite `logical`, if the FASTA file already exists should it be
 #' overwritten? Default is `FALSE`
 #' @param verbose `logical`, should the function send messages to the console?
@@ -43,11 +44,11 @@ get_ccp_crap <- function() {
 #' crap <- get_ccp_crap()
 #'
 #' \dontrun{
-#' make_crap_fasta(crap, "crap_2021-01.fasta")
+#' make_fasta(crap, "2021-01_cRAP.fasta")
 #' }
 #'
 #' @export
-make_crap_fasta <- function(accessions, file, add_crap = TRUE, overwrite = FALSE, verbose = TRUE) {
+make_fasta <- function(accessions, file, is_crap = FALSE, overwrite = FALSE, verbose = TRUE) {
   # define payload used to query uniprot
   payload <- list(
     query = paste(accessions, collapse = " "),
@@ -70,49 +71,11 @@ make_crap_fasta <- function(accessions, file, add_crap = TRUE, overwrite = FALSE
   if (verbose) message(paste("Downloading from UniProtKB release:",
                              response$headers$`x-uniprot-release`))
 
-  if (add_crap) {
+  if (is_crap) {
     crap <- Biostrings::readAAStringSet(filepath = file)
     names(crap) <- sub_crap(names(crap))
     Biostrings::writeXStringSet(crap, filepath = file)
   }
-}
-
-#' Append sequences to end of cRAP FASTA
-#'
-#' @description This function is used to add sequences from a FASTA file onto
-#' the end of an existing cRAP FASTA file.
-#'
-#' @param file `character`, file path of FASTA to append
-#' @param crap_file `character`, file path of existing cRAP FASTA to append to
-#' @param add_crap add_crap `logical`, should cRAP001, cRAP002, etc. be appended to the
-#' sequence headers in the FASTA to append? Default is `TRUE`
-#' @param add_crap_start `numeric`, what number should the cRAP00x start at?
-#' Default is 1.
-#'
-#' @return Returns the existing cRAP FASTA file with some more sequences added
-#' to the end.
-#' @examples
-#' # Add some commerical protease sequences onto the end of CCP cRAP FASTA
-#' \dontrun{
-#' append_crap_fasta(
-#'   file = "commercial-proteases.fasta",
-#'   crap_file = "ccp_crap_2021-01.fasta",
-#'   add_crap = TRUE
-#' )
-#' }
-#'
-#' @export
-append_crap_fasta <- function(file, crap_file, add_crap = TRUE, add_crap_start = 1) {
-  # read in file to append
-  to_append <- Biostrings::readAAStringSet(file)
-
-  # add cRAP to headers if specified
-  if (add_crap) {
-    names(to_append) <- sub_crap(names(to_append), start = add_crap_start)
-  }
-
-  # append sequences
-  Biostrings::writeXStringSet(to_append, filepath = crap_file, append = TRUE)
 }
 
 #' Insert cRAP numbers into a character vector
