@@ -169,5 +169,52 @@
 				]
 			]
 		}
+	},
+	{
+		"id": "Jeong2012",
+		"type": "article-journal",
+		"abstract": "Automated database search engines are one of the fundamental engines of high-throughput proteomics enabling daily identifications of hundreds of thousands of peptides and proteins from tandem mass (MS/MS) spectrometry data. Nevertheless, this automation also makes it humanly impossible to manually validate the vast lists of resulting identifications from such high-throughput searches. This challenge is usually addressed by using a Target-Decoy Approach (TDA) to impose an empirical False Discovery Rate (FDR) at a pre-determined threshold x% with the expectation that at most x% of the returned identifications would be false positives. But despite the fundamental importance of FDR estimates in ensuring the utility of large lists of identifications, there is surprisingly little consensus on exactly how TDA should be applied to minimize the chances of biased FDR estimates. In fact, since less rigorous TDA/FDR estimates tend to result in more identifications (at higher 'true' FDR), there is often little incentive to enforce strict TDA/FDR procedures in studies where the major metric of success is the size of the list of identifications and there are no follow up studies imposing hard cost constraints on the number of reported false positives.",
+		"container-title": "BMC Bioinformatics",
+		"DOI": "10.1186/1471-2105-13-S16-S2",
+		"ISSN": "1471-2105",
+		"issue": "16",
+		"journalAbbreviation": "BMC Bioinformatics",
+		"page": "S2",
+		"source": "BioMed Central",
+		"title": "False discovery rates in spectral identification",
+		"URL": "https://doi.org/10.1186/1471-2105-13-S16-S2",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Jeong",
+				"given": "Kyowon"
+			},
+			{
+				"family": "Kim",
+				"given": "Sangtae"
+			},
+			{
+				"family": "Bandeira",
+				"given": "Nuno"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					3,
+					19
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2012",
+					11,
+					5
+				]
+			]
+		}
 	}
 ]

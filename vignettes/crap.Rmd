@@ -30,11 +30,11 @@ and a FASTA database of protein/peptide sequences. Search algorithms are then
 used to match the supplied MS2 spectra to theoretical spectra generated from
 an in-silico digest of the supplied FASTA database (typically we use the 
 SwissProt protein database for the organism of interest). The selection of
-the FASTA database should be done carefully as it can have a 
-[significant effect on protein quantification](https://pwilmart.github.io/blog/2020/09/19/shotgun-quantification-part2)
-in shotgun proteomics.
+the FASTA database should be done carefully as having a very large database 
+can reduce the number of PSMs obtained [@Jeong2012]. Supposedly, using an 
+unecessarily large database can also affect [protein quantification](https://pwilmart.github.io/blog/2020/09/19/shotgun-quantification-part2).
 
-Furthermore, there are certain proteinaceous contaminants that are commonly, 
+There are certain proteinaceous contaminants that are commonly, 
 accidentally introduced during sample preparation for proteomics. In order
 to avoid misidentification of MS2 spectra that have come from these contaminants
 we use an additional (much smaller) FASTA database containing the sequences of
