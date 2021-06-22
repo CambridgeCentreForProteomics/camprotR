@@ -85,8 +85,8 @@ only concern ourselves with the `assayData`, `featureData`,  and `phenoData` slo
 MSnSets contain information about an MS experiment. To better understand MSnSets
 we need to define some terminology.
 
-In a quantitative proteomics experiment we run 'samples' on the MS from 
-different experimental conditions, e.g. comparing 'samples' from cells treated 
+In a quantitative proteomics experiment we are analysing 'samples' from
+different experimental conditions via MS, e.g. comparing 'samples' from cells treated 
 with a drug versus a control. The quantitative data we eventually
 obtain consists of measurements of 'features'. In this context features can be 
 PSMs, peptides, or proteins.
@@ -95,7 +95,8 @@ PSMs, peptides, or proteins.
 
 The `assayData` slot contains the quantitative data from the experiment, 
 i.e. how much of each feature (spectra/PSM, peptide, or protein) was detected 
-in each sample. This is the essential part of an MSnSet.
+in each sample. **This is the essential part of an MSnSet.** All other slots 
+are optional.
 
 We can extract this information from the MSnSet into a numeric matrix with the 
 `exprs()` function.
@@ -110,15 +111,69 @@ Lets look at its structure.
 str(msnset_exprs)
 ```
 
-It is a `r nrow(msnset_exprs)` by `r ncol(msnset_exprs)` numeric matrix.
+It is a `r nrow(msnset_exprs)` by `r ncol(msnset_exprs)` numeric matrix. 
+The data it contains is reporter ion intensities from `r ncol(msnset_exprs)` 
+iTRAQ tags across `r nrow(msnset_exprs)` different PSMs.
 
-Each **column** of this matrix refers to an iTRAQ channel which corresponds
-to an individual **'sample'**. Each **row** of this matrix corresponds to a **'feature'**
-which in this case is a PSM. The numbers indicate the intensity of
+Each **column** of this matrix refers to an iTRAQ tag which corresponds
+to an individual **'sample'**. Each **row** of this matrix corresponds to a 
+**'feature'** which in this case is a PSM. The numbers indicate the intensity of
+the reporter ion from a particular tag (i.e. sample) in a particular PSM.
 
 ### featureData
 
+The `featureData` slot contains metadata about the 'features' (e.g. PSMs, 
+peptides, proteins). 
+
+We can extract this information from the MSnSet into a data.frame with the 
+`fData()` function.
+
+```{r}
+msnset_fdata <- fData(msnset)
+```
+
+Lets look at its structure.
+
+```{r}
+str(msnset_fdata)
+```
+
+It is a `r nrow(msnset_exprs)` by `r ncol(msnset_exprs)` data.frame. The data
+it contains is metadata about each 'feature', which are PSMs in this case. 
+The type of metadata included is entirely arbitrary and there can be as many
+or as few columns as you want.
+
+Each **column** of this matrix refers to a particular type of metadata. 
+Each **row** of this matrix corresponds to a **'feature'** which in this case 
+is a PSM. Notice that the number of rows in `featureData` must be the same as
+the number of rows in `assayData`.
+
 ### phenoData
+
+The `phenoData` slot contains metadata about the 'samples'.
+
+We can extract this information from the MSnSet into a data.frame with the 
+`pData()` function.
+
+```{r}
+msnset_pdata <- pData(msnset)
+```
+
+Lets look at its structure.
+
+```{r}
+str(msnset_pdata)
+```
+
+It is a `r nrow(msnset_exprs)` by `r ncol(msnset_exprs)` data.frame. The data
+it contains is metadata about each 'sample', which are iTRAQ tags in this case. 
+The type of metadata included is entirely arbitrary and there can be as many
+or as few columns as you want.
+
+Each **column** of this matrix refers to a particular type of metadata. 
+Each **row** of this matrix corresponds to a **'sample'** which in this case 
+is an iTRAQ tag. Notice that the number of rows in `[phenoData` must be the 
+same as the number of columns in `assayData`.
 
 ## Making an MSnSet
 
