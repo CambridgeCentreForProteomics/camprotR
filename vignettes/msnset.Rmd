@@ -1,0 +1,127 @@
+---
+title: "Working with MSnSets"
+author: "Charlotte Dawson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: camprot_references.json
+vignette: >
+  %\VignetteIndexEntry{Working with MSnSets}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message=FALSE}
+library(MSnbase)
+library(camprotR)
+library(dplyr)
+```
+
+## Introduction
+
+**What is an MSnSet?** To quote from `MSnbase`:
+
+> The `MSnSet` class is derived form the `Biobase::eSet` class and mimics the
+`Biobase::ExpressionSet` class classically used for microarray data.
+
+This description is a bit dense and unintelligible, so I will describe an MSnSet
+in my own words:
+
+1. An MSnSet is a special type of list (specifically it is an S4 object) that 
+describes an MS experiment. 
+1. This list contains multiple objects of different types (typically a matrix or
+data.frame) that contains the quantitative data and metadata from an MS experiment.
+1. These underlying objects must have a specific structure (e.g. matching sample 
+names and the correct dimensions), so that each individual object in this 
+special list can be combined when necessary.
+
+Conveniently, the `MSnbase` package comes with some example MSnSets. In this
+section we will explore the `msnset` MSnSet. This data set is from an 
+iTRAQ 4-plex experiment wherein BSA and Enolase have been spiked into a background
+of _Erwinia_ proteins. See `?msnset` for more information.
+
+## Exploring an MSnSet
+
+Below we make an example list to compare to an MSnSet.
+
+```{r}
+# make a list which contains 2 data.frames and a list
+ls <- list(
+  "df1" = data.frame(
+    x = letters[1:3],
+    y = 1:3
+  ),
+  "df2" = data.frame(
+    a = rnorm(100),
+    b = rnorm(100)
+  ),
+  "ls1" = list(
+    sample.int(100, 10),
+    sample.int(200, 10)
+  )
+)
+```
+
+My favourite way to have a look at anything in R is to use the `str()` 
+function to explore an objects' structure.
+
+```{r}
+# ls is a list of 3 objects
+str(ls, max.level = 2)
+
+# msnset is an MSnSet with 9 'slots' that each contain some sort of object
+str(msnset, max.level = 2)
+```
+
+Each slot in `msnset` is described in detail in section x below. For now we will 
+only concern ourselves with the `assayData`, `featureData`,  and `phenoData` slots. 
+
+MSnSets contain information about an MS experiment. To better understand MSnSets
+we need to define some terminology.
+
+In a quantitative proteomics experiment we run 'samples' on the MS from 
+different experimental conditions, e.g. comparing 'samples' from cells treated 
+with a drug versus a control. The quantitative data we eventually
+obtain consists of measurements of 'features'. In this context features can be 
+PSMs, peptides, or proteins.
+
+### assayData
+
+The `assayData` slot contains the quantitative data from the experiment, 
+i.e. how much of each feature (spectra/PSM, peptide, or protein) was detected 
+in each sample. This is the essential part of an MSnSet.
+
+We can extract this information from the MSnSet into a numeric matrix with the 
+`exprs()` function.
+
+```{r}
+msnset_exprs <- exprs(msnset)
+```
+
+Lets look at its structure.
+
+```{r}
+str(msnset_exprs)
+```
+
+It is a `r nrow(msnset_exprs)` by `r ncol(msnset_exprs)` numeric matrix.
+
+Each **column** of this matrix refers to an iTRAQ channel which corresponds
+to an individual **'sample'**. Each **row** of this matrix corresponds to a **'feature'**
+which in this case is a PSM. The numbers indicate the intensity of
+
+### featureData
+
+### phenoData
+
+## Making an MSnSet
+
+## Extracting results from an MSnSet
+
+## MSnSet slots
