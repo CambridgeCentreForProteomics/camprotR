@@ -147,7 +147,7 @@ plot_below_notch_per_prot <- function(notch_per_protein){
     geom_bar(stat='identity', position='fill') +
     scale_fill_manual(name='# PSMs below notch', values=c('grey', get_cat_palette(6))) +
     xlab('Tag') +
-    scale_y_continuous(name='Fraction of proteins', expand = c(0, 0)) +
+    scale_y_continuous(name='Proportion of proteins', expand = c(0, 0)) +
     theme_camprot(base_size=12, border=FALSE)
 
   return(p_notch_per_protein)
@@ -174,7 +174,7 @@ plot_fraction_below_notch_per_prot <- function(notch_per_protein){
     geom_histogram(bins=10) +
     theme_camprot(base_size=10) +
     facet_wrap(~sample) +
-    xlab('Fraction at/below notch PSMs') +
+    xlab('Proportion at/below notch PSMs') +
     ylab('Count')
 
   return(p_fraction_psm_below_notch)
@@ -213,7 +213,7 @@ plot_missing_SN <- function(obj,
     scale_fill_manual(values=c('grey70', pal(max(n_missing))), name='Missing values') +
     guides(colour=guide_legend(override.aes = list(size = 1.5))) +
     xlab('Signal:Noise') +
-    scale_y_continuous(name='Fraction', expand = c(0, 0)) +
+    scale_y_continuous(name='Proportion', expand = c(0, 0)) +
     theme_camprot(base_size=12, border=FALSE) +
     theme(axis.text.x=element_text(size=10, angle=45, vjust=1, hjust=1))
 
