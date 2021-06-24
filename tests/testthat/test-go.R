@@ -47,7 +47,7 @@ test_that("determine_offspring_function works", {
   go_terms, onts)
 
   expect_named(go_relations, go_terms)
-  expect_equivalent(lengths(go_relations), c(7, 15, 46))
+  expect_equivalent(lengths(go_relations), c(7, 14, 47))
 })
 
 test_that("get_all_mappings works with ancestor direction", {
@@ -70,7 +70,7 @@ test_that("get_all_mappings works with offspring direction", {
   )
 
   expect_named(rbp_mappings, rbp_terms)
-  expect_equivalent(lengths(rbp_mappings), c(172, 4))
+  expect_equivalent(lengths(rbp_mappings), c(173, 4))
 })
 
 test_that("expand_terms works", {
