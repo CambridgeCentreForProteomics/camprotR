@@ -17,7 +17,12 @@ get_ccp_crap <- function() {
     gregexpr("(?<=\\|)[A-Z,0-9]{6}(?=\\|)", input, perl = TRUE)
   ) %>%
     unlist()
+
   accessions[!accessions %in% "000000"]
+
+  # deal with alpha amylase proteins specifically
+  accessions[4:6] <- c("P0DUB6", "P0DTE7", "P0DTE8")
+  accessions
 }
 
 #' Make a FASTA using UniProt accessions
