@@ -21,43 +21,43 @@ test_that("plot_TMT_notch faceted by sample works", {
   expect_silent(ggplotGrob(p))
 })
 
-test_that("get_notch_per_protein works", {
-  expect_equal_to_reference(
-    get_notch_per_protein(small_psm_tmt_phospho),
-    'reference/notch_count.rds'
-  )
-})
-
-test_that("plot_below_notch_per_prot works", {
-  expect_equal_to_reference(
-    plot_below_notch_per_prot(
-      get_notch_per_protein(small_psm_tmt_phospho)
-    ),
-    "reference/plot_below_notch_per_prot.rds"
-  )
-})
-
-test_that("plot_fraction_below_notch_per_prot works", {
-  expect_equal_to_reference(
-    plot_fraction_below_notch_per_prot(
-      get_notch_per_protein(small_psm_tmt_phospho)
-    ),
-    "reference/plot_fraction_below_notch_per_prot.rds"
-  )
-})
-
-test_that("plot_missing_SN works", {
-  expect_equal_to_reference(
-    plot_missing_SN(small_psm_tmt_total),
-    "reference/plot_missing_SN.rds"
-  )
-})
-
-test_that("plot_missing_SN_per_sample works", {
-  expect_equal_to_reference(
-    plot_missing_SN_per_sample(small_psm_tmt_total),
-    "reference/plot_missing_SN_per_sample.rds"
-  )
-})
+# test_that("get_notch_per_protein works", {
+#   expect_equal_to_reference(
+#     get_notch_per_protein(small_psm_tmt_phospho),
+#     'reference/notch_count.rds'
+#   )
+# })
+#
+# test_that("plot_below_notch_per_prot works", {
+#   expect_equal_to_reference(
+#     plot_below_notch_per_prot(
+#       get_notch_per_protein(small_psm_tmt_phospho)
+#     ),
+#     "reference/plot_below_notch_per_prot.rds"
+#   )
+# })
+#
+# test_that("plot_fraction_below_notch_per_prot works", {
+#   expect_equal_to_reference(
+#     plot_fraction_below_notch_per_prot(
+#       get_notch_per_protein(small_psm_tmt_phospho)
+#     ),
+#     "reference/plot_fraction_below_notch_per_prot.rds"
+#   )
+# })
+#
+# test_that("plot_missing_SN works", {
+#   expect_equal_to_reference(
+#     plot_missing_SN(small_psm_tmt_total),
+#     "reference/plot_missing_SN.rds"
+#   )
+# })
+#
+# test_that("plot_missing_SN_per_sample works", {
+#   expect_equal_to_reference(
+#     plot_missing_SN_per_sample(small_psm_tmt_total),
+#     "reference/plot_missing_SN_per_sample.rds"
+#   )
+# })
 
 #### Sanity checks -------------------------------------------------------------
