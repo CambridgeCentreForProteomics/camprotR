@@ -1,183 +1,235 @@
-#' Estimate the incorporation rate directly from PD output
+#' Estimate SILAC (2-plex) incorporation rate from PD output
 #'
-#' @description SILAC incorporation can be estimated from peptide-level PD output
-#' and summarised at peptide or protein level.
+#' @description SILAC (2-plex) incorporation can be estimated using the PSM and
+#' peptide groups PD outputs, and summarised at the peptide or protein level.
+#'
+#' This function takes the PSM.txt and PeptideGroups.txt files as inputs and
+#' outputs 3 plots and a .tsv file into the designated output directory.
 #'
 #' @details **Peptide sequencing/mass shift identification**
-#' In SILAC, Peptide identity of ions can be established through MS2 fragmentation
-#' ('peptide sequencing') or by mass shift (within tolerance limits) relative to
-#' a sequenced peptide. Ideally, the correlation between heavy and light intensities
-#' is the same regardless of whether light or heavy peptides are identified by
-#' mass shift or sequencing. If e.g light peptide intensities are not well correlated
-#' when they are identified by mass shift, this may indicate the mass shift identifications
-#' are erroneously picking up 'ghost peptide', which will make incorporation estimation
-#' difficult
+#' In SILAC, the peptide identity of ions can be established through MS2
+#' fragmentation ('peptide sequencing') or by mass shift (within tolerance
+#' limits) relative to a sequenced peptide.
+#'
+#' For 2-plex SILAC experiments, ideally, the correlation between Heavy and
+#' Light peptide intensities is the same regardless of whether Light or Heavy
+#' peptides are identified by mass shift or sequencing. If e.g Light peptide
+#' intensities are not well correlated when they are identified by mass shift,
+#' this may indicate that the mass shift identifications are erroneously
+#' picking up ghost peptides', which will make incorporation estimation difficult.
 #'
 #' **Mixing Heavy and Light material for incorporation rate testing**
-#' To get around the issue of 'ghost peptide', one can spike in Light material (
-#' at cell or protein extract-level) to the Heavy material being analysed.
-#
+#' To get around the issue of 'ghost peptides', one can spike in
+#' Light material (at cell or protein extract-level) to the Heavy material
+#' being analysed.
 #'
-#' @param psm_infile `string` filepath to psm-level PD output
-#' @param peptide_infile `string` filepath to peptide-level PD output
-#' @param crap_fasta `string`. filepath to cRAP fasta
+#' @param psm_infile `string`. Filepath to PSM-level PD output
+#' @param peptide_infile `string`. Filepath to peptide-level PD output
+#' @param crap_fasta `string`. Filepath to cRAP fasta used for PD search
 #' @param master_protein_col `string`. Name of column containing master
-#' proteins.
+#' protein accessions.
 #' @param protein_col `string`. Name of column containing all protein
-#' matches.
-#' @param sequence_col `string`. Name of column containing peptide sequences
-#' @param modifications_col `string`. Name of column containing peptide modifications
-#' @param mix `numeric`. If Light material has been spiked in, what is the abundance
-#' relative to the heavy material. E.g if they are equal, mix=1.
-#' Default value = 0, e.g no Light spike in
-#' @param outdir `string` filepath to directory for plots and incorporation summary table
-#' @return `incorporation`
+#' accessions.
+#' @param sequence_col `string`. Name of column containing peptide sequences.
+#' @param modifications_col `string`. Name of column containing peptide modifications.
+#' @param mix `numeric`. If Light material has been spiked in,
+#' what is the abundance relative to the Heavy material? Default is `mix = 0`
+#' e.g. no Light spike in. If they are equal, `mix = 1`.
+#' @param outdir `string`. Filepath for directory to save the plots and summary table.
+#' @return Returns 3 ggplots and 1 table which are saved in `outdir`.
 #' @export
-estimate_incorporation <- function(psm_infile,
-                                   peptide_infile,
-                                   crap_fasta,
-                                   master_protein_col = "Master.Protein.Accessions",
-                                   protein_col = "Protein.Accessions",
-                                   sequence_col = 'Sequence',
-                                   modifications_col = 'Modifications',
-                                   mix = 0,
-                                   outdir) {
+estimate_incorporation <- function(
+  psm_infile,
+  peptide_infile,
+  crap_fasta,
+  master_protein_col = "Master.Protein.Accessions",
+  protein_col = "Protein.Accessions",
+  sequence_col = "Sequence",
+  modifications_col = "Modifications",
+  mix = 0,
+  outdir
+) {
+  # create output directory if it does not already exist
   if (!dir.exists(outdir)) dir.create(outdir)
 
-  psm_sequenced_data <- silac_psm_seq_int(utils::read.delim(psm_infile),
-    sequence_col = sequence_col
+  # for each peptide, check whether it was MS2 sequenced and what the maximum
+  # isolation interference (%) was across all PSMs for that peptide
+  psm_sequenced_data <- silac_psm_seq_int(
+    utils::read.delim(psm_infile),
+    sequence_col = sequence_col,
+    mod_col = modifications_col,
+    interference_col = "Isolation.Interference.in.Percent"
   )
 
-  # Load the cRAP FASTA used for the PD search
-  crap.fasta <- Biostrings::fasta.index(crap_fasta, seqtype = "AA")
+  # load the cRAP FASTA used for the PD search
+  crap_fasta <- Biostrings::fasta.index(crap_fasta, seqtype = "AA")
 
-  # Extract the non cRAP UniProt accessions associated with each cRAP protein
-  crap.accessions <- crap.fasta %>%
-    pull(desc) %>%
-    regmatches(.data, gregexpr("(?<=\\|).*?(?=\\|)", .data, perl = TRUE)) %>%
+  # extract the UniProt accessions associated with each cRAP protein
+  crap_accessions <- regmatches(
+    crap_fasta$desc,
+    gregexpr("(?<=\\|).*?(?=\\|)", crap_fasta$desc, perl = TRUE)
+  ) %>%
     unlist()
 
-  peptide_data <- parse_features(utils::read.delim(peptide_infile),
+  # parse peptideGroups.txt and filter out:
+  # filter out: cRAP, non-tryptic peptides, peptides with redundant Quan
+  peptide_data <- parse_features(
+    utils::read.delim(peptide_infile),
     master_protein_col = master_protein_col,
     protein_col = protein_col,
     unique_master = FALSE,
     silac = TRUE,
     level = "peptide",
     filter_crap = TRUE,
-    crap_proteins = crap.accessions,
+    crap_proteins = crap_accessions,
     filter_associated_crap = TRUE
   ) %>%
-    filter(grepl('K|R|k|r', !!sym(sequence_col))) %>%
-    filter(.data$Quan.Info != 'Redundant')
+    subset(
+      Quan.Info != "Redundant" &
+        grepl("K|R", .[, sequence_col], ignore.case = TRUE)
+    )
 
-  light_col <- colnames(peptide_data)[
+  # rename Heavy and Light abundance columns
+  colnames(peptide_data)[
     grepl('Abundances.Grouped.(F\\d*.)?Light', colnames(peptide_data))
-  ]
-  heavy_col <- colnames(peptide_data)[
+  ] <- "Light"
+  colnames(peptide_data)[
     grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))
-  ]
+  ] <- "Heavy"
 
-  peptide_data <- peptide_data %>%
-    select(!!sym(sequence_col), !!sym(modifications_col),
-      !!sym(protein_col), !!sym(master_protein_col), .data$Number.of.Missed.Cleavages,
-      'light' = all_of(light_col), 'heavy' = all_of(heavy_col)
-    ) %>%
-    mutate(corrected_light = .data$light - (mix * .data$heavy)) %>%
-    rowwise() %>%
-    mutate(
-      incorporation = get_incorporation(.data$light, .data$heavy),
-      corrected_incorporation = get_incorporation(.data$corrected_light, .data$heavy)
+  # define the columns we need from peptide data
+  peptide_data_cols <- c(
+    "Sequence",
+    "Modifications",
+    "Protein.Accessions",
+    "Master.Protein.Accessions",
+    "Number.of.Missed.Cleavages",
+    "Light",
+    "Heavy"
+  )
+
+  # throw an error if these columns aren't present in peptide data
+  if (!all(peptide_data_cols %in% colnames(peptide_data))) {
+    stop(
+      "The following essential columns are missing from `peptide_infile`: ",
+      paste(peptide_data_cols[!peptide_data_cols %in% colnames(peptide_data)], collapse = ", ")
     )
+  }
 
-  peptide_data <- peptide_data %>%
-    remove_silac_modifications(level = 'peptide') %>%
-    merge(psm_sequenced_data, by = c(sequence_col, modifications_col)) %>%
-    mutate(
-      found_light = ifelse(.data$Sequenced_Light, 'Light: Spectrum matched', ifelse(
-        is.finite(.data$light), 'Light: Detected by mass shift', 'Light: Not found'
-      )),
-      found_heavy = ifelse(.data$Sequenced_Heavy, 'Heavy: Spectrum matched', ifelse(
-        is.finite(.data$heavy), 'Heavy: Detected by mass shift', 'Heavy: Not found'
-      ))
+  # subset peptide data
+  peptide_data <- subset(peptide_data, select = peptide_data_cols)
+
+  # correct the Light channel based on the mixing ratio
+  peptide_data$Light.corrected <- peptide_data$Light - (mix * peptide_data$Heavy)
+
+  # calculate incorporation
+  peptide_data$incorporation <- mapply(
+    get_incorporation, peptide_data$Light, peptide_data$Heavy
+  )
+
+  peptide_data$corrected_incorporation <- mapply(
+    get_incorporation, peptide_data$Light.corrected, peptide_data$Heavy
+  )
+
+  # remove SILAC modifications from the Modifications column of peptide data
+  peptide_data$Modifications <- remove_silac_modifications(peptide_data$Modifications, level = "peptide")
+
+  # merge the peptide and PSM data
+  merged_data <- merge(peptide_data, psm_sequenced_data, by = c(sequence_col, modifications_col))
+
+  # make columns indicating if peptide was identified by PSM or by mass shift
+  merged_data$Found.Light <- ifelse(
+    merged_data$Sequenced_Light, "Light: Spectrum matched",
+    ifelse(
+      is.finite(merged_data$Light), "Light: Detected by mass shift",
+      "Light: Not found"
     )
+  )
 
-  p_cor <- peptide_data %>%
-    filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
-    ggplot(aes(log10(.data$heavy), log10(.data$light))) +
+  merged_data$Found.Heavy <- ifelse(
+    merged_data$Sequenced_Heavy, "Heavy: Spectrum matched",
+    ifelse(
+      is.finite(merged_data$Heavy), "Heavy: Detected by mass shift",
+      "Heavy: Not found"
+    )
+  )
+
+  # plot Light vs Heavy intensities for each peptide
+  p1 <- merged_data %>%
+    subset(is.finite(Light) & is.finite(Heavy)) %>%
+    ggplot(aes(x = log10(Heavy), y = log10(Light))) +
     geom_point(size = 0.2) +
     theme_bw() +
     theme(aspect.ratio = 1) +
-    facet_wrap(found_heavy ~ found_light) +
-    xlab('Heavy intensity (log10)') +
-    ylab('Light intensity (log10)') +
-    xlim(3, NA) +
-    ylim(3, NA)
-
-  ggsave(file.path(outdir, 'heavy_light_correlation.png'), p_cor)
+    facet_wrap(Found.Heavy ~ Found.Light) +
+    labs(x = "Heavy intensity (log10)", y = "Light intensity (log10)") +
+    coord_cartesian(xlim = c(3, NA), ylim = c(3, NA))
 
   if (mix > 0) {
-    p_cor2 <- p_cor + geom_abline(
-      slope = 1, linetype = 2,
-      intercept = log10((mix / 2) / (1 - (mix / 2))),
-      colour = get_cat_palette(1)
-    )
-
-    ggsave(file.path(outdir, 'heavy_light_correlation2.png'), p_cor2)
-
-    peptide_incorporation <- peptide_data %>%
-      filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
-      plot_incorporation(mix = mix)
-  } else {
-    peptide_incorporation <- plot_incorporation(peptide_data)
+    p1 <- p1 +
+      geom_abline(
+        linetype = 2,
+        slope = 1,
+        intercept = log10((mix / 2) / (1 - (mix / 2))),
+        colour = get_cat_palette(1)
+      )
   }
 
+  ggsave(file.path(outdir, "heavy_light_correlation.png"), plot = p1)
 
-  ggsave(file.path(outdir, 'peptide_incorporation.png'), peptide_incorporation$p)
-
-  multi_peptide <- peptide_data %>%
-    # first run unique on the protein, sequence columns so each peptide sequence is
-    # only counted once
-    select(!!sym(master_protein_col), .data$Sequence) %>% #
-    unique() %>%
-    group_by(!!sym(master_protein_col)) %>%
-    tally() %>%
-    filter(n > 1)
-
-  # Use MsnSets here and make other combine methods available?
+  # plot peptide-level incorporation histogram
   if (mix > 0) {
-    protein_data <- peptide_data %>%
-      filter(is.finite(.data$light), is.finite(.data$heavy)) %>%
-      group_by(!!sym(master_protein_col)) %>%
-      summarise(
-        corrected_incorporation = stats::median(.data$corrected_incorporation, na.rm = TRUE),
-        incorporation = stats::median(.data$incorporation, na.rm = TRUE)
-      ) %>%
-      merge(multi_peptide, by = master_protein_col)
+    p2 <- merged_data %>%
+      subset(is.finite(Light) & is.finite(Heavy)) %>%
+      plot_incorporation(level = "Peptide", mix = mix)
   } else {
-    protein_data <- peptide_data %>%
-      group_by(!!sym(master_protein_col)) %>%
-      summarise(
-        corrected_incorporation = stats::median(.data$corrected_incorporation, na.rm = TRUE),
-        incorporation = stats::median(.data$incorporation, na.rm = TRUE)
-      ) %>%
-      merge(multi_peptide, by = master_protein_col)
+    p2 <- plot_incorporation(merged_data, level = "Peptide", mix = 0)
   }
 
+  ggsave(file.path(outdir, "peptide_incorporation.png"), plot = p2$p)
 
-  protein_incorporation <- plot_incorporation(protein_data, level = 'Protein', mix = mix)
-  ggsave(file.path(outdir, 'protein_incorporation.png'), protein_incorporation$p)
+  # count the number of unique peptides per master protein
+  unique_peptides <- merged_data %>%
+    subset(select = c(master_protein_col, sequence_col)) %>%
+    unique()
 
-  incorporation_estimates <- data.frame(matrix(
+  # get proteins with min. 2 unique peptides
+  n_unique_peptides <- unique_peptides %>%
+    as.data.frame() %>%
+    `colnames<-`(c(master_protein_col, "n")) %>%
+    subset(n > 1)
+
+  # note to self: use MsnSets here and make other combine methods available?
+
+  # group data by master protein
+  if (mix > 0) {
+    merged_data <- merged_data %>%
+      subset(is.finite(Light) & is.finite(Heavy))
+  }
+
+  protein_data <- merged_data %>%
+    subset(select = c(master_protein_col, "incorporation", "corrected_incorporation")) %>%
+    aggregate(as.formula(paste0(". ~ ", master_protein_col)), ., median) %>%
+    merge(n_unique_peptides, by = master_protein_col)
+
+  # plot protein-level incorporation histogram
+  p3 <- plot_incorporation(protein_data, level = 'Protein', mix = mix)
+
+  ggsave(file.path(outdir, 'protein_incorporation.png'), p3$p)
+
+  # create table of peptide- and protein-level data
+  t1 <- data.frame(matrix(
     unlist(c(
-      peptide_incorporation$incorporation_estimates,
-      protein_incorporation$incorporation_estimates
+      p2$incorporation_estimates,
+      p3$incorporation_estimates
     )),
-    ncol = length(peptide_incorporation$incorporation_estimates), byrow = TRUE
+    ncol = length(p2$incorporation_estimates), byrow = TRUE
   )) %>%
-    setNames(names(peptide_incorporation$incorporation_estimates)) %>%
-    mutate('level' = c('peptide', 'protein')) #
+    setNames(names(p2$incorporation_estimates))
 
-  utils::write.table(incorporation_estimates, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
+  t1$level <- c("peptide", "protein")
+
+  utils::write.table(t1, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
 
   invisible(NULL)
 }
