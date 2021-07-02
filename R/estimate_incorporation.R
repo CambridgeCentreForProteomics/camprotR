@@ -35,8 +35,11 @@
 #' @param mix `numeric`. If Light material has been spiked in,
 #' what is the abundance relative to the Heavy material? Default is `mix = 0`
 #' e.g. no Light spike in. If they are equal, `mix = 1`.
-#' @param outdir `string`. Filepath for directory to save the plots and summary table.
-#' @return Returns 3 ggplots and 1 table which are saved in `outdir`.
+#' @param outdir `NULL` or `string`. If not `NULL`, filepath for directory to
+#' save the plots and summary table.
+#' @return By default returns a `list` with 3 ggplots (HL correlation, peptide-level
+#' incorporation, protein-level incorporation) and 1 summary table. If `outdir`
+#' is not `NULL` then the plots and table will be saved into `outdir`.
 #' @export
 estimate_incorporation <- function(
   psm_infile,
@@ -47,10 +50,10 @@ estimate_incorporation <- function(
   sequence_col = "Sequence",
   modifications_col = "Modifications",
   mix = 0,
-  outdir
+  outdir = NULL
 ) {
   # create output directory if it does not already exist
-  if (!dir.exists(outdir)) dir.create(outdir)
+  if (!is.null(outdir)) {if (!dir.exists(outdir)) dir.create(outdir)}
 
   # for each peptide, check whether it was MS2 sequenced and what the maximum
   # isolation interference (%) was across all PSMs for that peptide
@@ -175,8 +178,6 @@ estimate_incorporation <- function(
       )
   }
 
-  ggsave(file.path(outdir, "heavy_light_correlation.png"), plot = p1)
-
   # plot peptide-level incorporation histogram
   if (mix > 0) {
     p2 <- merged_data %>%
@@ -185,8 +186,6 @@ estimate_incorporation <- function(
   } else {
     p2 <- plot_incorporation(merged_data, level = "peptide", mix = 0)
   }
-
-  ggsave(file.path(outdir, "peptide_incorporation.png"), plot = p2$p)
 
   # count the number of unique peptides per master protein
   unique_peptides <- merged_data %>%
@@ -216,8 +215,6 @@ estimate_incorporation <- function(
   # plot protein-level incorporation histogram
   p3 <- plot_incorporation(protein_data, level = 'protein', mix = mix)
 
-  ggsave(file.path(outdir, 'protein_incorporation.png'), p3$p)
-
   # create table of peptide- and protein-level data
   t1 <- data.frame(matrix(
     unlist(c(
@@ -230,7 +227,18 @@ estimate_incorporation <- function(
 
   t1$level <- c("peptide", "protein")
 
-  utils::write.table(t1, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
-
-  invisible(NULL)
+  if (!is.null(outdir)) {
+    ggsave(file.path(outdir, "HL_correlation.png"), plot = p1)
+    ggsave(file.path(outdir, "peptide_incorporation.png"), plot = p2$p)
+    ggsave(file.path(outdir, 'protein_incorporation.png'), p3$p)
+    utils::write.table(t1, file.path(outdir, 'incorporation.tsv'), sep = '\t', row.name = FALSE)
+  } else {
+    out <- list(
+      'HL_correlation' = p1,
+      'peptide_incorporation' = p2,
+      'protein_incorporation' = p3,
+      'incorporation_table' = t1
+    )
+    out
+  }
 }

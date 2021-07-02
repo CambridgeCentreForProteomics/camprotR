@@ -13,7 +13,7 @@ estimate_incorporation(
   sequence_col = "Sequence",
   modifications_col = "Modifications",
   mix = 0,
-  outdir
+  outdir = NULL
 )
 }
 \arguments{
@@ -37,10 +37,13 @@ accessions.}
 what is the abundance relative to the Heavy material? Default is \code{mix = 0}
 e.g. no Light spike in. If they are equal, \code{mix = 1}.}
 
-\item{outdir}{\code{string}. Filepath for directory to save the plots and summary table.}
+\item{outdir}{\code{NULL} or \code{string}. If not \code{NULL}, filepath for directory to
+save the plots and summary table.}
 }
 \value{
-Returns 3 ggplots and 1 table which are saved in \code{outdir}.
+By default returns a \code{list} with 3 ggplots (HL correlation, peptide-level
+incorporation, protein-level incorporation) and 1 summary table. If \code{outdir}
+is not \code{NULL} then the plots and table will be saved into \code{outdir}.
 }
 \description{
 SILAC (2-plex) incorporation can be estimated using the PSM and
