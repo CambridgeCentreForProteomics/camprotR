@@ -1,14 +1,14 @@
 context('silac')
 
 #### Setup ---------------------------------------------------------------------
-input <- data.frame('incorporation'=c(1, seq(.9,1,.01)))
-output <- c(median(100*input$incorporation),
-            mean(100*input$incorporation))
+input <- data.frame('Incorporation' = c(1, seq(.9, 1, .01)))
+output <- c(median(100 * input$Incorporation),
+            mean(100 * input$Incorporation))
 
-input_mix <- data.frame('incorporation'=seq(.45,.55,.01),
-                        'corrected_incorporation'=seq(.95,1.05,.01))
-output_mix <- c(median(100*input_mix$incorporation),
-                median(100*input_mix$corrected_incorporation))
+input_mix <- data.frame('Incorporation' = seq(.45, .55, .01),
+                        'Incorporation.corrected' = seq(.95, 1.05, .01))
+output_mix <- c(median(100 * input_mix$Incorporation),
+                median(100 * input_mix$Incorporation.corrected))
 
 #### Tests ---------------------------------------------------------------------
 test_that("No heavy produces ratio = 0", {
