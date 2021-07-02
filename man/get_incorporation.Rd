@@ -2,20 +2,20 @@
 % Please edit documentation in R/silac.R
 \name{get_incorporation}
 \alias{get_incorporation}
-\title{Determine the SILAC incorporation rate given intensity values for light and heavy}
+\title{Determine SILAC (2-plex) incorporation rate given intensity values for Light and Heavy}
 \usage{
 get_incorporation(light, heavy)
 }
 \arguments{
-\item{light}{\code{numeric} Light peptide intensity}
+\item{light}{\code{numeric}. Light peptide intensity.}
 
-\item{heavy}{\code{numeric} Heavy peptide intensity}
+\item{heavy}{\code{numeric}. Heavy peptide intensity.}
 }
 \value{
-\code{incorporation}
+Returns a \code{numeric} from 0 to 1 (or \code{NA} if \code{light} and \code{heavy} are both \code{NA})
 }
 \description{
-SILAC incorporation is estimated by H / (H + L), where H=Heavy
-and L=Light labelled peptide intensity. If L is NA, incorporation==1, if H is
-NA, incorproration==0
+SILAC incorporation is estimated by H / (H + L), where H = Heavy
+and L = Light labelled peptide intensity. If L is \code{NA}, incorporation == 1
+and if H is \code{NA}, incorporation == 0.
 }

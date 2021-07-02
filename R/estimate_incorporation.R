@@ -123,11 +123,11 @@ estimate_incorporation <- function(
   peptide_data$Light.corrected <- peptide_data$Light - (mix * peptide_data$Heavy)
 
   # calculate incorporation
-  peptide_data$incorporation <- mapply(
+  peptide_data$Incorporation <- mapply(
     get_incorporation, peptide_data$Light, peptide_data$Heavy
   )
 
-  peptide_data$corrected_incorporation <- mapply(
+  peptide_data$Incorporation.corrected <- mapply(
     get_incorporation, peptide_data$Light.corrected, peptide_data$Heavy
   )
 
@@ -181,9 +181,9 @@ estimate_incorporation <- function(
   if (mix > 0) {
     p2 <- merged_data %>%
       subset(is.finite(Light) & is.finite(Heavy)) %>%
-      plot_incorporation(level = "Peptide", mix = mix)
+      plot_incorporation(level = "peptide", mix = mix)
   } else {
-    p2 <- plot_incorporation(merged_data, level = "Peptide", mix = 0)
+    p2 <- plot_incorporation(merged_data, level = "peptide", mix = 0)
   }
 
   ggsave(file.path(outdir, "peptide_incorporation.png"), plot = p2$p)
@@ -194,7 +194,8 @@ estimate_incorporation <- function(
     unique()
 
   # get proteins with min. 2 unique peptides
-  n_unique_peptides <- unique_peptides %>%
+  n_unique_peptides <- unique_peptides[, master_protein_col] %>%
+    table() %>%
     as.data.frame() %>%
     `colnames<-`(c(master_protein_col, "n")) %>%
     subset(n > 1)
@@ -208,12 +209,12 @@ estimate_incorporation <- function(
   }
 
   protein_data <- merged_data %>%
-    subset(select = c(master_protein_col, "incorporation", "corrected_incorporation")) %>%
+    subset(select = c(master_protein_col, "Incorporation", "Incorporation.corrected")) %>%
     aggregate(as.formula(paste0(". ~ ", master_protein_col)), ., median) %>%
     merge(n_unique_peptides, by = master_protein_col)
 
   # plot protein-level incorporation histogram
-  p3 <- plot_incorporation(protein_data, level = 'Protein', mix = mix)
+  p3 <- plot_incorporation(protein_data, level = 'protein', mix = mix)
 
   ggsave(file.path(outdir, 'protein_incorporation.png'), p3$p)
 
