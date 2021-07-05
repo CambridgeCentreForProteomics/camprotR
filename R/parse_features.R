@@ -48,9 +48,69 @@
 #' for example: `c("P02768")` which is serum albumin.
 #' @param filter_associated_crap `logical`. Filter out features which
 #' match a cRAP associated protein.
-#' @return `data.frame` with the filtered Proteome Discoverer output.
+#' @return Returns a `data.frame` with the filtered Proteome Discoverer output.
 #' @examples
-#' #
+#' \dontrun{
+#'
+#' #### PSMs.txt example ####
+#' # load PD PSMs.txt output
+#' psm <- read.delim("data-raw/PSMs.txt")
+#'
+#' # load the cRAP FASTA used for the PD search
+#' crap_fasta <- Biostrings::fasta.index(
+#'   "2021-06_CCP_cRAP.fasta", seqtype = "AA"
+#' )
+#'
+#' # extract the UniProt accessions from the cRAP FASTA headers
+#' crap_accessions <- regmatches(
+#'   crap_fasta$desc,
+#'   gregexpr("(?<=\\|).*?(?=\\|)", crap_fasta$desc, perl = TRUE)
+#' ) %>%
+#'   unlist()
+#'
+#' # parse peptides from an e.g. TMT experiment
+#' psm2 <- parse_features(
+#'   data = psm,
+#'   master_protein_col = "Master.Protein.Accessions",
+#'   protein_col = "Protein.Accessions",
+#'   unique_master = TRUE,
+#'   TMT = TRUE,
+#'   level = "PSM",
+#'   filter_crap = TRUE,
+#'   crap_proteins = crap_accessions,
+#'   filter_associated_crap = TRUE
+#' )
+#'
+#' #### peptideGroups.txt example ####
+#' # load PD peptideGroups.txt output
+#' pep_group <- read.delim("data-raw/peptideGroups.txt")
+#'
+#' # load the cRAP FASTA used for the PD search
+#' crap_fasta <- Biostrings::fasta.index(
+#'   "2021-06_CCP_cRAP.fasta", seqtype = "AA"
+#' )
+#'
+#' # extract the UniProt accessions from the cRAP FASTA headers
+#' crap_accessions <- regmatches(
+#   crap_fasta$desc,
+#   gregexpr("(?<=\\|).*?(?=\\|)", crap_fasta$desc, perl = TRUE)
+# ) %>%
+#   unlist()
+#'
+#' # parse peptides from an e.g. SILAC experiment
+#' pep_group2 <- parse_features(
+#'   data = pep_group,
+#'   master_protein_col = "Master.Protein.Accessions",
+#'   protein_col = "Protein.Accessions",
+#'   unique_master = TRUE,
+#'   silac = TRUE,
+#'   level = "peptide",
+#'   filter_crap = TRUE,
+#'   crap_proteins = crap_accessions,
+#'   filter_associated_crap = TRUE
+#' )
+#'
+#' }
 #' @export
 parse_features <- function(data,
                            master_protein_col = "Master.Protein.Accessions",
