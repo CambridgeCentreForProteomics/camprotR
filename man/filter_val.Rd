@@ -49,5 +49,5 @@ to 100 in the "sample_A" columns AND less than or equal to 50 in the
 More illustrative examples are below.
 }
 \examples{
-# need to write example
+#
 }

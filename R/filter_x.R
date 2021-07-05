@@ -52,7 +52,8 @@ subset_na <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' `regex` vector.
 #'
 #' @return Returns a filtered object of the same class as `data`.
-#' @example inst/examples/ex-filter_na.R
+#' @examples
+#' #
 #' @export
 filter_na <- function(data, op, setop, regex, value) {
   # repeat subset_na for pairs of values in two vectors
@@ -116,7 +117,8 @@ subset_zero <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' `regex` vector.
 #'
 #' @return Returns a filtered object of the same class as `data`.
-#' @example inst/examples/ex-filter_zero.R
+#' @examples
+#' #
 #' @export
 filter_zero <- function(data, op, setop, regex, value) {
   # repeat subset_zero for pairs of values in two vectors
@@ -180,7 +182,8 @@ subset_val <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' `regex` vector.
 #'
 #' @return Returns a filtered object of the same class as `data`.
-#' @example inst/examples/ex-filter_val.R
+#' @examples
+#' #
 #' @export
 filter_val <- function(data, op, setop, regex, value) {
   # repeat subset_val for pairs of values in two vectors

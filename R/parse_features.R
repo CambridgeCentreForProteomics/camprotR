@@ -49,7 +49,8 @@
 #' @param filter_associated_crap `logical`. Filter out features which
 #' match a cRAP associated protein.
 #' @return `data.frame` with the filtered Proteome Discoverer output.
-#' @example inst/examples/ex-parse_features.R
+#' @examples
+#' #
 #' @export
 parse_features <- function(data,
                            master_protein_col = "Master.Protein.Accessions",

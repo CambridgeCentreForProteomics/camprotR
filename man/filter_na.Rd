@@ -49,5 +49,5 @@ columns.
 More illustrative examples are below.
 }
 \examples{
-# need to write example
+#
 }

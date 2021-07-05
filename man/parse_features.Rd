@@ -80,5 +80,5 @@ f3       protein2                   protein2
 }
 }
 \examples{
-# need to write example
+#
 }
