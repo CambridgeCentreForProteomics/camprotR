@@ -13,8 +13,8 @@ filter_na(data, op, setop, regex, value)
 one of \code{"=="}, \code{"<="}, \code{">="}, or \code{"!="}.}
 
 \item{setop}{The function used for combining the results for the different
-column groups. Should be one of \code{union} (equivalent to "OR"), \code{intersect}
-(equivalent to "AND"), or \code{setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
+column groups. Should be one of \code{dplyr::union} (equivalent to "OR"), \code{dplyr::intersect}
+(equivalent to "AND"), or \code{dplyr::setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
 
 \item{regex}{\verb{character vector} of length n. The regular expression(s) used
 to define the column groups. The length of the vector indicates the number
@@ -36,7 +36,7 @@ over what is filtered out compared to filtering based on ratios alone.
 The function can be explained as follows:\preformatted{filter_na(
   data,
   op = "<=",
-  setop = intersect,
+  setop = dplyr::intersect,
   regex = c("sample_A", "sample_B"),
   value = c(1, 1)
 )
@@ -66,18 +66,18 @@ mapply(function(i, j) {
 }, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
 
 # filter for rows with <= 1 NA value in ctr OR trt samples
-filter_na(df, "<=", union, c("ctr", "trt"), c(1, 1))
+filter_na(df, "<=", dplyr::union, c("ctr", "trt"), c(1, 1))
 
 # filter for rows with <= 1 NA value in ctr AND trt samples
-filter_na(df, "<=", intersect, c("ctr", "trt"), c(1, 1))
+filter_na(df, "<=", dplyr::intersect, c("ctr", "trt"), c(1, 1))
 
 # filter for rows with exactly 1 NA value in ctr AND trt samples
-filter_na(df, "==", intersect, c("ctr", "trt"), c(1, 1))
+filter_na(df, "==", dplyr::intersect, c("ctr", "trt"), c(1, 1))
 
 # filter for rows with at least 1 non-NA value
-filter_na(df, "<=", union, "ctr|trt", 5)
+filter_na(df, "<=", dplyr::union, "ctr|trt", 5)
 
 # filter for rows with at least 3 NA values
-filter_na(df, ">=", union, "ctr|trt", 3)
+filter_na(df, ">=", dplyr::union, "ctr|trt", 3)
 
 }

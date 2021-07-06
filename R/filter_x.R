@@ -26,7 +26,7 @@ subset_na <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' filter_na(
 #'   data,
 #'   op = "<=",
-#'   setop = intersect,
+#'   setop = dplyr::intersect,
 #'   regex = c("sample_A", "sample_B"),
 #'   value = c(1, 1)
 #' )
@@ -42,8 +42,8 @@ subset_na <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' @param op `string`. Defines the operation used for the filtering. Should be
 #' one of `"=="`, `"<="`, `">="`, or `"!="`.
 #' @param setop The function used for combining the results for the different
-#' column groups. Should be one of `union` (equivalent to "OR"), `intersect`
-#' (equivalent to "AND"), or `setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
+#' column groups. Should be one of `dplyr::union` (equivalent to "OR"), `dplyr::intersect`
+#' (equivalent to "AND"), or `dplyr::setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
 #' @param regex `character vector` of length n. The regular expression(s) used
 #' to define the column groups. The length of the vector indicates the number
 #' of column groups to use.
@@ -70,19 +70,19 @@ subset_na <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' }, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
 #'
 #' # filter for rows with <= 1 NA value in ctr OR trt samples
-#' filter_na(df, "<=", union, c("ctr", "trt"), c(1, 1))
+#' filter_na(df, "<=", dplyr::union, c("ctr", "trt"), c(1, 1))
 #'
 #' # filter for rows with <= 1 NA value in ctr AND trt samples
-#' filter_na(df, "<=", intersect, c("ctr", "trt"), c(1, 1))
+#' filter_na(df, "<=", dplyr::intersect, c("ctr", "trt"), c(1, 1))
 #'
 #' # filter for rows with exactly 1 NA value in ctr AND trt samples
-#' filter_na(df, "==", intersect, c("ctr", "trt"), c(1, 1))
+#' filter_na(df, "==", dplyr::intersect, c("ctr", "trt"), c(1, 1))
 #'
 #' # filter for rows with at least 1 non-NA value
-#' filter_na(df, "<=", union, "ctr|trt", 5)
+#' filter_na(df, "<=", dplyr::union, "ctr|trt", 5)
 #'
 #' # filter for rows with at least 3 NA values
-#' filter_na(df, ">=", union, "ctr|trt", 3)
+#' filter_na(df, ">=", dplyr::union, "ctr|trt", 3)
 #'
 #' @export
 filter_na <- function(data, op, setop, regex, value) {
@@ -109,19 +109,19 @@ subset_zero <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
   subset(data, sapply(n_zero, op, value))
 }
 
-#' Filter rows based on zero values in column groups
+#' Filter rows based on `0` values in column groups
 #'
-#' @description This function is used to filter rows based on number of zero
+#' @description This function is used to filter rows based on number of `0`
 #' values in different groups of columns. The column groups are defined by a
-#' regex matching their names. This provides more granular control over what
-#' is filtered out compared to filtering based on ratios alone.
+#' regular expression matching their names. This provides more granular control
+#' over what is filtered out compared to filtering based on ratios alone.
 #'
 #' The function can be explained as follows:
 #' ```
 #' filter_zero(
 #'   data,
 #'   op = "<=",
-#'   setop = intersect,
+#'   setop = dplyr::intersect,
 #'   regex = c("sample_A", "sample_B"),
 #'   value = c(1, 1)
 #' )
@@ -137,18 +137,47 @@ subset_zero <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' @param op `string`. Defines the operation used for the filtering. Should be
 #' one of `"=="`, `"<="`, `">="`, or `"!="`.
 #' @param setop The function used for combining the results for the different
-#' column groups. Should be one of `union` (equivalent to "OR"), `intersect`
-#' (equivalent to "AND"), or `setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
+#' column groups. Should be one of `dplyr::union` (equivalent to "OR"), `dplyr::intersect`
+#' (equivalent to "AND"), or `dplyr::setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
 #' @param regex `character vector` of length n. The regular expression(s) used
 #' to define the column groups. The length of the vector indicates the number
 #' of column groups to use.
-#' @param value `numeric vector` of length n. The number of zero values to check
+#' @param value `numeric vector` of length n. The number of `0` values to check
 #' for in the rows of each column group. Must be the same length as the
 #' `regex` vector.
 #'
 #' @return Returns a filtered object of the same class as `data`.
 #' @examples
-#' #
+#' library(magrittr)
+#'
+#' # set a seed for reproducibility
+#' set.seed(123)
+#'
+#' # make a data.frame with fake protein/peptide abundance data
+#' df <- cbind(replicate(3, runif(7, 13, 24)),
+#'             replicate(3, runif(7, 24, 30))) %>%
+#'  as.data.frame() %>%
+#'  `colnames<-`(c(paste0("ctr", 1:3), paste0("trt", 1:3)))
+#'
+#' # add in some 0 values
+#' mapply(function(i, j) {
+#'   df[i, j] <<- 0
+#' }, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
+#'
+#' # filter for rows with <= 1 0 value in ctr OR trt samples
+#' filter_zero(df, "<=", dplyr::union, c("ctr", "trt"), c(1, 1))
+#'
+#' # filter for rows with <= 1 0 value in ctr AND trt samples
+#' filter_zero(df, "<=", dplyr::intersect, c("ctr", "trt"), c(1, 1))
+#'
+#' # filter for rows with exactly 1 0 value in ctr AND trt samples
+#' filter_zero(df, "==", dplyr::intersect, c("ctr", "trt"), c(1, 1))
+#'
+#' # filter for rows with at least 1 non-0 value
+#' filter_zero(df, "<=", dplyr::union, "ctr|trt", 5)
+#'
+#' # filter for rows with at least 3 0 values
+#' filter_zero(df, ">=", dplyr::union, "ctr|trt", 3)
 #' @export
 filter_zero <- function(data, op, setop, regex, value) {
   # repeat subset_zero for pairs of values in two vectors
@@ -178,15 +207,15 @@ subset_val <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #'
 #' @description This function is used to filter rows based on the sum of
 #' values in different groups of columns. The column groups are defined by a
-#' regex matching their names. This provides more granular control over what
-#' is filtered out compared to filtering based on ratios alone.
+#' regular expression matching their names. This provides more granular control
+#'  over what is filtered out compared to filtering based on ratios alone.
 #'
 #' The function can be explained as follows:
 #' ```
 #' filter_val(
 #'   data,
 #'   op = "<=",
-#'   setop = intersect,
+#'   setop = dplyr::intersect,
 #'   regex = c("sample_A", "sample_B"),
 #'   value = c(100, 50)
 #' )
@@ -202,8 +231,8 @@ subset_val <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #' @param op `string`. Defines the operation used for the filtering. Should be
 #' one of `"=="`, `"<="`, `">="`, or `"!="`.
 #' @param setop The function used for combining the results for the different
-#' column groups. Should be one of `union` (equivalent to "OR"), `intersect`
-#' (equivalent to "AND"), or `setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
+#' column groups. Should be one of `dplyr::union` (equivalent to "OR"), `dplyr::intersect`
+#' (equivalent to "AND"), or `dplyr::setdiff` (equivalent to "SYMMETRIC DIFFERENCE").
 #' @param regex `character vector` of length n. The regular expression(s) used
 #' to define the column groups. The length of the vector indicates the number
 #' of column groups to use.
@@ -213,7 +242,32 @@ subset_val <- function(data, op = c("==", "<=", ">=", "!="), regex, value) {
 #'
 #' @return Returns a filtered object of the same class as `data`.
 #' @examples
-#' #
+#' library(magrittr)
+#'
+#' # set a seed for reproducibility
+#' set.seed(123)
+#'
+#' # make a data.frame with fake protein/peptide abundance data
+#' df <- cbind(replicate(3, runif(7, 13, 24)),
+#'             replicate(3, runif(7, 24, 30))) %>%
+#'  as.data.frame() %>%
+#'  `colnames<-`(c(paste0("ctr", 1:3), paste0("trt", 1:3)))
+#'
+#' # add in some low values
+#' mapply(function(i, j) {
+#'   df[i, j] <<- 9
+#' }, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
+#'
+#' # filter for rows where the values in the 'ctr' columns add up to at least 28
+#' filter_val(df, ">=", dplyr::union, "ctr", 28)
+#'
+#' # filter for rows where the values in the 'ctr' columns add up to at least 28
+#' # AND the values in the 'trt' columns add up to at least 80
+#' filter_val(df, ">=", dplyr::intersect, c("ctr", "trt"), c(28, 80))
+#'
+#' # filter for rows where the values in the 'ctr' columns add up to exactly 27
+#' # OR the values in the 'trt' columns add up to at exactly 27
+#' filter_val(df, "==", dplyr::union, c("ctr", "trt"), c(27, 27))
 #' @export
 filter_val <- function(data, op, setop, regex, value) {
   # repeat subset_val for pairs of values in two vectors
