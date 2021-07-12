@@ -33,8 +33,8 @@ get_ratio <- function(data, treatment, control, bind = TRUE) {
       missing <- sum(is.na(x))
 
       if (missing == 1) {
-        if (is.na(x[1])) missing <- sprintf("%s Missing", names(x[1]))
-        else if (is.na(x[2])) missing <- sprintf("%s Missing", names(x[2]))
+        if (is.na(x[1])) missing <- sprintf("%s missing", names(x[1]))
+        else if (is.na(x[2])) missing <- sprintf("%s missing", names(x[2]))
       } else if (missing == 0) {
         missing <- "Neither missing"
       } else if (missing == 2) {
