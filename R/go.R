@@ -266,18 +266,20 @@ get_ancestor_go <- function(go_df, feature_col = "UNIPROTKB", go_col = "GO.ID",
 get_enriched_go <- function(pwf, gene2cat = NULL, ...,
                             shorten_term = TRUE, shorten_lims = c(1L, 30L)) {
   if(!is.null(gene2cat)) {
-    out <- goseq::goseq(pwf, gene2cat, ...)
+    message(sprintf("Number of DE genes input: %i", sum(pwf$DEgenes)))
+    out <- goseq::goseq(pwf = pwf, gene2cat = gene2cat, ...)
   } else {
-    message('gene2cat not provided. Defaulting to genome = "hg" and id = "ensGene')
+    message(sprintf("Number of DE genes input: %i", sum(pwf$DEgenes)))
+    message('gene2cat not provided. Defaulting to genome = "hg" and id = "ensGene"')
     out <- goseq::goseq(pwf, genome = "hg19", id = "ensGene", ...)
   }
 
-  out$over_represented_adj_pval <- p.adjust(out$over_represented_pvalue, method = "BH")
-  out$under_represented_adj_pval <- p.adjust(out$under_represented_pvalue, method = "BH")
+  out$over_represented_adj_pval <- stats::p.adjust(out$over_represented_pvalue, method = "BH")
+  out$under_represented_adj_pval <- stats::p.adjust(out$under_represented_pvalue, method = "BH")
   if (shorten_term) {
     out$term_short <- substr(out$term, start = shorten_lims[1], stop = shorten_lims[2])
   }
-  out
+  filter(out, .data$numDEInCat > 0)
 }
 
 #' Estimate effect size of GO over-representation
@@ -318,22 +320,30 @@ estimate_go_overrep <- function(obj, pwf, gene2cat) {
   n_de_genes <- sum(pwf$DEgenes)
   n_genes <- length(pwf$DEgenes)
 
-  obj$adj_overrep <- apply(
-    obj[,c("numDEInCat", "numInCat", "category")],
-    MARGIN=1,
-    function(x) {
-      term_features <- gene2cat[gene2cat[, 1] %in% x[["category"]], 2]
+  gene2cat_subset <- gene2cat[gene2cat[, 2] %in% obj$category, 1:2]
 
-      term_weight <- mean(pwf[rownames(pwf) %in% term_features, "pwf"])
-      non_term_weight <- mean(pwf[!rownames(pwf) %in% term_features, "pwf"])
-
-      as.numeric(x[["numDEInCat"]]) / as.numeric(x[["numInCat"]]) /
-        (term_weight / non_term_weight) / (n_de_genes / n_genes)
-    }
-
+  # filter gene2cat for GO terms present in obj, then output a named list of
+  # vectors where the name is a GO term and the element is a vector of gene ids
+  gene2cat_long <- with(
+    gene2cat_subset,
+    split(gene2cat_subset[, 1], gene2cat_subset[, 2])
   )
 
-  obj
+  # sort obj in order of GO term i.e. GO:0000002 first
+  obj_sorted <- obj[match(names(gene2cat_long), obj$category), ]
+
+  # calculate overrepresentation score
+  out <- vector(mode = "numeric", length = nrow(obj))
+  for (i in seq_len(nrow(obj_sorted))) {
+    out[i] <- as.numeric(obj_sorted[i, "numDEInCat"]) /
+      as.numeric(obj_sorted[i, "numInCat"]) /
+      (mean(pwf[rownames(pwf) %in% gene2cat_long[[i]], "pwf"]) / # term weight
+         mean(pwf[!rownames(pwf) %in% gene2cat_long[[i]], "pwf"])) / # non-term weight
+      (n_de_genes / n_genes)
+  }
+
+  obj_sorted$adj_overrep <- out
+  dplyr::arrange(obj_sorted, .data$over_represented_pvalue)
 }
 
 #' Remove redundant GO terms
@@ -389,9 +399,9 @@ remove_redundant_go <- function(obj) {
       c(go_id)
 
     top_go <- obj %>%
-      dplyr::filter(category %in% go_tree) %>% # subset to terms in go_tree
-      arrange(over_represented_pvalue) %>% # order by ascending p-value
-      pull(category) %>% # pull out category
+      dplyr::filter(.data$category %in% go_tree) %>% # subset to terms in go_tree
+      arrange(.data$over_represented_pvalue) %>% # order by ascending p-value
+      pull(.data$category) %>% # pull out category
       head(1) # keep the top GO term
 
     # remove all offspring and ancestor terms within go_tree for the top GO term
@@ -403,7 +413,7 @@ remove_redundant_go <- function(obj) {
   }
 
   out <- obj %>%
-    filter(category %in% retained) # keep only 'retained' terms
+    filter(.data$category %in% retained) # keep only 'retained' terms
 
   out
 }
