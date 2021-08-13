@@ -265,6 +265,7 @@ get_ancestor_go <- function(go_df, feature_col = "UNIPROTKB", go_col = "GO.ID",
 #' @export
 get_enriched_go <- function(pwf, gene2cat = NULL, ...,
                             shorten_term = TRUE, shorten_lims = c(1L, 30L)) {
+  # perform GO term enrichment with or without gene2cat
   if(!is.null(gene2cat)) {
     message(sprintf("Number of DE genes input: %i", sum(pwf$DEgenes)))
     out <- goseq::goseq(pwf = pwf, gene2cat = gene2cat, ...)
@@ -274,11 +275,16 @@ get_enriched_go <- function(pwf, gene2cat = NULL, ...,
     out <- goseq::goseq(pwf, genome = "hg19", id = "ensGene", ...)
   }
 
+  # adjust p-values
   out$over_represented_adj_pval <- stats::p.adjust(out$over_represented_pvalue, method = "BH")
   out$under_represented_adj_pval <- stats::p.adjust(out$under_represented_pvalue, method = "BH")
+
+  # add column with shortened terms if necessary
   if (shorten_term) {
     out$term_short <- substr(out$term, start = shorten_lims[1], stop = shorten_lims[2])
   }
+
+  # remove GO terms without any genes assigned to them
   filter(out, .data$numDEInCat > 0)
 }
 
@@ -320,6 +326,8 @@ estimate_go_overrep <- function(obj, pwf, gene2cat) {
   n_de_genes <- sum(pwf$DEgenes)
   n_genes <- length(pwf$DEgenes)
 
+  # gene2cat can have variable column names so we rely on column positions
+  # 1 = gene ids e.g. UniProt accessions, 2 = GO terms
   gene2cat_subset <- gene2cat[gene2cat[, 2] %in% obj$category, 1:2]
 
   # filter gene2cat for GO terms present in obj, then output a named list of
@@ -342,6 +350,7 @@ estimate_go_overrep <- function(obj, pwf, gene2cat) {
       (n_de_genes / n_genes)
   }
 
+  # add overrepresentation score to input and sort in increasing p-value
   obj_sorted$adj_overrep <- out
   dplyr::arrange(obj_sorted, .data$over_represented_pvalue)
 }
