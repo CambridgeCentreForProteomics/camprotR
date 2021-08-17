@@ -25,6 +25,7 @@ Imports:
     cutr,
     dplyr,
     ggplot2,
+    goseq,
     GO.db,
     httr,
     MSnbase,
