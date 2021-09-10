@@ -378,6 +378,22 @@ remove_redundant_go <- function(obj) {
   )
   ontologies <- setNames(ontologies$ONTOLOGY, ontologies$GOID)
 
+  if (any(is.na(ontologies))) {
+    # get names of GO terms that failed to be matched
+    bad.terms <- names(ontologies[is.na(ontologies) == TRUE])
+
+    warning(
+      "Warning: the following GO terms failed to match to a primary ontology ",
+      "in GO.db and were removed: ",
+      paste(bad.terms, collapse = ", ")
+    )
+    # remove NA ontologies
+    ontologies <- ontologies[!is.na(ontologies)]
+
+    # remove corresponding GO ids
+    all_observed_go <- all_observed_go[!all_observed_go %in% bad.terms]
+  }
+
   # get ancestor and offspring GO terms of parent GO terms
   offspring <- get_all_mappings(all_observed_go, ontologies, verbose = FALSE, direction = "offspring")
   ancestors <- get_all_mappings(all_observed_go, ontologies, verbose = FALSE, direction = "ancestor")
