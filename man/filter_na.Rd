@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_x.R
 \name{filter_na}
 \alias{filter_na}
-\title{Filter rows based on NA values in column groups}
+\title{Filter rows based on \code{NA} values in column groups}
 \usage{
 filter_na(data, op, setop, regex, value)
 }
@@ -13,14 +13,14 @@ filter_na(data, op, setop, regex, value)
 one of \code{"=="}, \code{"<="}, \code{">="}, or \code{"!="}.}
 
 \item{setop}{The function used for combining the results for the different
-column groups. Should be one of \code{union} (equivalent to "OR"), \code{intersect}
-(equivalent to "AND"), or \code{setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
+column groups. Should be one of \code{dplyr::union} (equivalent to "OR"), \code{dplyr::intersect}
+(equivalent to "AND"), or \code{dplyr::setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
 
 \item{regex}{\verb{character vector} of length n. The regular expression(s) used
 to define the column groups. The length of the vector indicates the number
 of column groups to use.}
 
-\item{value}{\verb{numeric vector} of length n. The number of NA values to check
+\item{value}{\verb{numeric vector} of length n. The number of \code{NA} values to check
 for in the rows of each column group. Must be the same length as the
 \code{regex} vector.}
 }
@@ -28,26 +28,54 @@ for in the rows of each column group. Must be the same length as the
 Returns a filtered object of the same class as \code{data}.
 }
 \description{
-This function is used to filter rows based on number of NA
+This function is used to filter rows based on number of \code{NA}
 values in different groups of columns. The column groups are defined by a
-regex matching their names. This provides more granular control over what
-is filtered out compared to filtering based on ratios alone.
+regular expression matching their names. This provides more granular control
+over what is filtered out compared to filtering based on ratios alone.
 
 The function can be explained as follows:\preformatted{filter_na(
   data,
   op = "<=",
-  setop = intersect,
+  setop = dplyr::intersect,
   regex = c("sample_A", "sample_B"),
   value = c(1, 1)
 )
 }
 
 The above can be translated as: keep rows that have less
-than or equal to 1 NA value in the "sample_A" columns AND the "sample_B"
+than or equal to 1 \code{NA} value in the "sample_A" columns AND the "sample_B"
 columns.
 
 More illustrative examples are below.
 }
 \examples{
-# need to write example
+# set a seed for reproducibility
+set.seed(123)
+
+# make a data.frame with fake protein/peptide abundance data
+df <- as.data.frame(cbind(replicate(3, runif(7, 13, 24)),
+                          replicate(3, runif(7, 24, 30))))
+
+colnames(df) <- c(paste0("ctr", 1:3), paste0("trt", 1:3))
+
+# add in some missing values
+mapply(function(i, j) {
+  df[i, j] <<- NA_real_
+}, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
+
+# filter for rows with <= 1 NA value in ctr OR trt samples
+filter_na(df, "<=", dplyr::union, c("ctr", "trt"), c(1, 1))
+
+# filter for rows with <= 1 NA value in ctr AND trt samples
+filter_na(df, "<=", dplyr::intersect, c("ctr", "trt"), c(1, 1))
+
+# filter for rows with exactly 1 NA value in ctr AND trt samples
+filter_na(df, "==", dplyr::intersect, c("ctr", "trt"), c(1, 1))
+
+# filter for rows with at least 1 non-NA value
+filter_na(df, "<=", dplyr::union, "ctr|trt", 5)
+
+# filter for rows with at least 3 NA values
+filter_na(df, ">=", dplyr::union, "ctr|trt", 3)
+
 }

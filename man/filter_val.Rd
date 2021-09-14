@@ -13,8 +13,8 @@ filter_val(data, op, setop, regex, value)
 one of \code{"=="}, \code{"<="}, \code{">="}, or \code{"!="}.}
 
 \item{setop}{The function used for combining the results for the different
-column groups. Should be one of \code{union} (equivalent to "OR"), \code{intersect}
-(equivalent to "AND"), or \code{setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
+column groups. Should be one of \code{dplyr::union} (equivalent to "OR"), \code{dplyr::intersect}
+(equivalent to "AND"), or \code{dplyr::setdiff} (equivalent to "SYMMETRIC DIFFERENCE").}
 
 \item{regex}{\verb{character vector} of length n. The regular expression(s) used
 to define the column groups. The length of the vector indicates the number
@@ -30,13 +30,13 @@ Returns a filtered object of the same class as \code{data}.
 \description{
 This function is used to filter rows based on the sum of
 values in different groups of columns. The column groups are defined by a
-regex matching their names. This provides more granular control over what
-is filtered out compared to filtering based on ratios alone.
+regular expression matching their names. This provides more granular control
+over what is filtered out compared to filtering based on ratios alone.
 
 The function can be explained as follows:\preformatted{filter_val(
   data,
   op = "<=",
-  setop = intersect,
+  setop = dplyr::intersect,
   regex = c("sample_A", "sample_B"),
   value = c(100, 50)
 )
@@ -49,5 +49,28 @@ to 100 in the "sample_A" columns AND less than or equal to 50 in the
 More illustrative examples are below.
 }
 \examples{
-# need to write example
+# set a seed for reproducibility
+set.seed(123)
+
+# make a data.frame with fake protein/peptide abundance data
+df <- as.data.frame(cbind(replicate(3, runif(7, 13, 24)),
+                          replicate(3, runif(7, 24, 30))))
+
+colnames(df) <- c(paste0("ctr", 1:3), paste0("trt", 1:3))
+
+# add in some low values
+mapply(function(i, j) {
+  df[i, j] <<- 9
+}, c(2:7), list(2, c(2:3), c(3:4), c(2:5), c(2:6), c(1:6)))
+
+# filter for rows where the values in the 'ctr' columns add up to at least 28
+filter_val(df, ">=", dplyr::union, "ctr", 28)
+
+# filter for rows where the values in the 'ctr' columns add up to at least 28
+# AND the values in the 'trt' columns add up to at least 80
+filter_val(df, ">=", dplyr::intersect, c("ctr", "trt"), c(28, 80))
+
+# filter for rows where the values in the 'ctr' columns add up to exactly 27
+# OR the values in the 'trt' columns add up to at exactly 27
+filter_val(df, "==", dplyr::union, c("ctr", "trt"), c(27, 27))
 }
