@@ -49,16 +49,14 @@ columns.
 More illustrative examples are below.
 }
 \examples{
-library(magrittr)
-
 # set a seed for reproducibility
 set.seed(123)
 
 # make a data.frame with fake protein/peptide abundance data
-df <- cbind(replicate(3, runif(7, 13, 24)),
-            replicate(3, runif(7, 24, 30))) \%>\%
- as.data.frame() \%>\%
- `colnames<-`(c(paste0("ctr", 1:3), paste0("trt", 1:3)))
+df <- as.data.frame(cbind(replicate(3, runif(7, 13, 24)),
+                          replicate(3, runif(7, 24, 30))))
+
+colnames(df) <- c(paste0("ctr", 1:3), paste0("trt", 1:3))
 
 # add in some missing values
 mapply(function(i, j) {
