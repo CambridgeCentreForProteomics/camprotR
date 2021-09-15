@@ -79,8 +79,9 @@ str(ls, max.level = 2)
 str(msnset, max.level = 2)
 ```
 
-Each slot in `msnset` is described in detail in section x below. For now we will 
-only concern ourselves with the `assayData`, `featureData`,  and `phenoData` slots. 
+Each slot in `msnset` is described in detail in the **'MSnSet slots'** section 
+below. For now we will only concern ourselves with the `assayData`, 
+`featureData`,  and `phenoData` slots. 
 
 MSnSets contain information about an MS experiment. To better understand MSnSets
 we need to define some terminology.
@@ -172,7 +173,7 @@ or as few columns as you want.
 
 Each **column** of this matrix refers to a particular type of metadata. 
 Each **row** of this matrix corresponds to a **'sample'** which in this case 
-is an iTRAQ tag. Notice that the number of rows in `[phenoData` must be the 
+is an iTRAQ tag. Notice that the number of rows in `phenoData` must be the 
 same as the number of columns in `assayData`.
 
 ## Making an MSnSet
@@ -199,9 +200,10 @@ PSM (all the other columns).
 As before, the single essential part of an MSnSet is the `assayData` slot which
 contains the quantitative data from your experiment. 
 
-In this case, it should contain a numeric matrix with `r nrow(psm_tmt_total)` rows corresponding
-to the `r nrow(psm_tmt_total)` PSMs and `r sum(grepl("Abundance\\.", colnames(psm_tmt_total)))`
-columns corresponding to the `r sum(grepl("Abundance\\.", colnames(psm_tmt_total)))` TMT tags.
+In this case, it should contain a numeric matrix with `r nrow(psm_tmt_total)` 
+rows corresponding to the `r nrow(psm_tmt_total)` PSMs and 
+`r sum(grepl("Abundance\\.", colnames(psm_tmt_total)))` columns corresponding 
+to the `r sum(grepl("Abundance\\.", colnames(psm_tmt_total)))` TMT tags.
 
 First we extract the columns with the quantitative data and convert them to a
 numeric matrix.
@@ -222,22 +224,23 @@ colnames(tmt_exprs) <- gsub('Abundance.', '', colnames(tmt_exprs))
 ```
 
 Lastly, we use the unique `PSMs.Peptide.ID` column to define unique row names. 
-This is important for extracting and combining data down the line.
+This is important for extracting and combining data down the line. Row names
+must be unique!
 
 ```{r}
 # use PSMs.Peptide.ID, which are unique, to define rownames
 rownames(tmt_exprs) <- psm_tmt_total$PSMs.Peptide.ID
 ```
 
-Our quantitive data are now ready.
+Our quantitative data are now ready.
 
 ### featureData
 
 Now we construct a data.frame with metadata for each PSM to go into the 
 `featureData` slot of our MSnSet.
 
-In this case, it should be a data.frame with `r nrow(psm_tmt_total)` rows corresponding
-to the `r nrow(psm_tmt_total)` PSMs and any number of columns.
+In this case, it should be a data.frame with `r nrow(psm_tmt_total)` rows 
+corresponding to the `r nrow(psm_tmt_total)` PSMs and any number of columns.
 
 First we extract the columns with the metadata of interest. Here we want 
 everything but the `Abundance` columns and the unique IDs.
@@ -465,4 +468,3 @@ also a log of what processes have been applied to the MSnSet.
   * _trimmed_
   * _normalised_
   * _MSnbaseVersion_
-
