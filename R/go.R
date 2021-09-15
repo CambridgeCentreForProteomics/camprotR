@@ -271,7 +271,7 @@ get_enriched_go <- function(pwf, gene2cat = NULL, ...,
     out <- goseq::goseq(pwf = pwf, gene2cat = gene2cat, ...)
   } else {
     message(sprintf("Number of DE genes input: %i", sum(pwf$DEgenes)))
-    message('gene2cat not provided. Defaulting to genome = "hg" and id = "ensGene"')
+    message('gene2cat not provided. Defaulting to genome = "hg19" and id = "ensGene"')
     out <- goseq::goseq(pwf, genome = "hg19", id = "ensGene", ...)
   }
 
