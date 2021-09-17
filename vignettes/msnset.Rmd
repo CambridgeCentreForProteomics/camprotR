@@ -30,62 +30,58 @@ library(dplyr)
 > The `MSnSet` class is derived form the `Biobase::eSet` class and mimics the
 `Biobase::ExpressionSet` class classically used for microarray data.
 
-This description is a bit dense and unintelligible to the uninitiated.
+This function description is a bit dense and unintelligible to the uninitiated. 
+Additionally, there is already a 
+[vignette](https://bioconductor.org/packages/release/bioc/vignettes/MSnbase/inst/doc/v02-MSnbase-io.html) 
+in the `MSnbase` package describing MSnSets, but this may be a bit hard to
+understand for beginners.
+
 Here, I will describe an MSnSet in my own words.
 
+> An MSnSet is a special type of list (specifically it is an S4 object) that 
+contains information about an MS experiment. 
 
-MSnSets contain information about an MS experiment. To better understand MSnSets
-we first need to define some terminology.
-
+To better understand MSnSets we first need to define some terminology.
 In a quantitative proteomics experiment we are analysing 'samples' from
-different experimental conditions via MS, e.g. comparing 'samples' from cells treated 
-with a drug versus a control. The quantitative data we eventually
+different experimental conditions via MS, e.g. comparing 'samples' from cells 
+treated with a drug versus a control. The quantitative data we eventually
 obtain consists of measurements of 'features'. In this context, features can be 
 PSMs, peptides, or proteins.
 
-- An MSnSet is a special type of list (specifically it is an S4 object) that 
-describes an MS experiment. 
-- This list contains multiple objects of different types:
-  - The quantitative data ('assay data'; in a `matrix`)
-  - The associated 'feature data' for each row in the quantification data (in a `Biobase::AnnotatedDataFrame`)
-  - Metadata describing the MS experiment ('phenotype Data'; in a `Biobase::AnnotatedDataFrame`)
-- These underlying objects must have a specific structure. For example the sample names in the assay data (columns) must match the sample names in the phenotype data (rownames) and the assay data and feature data must have the same number of rows.
+**MSnSets contain multiple objects of different types:**
+
+- The quantitative data ('assay data'; in a `numeric matrix`)
+- The associated 'feature data' for each row in the quantification data 
+(in a `Biobase::AnnotatedDataFrame`)
+- Metadata describing the MS experiment, for each column in the quantification 
+data ('phenotype Data'; in a `Biobase::AnnotatedDataFrame`)
+  
+**These underlying objects must have a specific structure:**
+
+- The number of _rows_ in `assayData` must match the number of _rows_ in 
+`featureData` and the row names must match exactly.
+- The number of _columns_ in `assayData` must match the number of _rows_ in
+`phenoData` and the column/row names must match exactly.
+
+```{r, echo=FALSE, out.width='60%', fig.cap=msnset_cap}
+msnset_cap <- "Dimension requirements for the assayData (aka. expression data), 
+featureData and phenoData (aka. sample data), slots. Adapted from 
+[this MSnbase vignette](https://www.bioconductor.org/packages/release/bioc/vignettes/MSnbase/inst/doc/v02-MSnbase-io.html)."
+knitr::include_graphics("figures/msnset.png")
+```
 
 Conveniently, the `MSnbase` package comes with some example MSnSets. In this
-section we will explore the `msnset` MSnSet. This data set is from an 
+vignette we will explore the `msnset` MSnSet. This data set is from an 
 iTRAQ 4-plex experiment wherein BSA and Enolase have been spiked into a background
 of _Erwinia_ proteins. See `?msnset` for more information.
 
 ## Exploring an MSnSet
 
-Below we make an example list to compare to an MSnSet.
-
-```{r}
-# make a list which contains 2 data.frames and a list
-ls <- list(
-  "df1" = data.frame(
-    x = letters[1:3],
-    y = 1:3
-  ),
-  "df2" = data.frame(
-    a = rnorm(100),
-    b = rnorm(100)
-  ),
-  "ls1" = list(
-    sample.int(100, 10),
-    sample.int(200, 10)
-  )
-)
-```
-
 My favourite way to have a look at anything in R is to use the `str()` 
-function to explore an objects' structure.
+function to explore an objects' structure. Here we look at `msnset` 
+which is an MSnSet with 9 'slots' that each contain some sort of object.
 
 ```{r}
-# ls is a list of 3 objects
-str(ls, max.level = 2)
-
-# msnset is an MSnSet with 9 'slots' that each contain some sort of object
 str(msnset, max.level = 2)
 ```
 
@@ -148,7 +144,12 @@ or as few columns as you want.
 Each **column** of this matrix refers to a particular type of metadata. 
 Each **row** of this matrix corresponds to a **'feature'** which in this case 
 is a PSM. Thus, the number of rows in `featureData` is the same as
-the number of rows in `assayData`.
+the number of rows in `assayData`. Also note that the row names of
+`featureData` exactly match the row names of `assayData`.
+
+```{r}
+rownames(exprs(msnset)) == rownames(fData(msnset))
+```
 
 ### phenoData
 
@@ -175,7 +176,12 @@ or as few columns as you want.
 Each **column** of this matrix refers to a particular type of metadata. 
 Each **row** of this matrix corresponds to a **'sample'** which in this case 
 is an iTRAQ tag. Thus, the number of rows in `phenoData` is the 
-same as the number of columns in `assayData`.
+same as the number of columns in `assayData`. Also note that the row names of
+`phenoData` exactly match the column names of `assayData`.
+
+```{r}
+colnames(exprs(msnset)) == rownames(pData(msnset))
+```
 
 ## Making an MSnSet
 
@@ -321,8 +327,23 @@ head(pData(tmt_msnset))
 
 ## Extracting results from an MSnSet
 
-The code below shows briefly how to save the data within an MSnSet to a csv
-or Excel spreadsheet.
+The code below shows briefly how to save/export the data within an MSnSet.
+
+Using `write.exprs()` from `MSnbase` is the easiest way. Use the fDataCols
+argument to specify which `featureData` columns to add to the right of the
+quantitative data (specify as column names, column numbers, or a logical vector).
+The other arguments are the same as `write.table()`.
+
+```{r, eval=FALSE}
+MSnbase::write.exprs(
+  tmt_msnset, 
+  file = "results.csv",
+  fDataCols = c("Percolator.q.Value", "Master.Protein.Accessions"),
+  sep = ",", row.names = FALSE, col.names = TRUE
+)
+```
+
+Alternatively you can manually combine the results manually.
 
 ```{r}
 results <- merge(
@@ -332,16 +353,10 @@ results <- merge(
 )
 ```
 
-Use the `writexl` package to save to Excel.
+And then use the `writexl` package to save to Excel.
 
 ```{r, eval=FALSE}
 writexl::write_xlsx(results, path = "results.xlsx")
-```
-
-Or use the `write.csv()` function to save to csv.
-
-```{r, eval=FALSE}
-write.csv(results, file = "results.csv")
 ```
 
 ## MSnSet slots
