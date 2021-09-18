@@ -41,6 +41,44 @@ create_small_psm_tmt_total <- function(df) {
   save(small_psm_tmt_total, file = test_path("testdata/small_psm_tmt_total.rda"))
 }
 
+create_small_pep_silac_p0 <- function(df) {
+  # select only necessary columns
+  small_pep_silac_p0 <- df %>%
+    select(
+      Sequence,
+      Modifications,
+      Master.Protein.Accessions,
+      Protein.Accessions,
+      Number.of.Protein.Groups,
+      Quan.Info,
+      Abundances.Grouped.F1.Light,
+      Abundances.Grouped.F1.Heavy
+    )
+
+  # output .txt file
+  write.table(small_pep_silac_p0, file = test_path("testdata/small_pep_silac_p0.txt"),
+              sep = "\t", row.names = FALSE, col.names = TRUE)
+}
+
+create_small_pep_silac_p4 <- function(df) {
+  # select only necessary columns
+  small_pep_silac_p4 <- df %>%
+    select(
+      Sequence,
+      Modifications,
+      Master.Protein.Accessions,
+      Protein.Accessions,
+      Number.of.Protein.Groups,
+      Quan.Info,
+      Abundances.Grouped.F5.Light,
+      Abundances.Grouped.F5.Heavy
+    )
+
+  # output .txt file
+  write.table(small_pep_silac_p4, file = test_path("testdata/small_pep_silac_p4.txt"),
+              sep = "\t", row.names = FALSE, col.names = TRUE)
+}
+
 #### Functions to setup and cleanup the test environment -----------------------
 
 setup_testenv <- function() {
@@ -52,11 +90,17 @@ setup_testenv <- function() {
               file = test_path("testdata/letters.txt"),
               sep = "\t", row.names = FALSE, col.names = TRUE)
 
-  # create small version of psm_tmt_phospho object for testing purposes
+  # create small MSnSet from psm_tmt_phospho for testing purposes
   create_small_psm_tmt_phospho(df = psm_tmt_phospho)
 
-  # create small version of psm_tmt_total object for testing purposes
+  # create small MSnSet from psm_tmt_total for testing purposes
   create_small_psm_tmt_total(df = psm_tmt_total)
+
+  # create small .txt file from pep_silac_p0 for testing purposes
+  create_small_pep_silac_p0(df = pep_silac_p0)
+
+  # create small .txt file from pep_silac_p4 for testing purposes
+  create_small_pep_silac_p4(df = pep_silac_p4)
 }
 
 cleanup_testenv <- function() {
