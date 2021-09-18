@@ -6,6 +6,9 @@ pepg <- read.delim(
   here::here("data-raw/Molm_13_P4_PeptideGroups.txt")
 )
 
+# Remove extraneous periods from colnames
+colnames(pepg) <- remove_dots(colnames(pepg))
+
 # Set seed for reproducible sampling
 set.seed(2021)
 
@@ -14,4 +17,4 @@ pep_silac_p4 <- pepg %>%
   filter(Master.Protein.Accessions %in% sample(unique(Master.Protein.Accessions), 100))
 
 # Output .rda file
-usethis::use_data(pep_silac_p4)
+usethis::use_data(pep_silac_p4, overwrite = TRUE)
