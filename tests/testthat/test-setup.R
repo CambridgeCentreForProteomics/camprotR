@@ -7,4 +7,10 @@ test_that("self cleaning test infrastructure works", {
 
   load(test_path("testdata/small_psm_tmt_total.rda"))
   expect_equal(dim(small_psm_tmt_total), c(100, 10))
+
+  small_pep_silac_p0 <- read.delim(test_path("testdata/small_pep_silac_p0.txt"))
+  expect_equal(dim(small_pep_silac_p0), c(418, 8))
+
+  small_pep_silac_p4 <- read.delim(test_path("testdata/small_pep_silac_p4.txt"))
+  expect_equal(dim(small_pep_silac_p4), c(470, 8))
 })
