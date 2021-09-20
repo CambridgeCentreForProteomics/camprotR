@@ -137,7 +137,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt;   ..@ experimentData   :Formal class 'MIAPE' [package "MSnbase"] with 30 slots</span>
 <span class="co">#&gt;   ..@ processingData   :Formal class 'MSnProcess' [package "MSnbase"] with 10 slots</span>
 <span class="co">#&gt;   ..@ qual             :'data.frame':    220 obs. of  7 variables:</span>
-<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x55c211a5ff38&gt; </span>
+<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x55b9e405cd78&gt; </span>
 <span class="co">#&gt;   ..@ phenoData        :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ featureData      :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ annotation       : chr "No annotation"</span>
@@ -148,9 +148,9 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <h3 class="hasAnchor">
 <a href="#assaydata" class="anchor"></a>assayData</h3>
 <p>The <code>assayData</code> slot contains the quantitative data from the experiment, i.e. how much of each feature (spectra/PSM, peptide, or protein) was detected in each sample. <strong>This is the essential part of an MSnSet.</strong> All other slots are optional.</p>
-<p>We can extract this information from the MSnSet into a numeric matrix with the <code>exprs()</code> function.</p>
+<p>We can extract this information from the MSnSet into a numeric matrix with the <code><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs()</a></code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">msnset_exprs</span> <span class="op">&lt;-</span> <span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">msnset_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
 <p>Lets look at its structure.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">msnset_exprs</span><span class="op">)</span>
@@ -190,7 +190,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>It is a 55 by 4 data.frame. The data it contains is metadata about each ‘feature,’ which are PSMs in this case. The type of metadata included is entirely arbitrary and there can be as many or as few columns as you want.</p>
 <p>Each <strong>column</strong> of this matrix refers to a particular type of metadata. Each <strong>row</strong> of this matrix corresponds to a <strong>‘feature’</strong> which in this case is a PSM. Thus, the number of rows in <code>featureData</code> is the same as the number of rows in <code>assayData</code>. Also note that the row names of <code>featureData</code> exactly match the row names of <code>assayData</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
 <span class="co">#&gt; [16] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
 <span class="co">#&gt; [31] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
@@ -212,7 +212,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>It is a 55 by 4 data.frame. The data it contains is metadata about each ‘sample,’ which are iTRAQ tags in this case. The type of metadata included is entirely arbitrary and there can be as many or as few columns as you want.</p>
 <p>Each <strong>column</strong> of this matrix refers to a particular type of metadata. Each <strong>row</strong> of this matrix corresponds to a <strong>‘sample’</strong> which in this case is an iTRAQ tag. Thus, the number of rows in <code>phenoData</code> is the same as the number of columns in <code>assayData</code>. Also note that the row names of <code>phenoData</code> exactly match the column names of <code>assayData</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></code></pre></div>
 </div>
 </div>
@@ -347,7 +347,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt;   ..@ processingData   :Formal class 'MSnProcess' [package "MSnbase"] with 10 slots</span>
 <span class="co">#&gt;   ..@ qual             :'data.frame':    0 obs. of  0 variables</span>
 <span class="co">#&gt; Formal class 'data.frame' [package "methods"] with 4 slots</span>
-<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x55c211c690b0&gt; </span>
+<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x55b9e42647f8&gt; </span>
 <span class="co">#&gt;   ..@ phenoData        :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ featureData      :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ annotation       : chr(0) </span>
@@ -356,7 +356,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>As before we can access the different slots as follows.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># access the quantitative data</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;           126  127N  127C  128N  128C  129N  129C  130N  130C   131</span>
 <span class="co">#&gt; 2151442 465.7 341.9 156.6   8.3  10.4  12.4  11.0  12.2  17.2  11.4</span>
 <span class="co">#&gt; 2803862  96.8  82.2  92.3  81.8  50.7  26.9  25.3  18.2  11.0  72.3</span>
@@ -471,7 +471,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>Alternatively you can manually combine the results manually.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span>
-  <span class="fu">exprs</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM quantitative data</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM quantitative data</span>
   <span class="fu">fData</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM metadata</span>
   by <span class="op">=</span> <span class="fl">0</span> <span class="co"># join by rownames</span>
 <span class="op">)</span></code></pre></div>
@@ -488,7 +488,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <a href="#assaydata-2" class="anchor"></a>assayData</h3>
 <p>Contains the quantitative data from the experiment, i.e. how much of each feature (e.g. PSM, peptide, protein) was detected in each sample. This is the essential part of an MSnSet.</p>
 <ul>
-<li>Access with <code>exprs(MSnSet)</code>
+<li>Access with <code><a href="https://ggplot2.tidyverse.org/reference/tidyeval.html">exprs(MSnSet)</a></code>
 </li>
 <li>Object = a matrix of expression values, access the dimensions with <code><a href="https://lgatto.github.io/MSnbase/reference/pSet-class.html">dim(MSnSet)</a></code>
 <ul>

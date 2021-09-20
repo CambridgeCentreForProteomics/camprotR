@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summarise the number of sub-notch PSM intensities per protein — get_notch_per_protein • camprotR</title>
+<title>GO term enrichment using goseq — get_enriched_go • camprotR</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,14 @@
 
 
 
-<meta property="og:title" content="Summarise the number of sub-notch PSM intensities per protein — get_notch_per_protein" />
-<meta property="og:description" content="The distribution of TMT intensities obtained by Orbitrap has
-been observed to have a 'notch' where few values are observed. This function
-summarises the number of sub-notch values observed per protein" />
+<meta property="og:title" content="GO term enrichment using goseq — get_enriched_go" />
+<meta property="og:description" content="A wrapper function around goseq to perform
+GO term enrichment analysis. See the goseq documentation
+for details. pwf can be made using nullp.
+Over/underrepresented p-values are automatically
+adjusted using method = &quot;BH&quot;. If gene2cat is not provided then this
+function will default to using the Homo sapiens genome hg19 and will
+expect Ensembl gene IDs to have been used to construct the pwf input." />
 
 
 
@@ -123,43 +127,65 @@ summarises the number of sub-notch values observed per protein" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summarise the number of sub-notch PSM intensities per protein</h1>
+    <h1>GO term enrichment using goseq</h1>
     
-    <div class="hidden name"><code>get_notch_per_protein.Rd</code></div>
+    <div class="hidden name"><code>get_enriched_go.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The distribution of TMT intensities obtained by Orbitrap has
-been observed to have a 'notch' where few values are observed. This function
-summarises the number of sub-notch values observed per protein</p>
+    <p>A wrapper function around <code><a href='https://rdrr.io/pkg/goseq/man/goseq.html'>goseq</a></code> to perform
+GO term enrichment analysis. See the <code><a href='https://rdrr.io/pkg/goseq/man/goseq.html'>goseq</a></code> documentation
+for details. <code>pwf</code> can be made using <code><a href='https://rdrr.io/pkg/goseq/man/nullp.html'>nullp</a></code>.</p>
+<p>Over/underrepresented p-values are automatically
+adjusted using <code>method = "BH"</code>. If <code>gene2cat</code> is not provided then this
+function will default to using the Homo sapiens genome <code>hg19</code> and will
+expect Ensembl gene IDs to have been used to construct the <code>pwf</code> input.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_notch_per_protein</span><span class='op'>(</span>
-  <span class='va'>obj</span>,
-  master_prot_col <span class='op'>=</span> <span class='st'>"Master.Protein.Accessions"</span>,
-  notch_upper <span class='op'>=</span> <span class='fl'>5.75</span>
+    <pre class="usage"><span class='fu'>get_enriched_go</span><span class='op'>(</span>
+  <span class='va'>pwf</span>,
+  gene2cat <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>,
+  shorten_term <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  shorten_lims <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>, <span class='fl'>30L</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>obj</th>
-      <td><p><code>MSnSet</code> containing PSM-level TMT intensities.</p></td>
+      <th>pwf</th>
+      <td><p><code>data.frame</code> with 3 columns (<code>DEgenes</code> = logical,
+<code>bias.data</code> = numeric/integer, <code>pwf</code> = numeric) and row names (usually UniProt
+accessions, Ensembl gene IDs or similar).
+Typically constructed using <code><a href='https://rdrr.io/pkg/goseq/man/nullp.html'>nullp</a></code>.</p></td>
     </tr>
     <tr>
-      <th>master_prot_col</th>
-      <td><p><code>character</code>. Column name for master proteins.</p></td>
+      <th>gene2cat</th>
+      <td><p><code>data.frame</code> with 2 columns containing the mapping between
+genes (usually UniProt accessions, Ensembl gene IDs or similar) and GO terms.
+Alternatively, a <code>named list</code> where the names are genes and each entry is
+a <code>character vector</code> of GO terms.</p></td>
     </tr>
     <tr>
-      <th>notch_upper</th>
-      <td><p><code>numeric</code>. Upper boundary of notch.</p></td>
+      <th>...</th>
+      <td><p>Other arguments to be passed to <code><a href='https://rdrr.io/pkg/goseq/man/goseq.html'>goseq</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>shorten_term</th>
+      <td><p><code>logical</code>. Should an extra column with a substring of
+the output GO terms be added to the output data.frame? Default is <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>shorten_lims</th>
+      <td><p><code>integer vector</code> of length 2. The start and stop
+coordinates of the substring.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>data.frame</code> Summarises # PSMs above/below notch for each protein</p>
+    <p>Returns a <code>data.frame</code> of over/underrepresented GO terms.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

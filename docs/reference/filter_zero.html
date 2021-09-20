@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Filter rows based on zero values in column groups — filter_zero • camprotR</title>
+<title>Filter rows based on 0 values in column groups — filter_zero • camprotR</title>
 
 
 <!-- jquery -->
@@ -39,15 +39,15 @@
 
 
 
-<meta property="og:title" content="Filter rows based on zero values in column groups — filter_zero" />
-<meta property="og:description" content="This function is used to filter rows based on number of zero
+<meta property="og:title" content="Filter rows based on 0 values in column groups — filter_zero" />
+<meta property="og:description" content="This function is used to filter rows based on number of 0
 values in different groups of columns. The column groups are defined by a
-regex matching their names. This provides more granular control over what
-is filtered out compared to filtering based on ratios alone.
+regular expression matching their names. This provides more granular control
+over what is filtered out compared to filtering based on ratios alone.
 The function can be explained as follows:filter_zero(
   data,
   op = &quot;&amp;lt;=&quot;,
-  setop = intersect,
+  setop = dplyr::intersect,
   regex = c(&quot;sample_A&quot;, &quot;sample_B&quot;),
   value = c(1, 1)
 )
@@ -116,6 +116,9 @@ More illustrative examples are below." />
     <li>
       <a href="../articles/crap.html">cRAP databases</a>
     </li>
+    <li>
+      <a href="../articles/msnset.html">Working with MSnSets</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -134,20 +137,20 @@ More illustrative examples are below." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Filter rows based on zero values in column groups</h1>
+    <h1>Filter rows based on <code>0</code> values in column groups</h1>
     
     <div class="hidden name"><code>filter_zero.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function is used to filter rows based on number of zero
+    <p>This function is used to filter rows based on number of <code>0</code>
 values in different groups of columns. The column groups are defined by a
-regex matching their names. This provides more granular control over what
-is filtered out compared to filtering based on ratios alone.</p>
+regular expression matching their names. This provides more granular control
+over what is filtered out compared to filtering based on ratios alone.</p>
 <p>The function can be explained as follows:</p><pre><span class='fu'>filter_zero</span><span class='op'>(</span>
   <span class='va'>data</span>,
   op <span class='op'>=</span> <span class='st'>"&lt;="</span>,
-  setop <span class='op'>=</span> <span class='va'>intersect</span>,
+  setop <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>intersect</a></span>,
   regex <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sample_A"</span>, <span class='st'>"sample_B"</span><span class='op'>)</span>,
   value <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='op'>)</span>
@@ -176,8 +179,8 @@ one of <code>"=="</code>, <code>"&lt;="</code>, <code>"&gt;="</code>, or <code>"
     <tr>
       <th>setop</th>
       <td><p>The function used for combining the results for the different
-column groups. Should be one of <code>union</code> (equivalent to "OR"), <code>intersect</code>
-(equivalent to "AND"), or <code>setdiff</code> (equivalent to "SYMMETRIC DIFFERENCE").</p></td>
+column groups. Should be one of <code><a href='https://rdrr.io/pkg/generics/man/setops.html'>dplyr::union</a></code> (equivalent to "OR"), <code><a href='https://rdrr.io/pkg/generics/man/setops.html'>dplyr::intersect</a></code>
+(equivalent to "AND"), or <code><a href='https://rdrr.io/pkg/generics/man/setops.html'>dplyr::setdiff</a></code> (equivalent to "SYMMETRIC DIFFERENCE").</p></td>
     </tr>
     <tr>
       <th>regex</th>
@@ -187,7 +190,7 @@ of column groups to use.</p></td>
     </tr>
     <tr>
       <th>value</th>
-      <td><p><code>numeric vector</code> of length n. The number of zero values to check
+      <td><p><code>numeric vector</code> of length n. The number of <code>0</code> values to check
 for in the rows of each column group. Must be the same length as the
 <code>regex</code> vector.</p></td>
     </tr>
@@ -198,8 +201,52 @@ for in the rows of each column group. Must be the same length as the
     <p>Returns a filtered object of the same class as <code>data</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># need to write example</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># set a seed for reproducibility</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span>
+
+<span class='co'># make a data.frame with fake protein/peptide abundance data</span>
+<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>7</span>, <span class='fl'>13</span>, <span class='fl'>24</span><span class='op'>)</span><span class='op'>)</span>,
+                          <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>7</span>, <span class='fl'>24</span>, <span class='fl'>30</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ctr"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"trt"</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># add in some 0 values</span>
+<span class='fu'><a href='https://rdrr.io/r/base/mapply.html'>mapply</a></span><span class='op'>(</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span>, <span class='va'>j</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>df</span><span class='op'>[</span><span class='va'>i</span>, <span class='va'>j</span><span class='op'>]</span> <span class='op'>&lt;&lt;-</span> <span class='fl'>0</span>
+<span class='op'>}</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>7</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0 0 0 0 0 0</div><div class='input'>
+<span class='co'># filter for rows with &lt;= 1 0 value in ctr OR trt samples</span>
+<span class='fu'>filter_zero</span><span class='op'>(</span><span class='va'>df</span>, <span class='st'>"&lt;="</span>, <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>union</a></span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ctr"</span>, <span class='st'>"trt"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       ctr1     ctr2     ctr3     trt1     trt2     trt3
+#&gt; 1 16.16335 22.81661 14.13217 28.15682 25.73496 26.86678
+#&gt; 2 21.67136  0.00000 22.89807 27.84304 24.88268 28.55076
+#&gt; 3 22.71319 23.52517  0.00000  0.00000 29.41379 25.90909
+#&gt; 4 17.49875  0.00000  0.00000 29.96562 29.77815 25.29845</div><div class='input'>
+<span class='co'># filter for rows with &lt;= 1 0 value in ctr AND trt samples</span>
+<span class='fu'>filter_zero</span><span class='op'>(</span><span class='va'>df</span>, <span class='st'>"&lt;="</span>, <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>intersect</a></span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ctr"</span>, <span class='st'>"trt"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       ctr1     ctr2     ctr3     trt1     trt2     trt3
+#&gt; 1 16.16335 22.81661 14.13217 28.15682 25.73496 26.86678
+#&gt; 2 21.67136  0.00000 22.89807 27.84304 24.88268 28.55076
+#&gt; 3 22.71319 23.52517  0.00000  0.00000 29.41379 25.90909</div><div class='input'>
+<span class='co'># filter for rows with exactly 1 0 value in ctr AND trt samples</span>
+<span class='fu'>filter_zero</span><span class='op'>(</span><span class='va'>df</span>, <span class='st'>"=="</span>, <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>intersect</a></span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ctr"</span>, <span class='st'>"trt"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       ctr1     ctr2 ctr3 trt1     trt2     trt3
+#&gt; 1 22.71319 23.52517    0    0 29.41379 25.90909</div><div class='input'>
+<span class='co'># filter for rows with at least 1 non-0 value</span>
+<span class='fu'>filter_zero</span><span class='op'>(</span><span class='va'>df</span>, <span class='st'>"&lt;="</span>, <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>union</a></span>, <span class='st'>"ctr|trt"</span>, <span class='fl'>5</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       ctr1     ctr2     ctr3     trt1     trt2     trt3
+#&gt; 1 16.16335 22.81661 14.13217 28.15682 25.73496 26.86678
+#&gt; 2 21.67136  0.00000 22.89807 27.84304 24.88268 28.55076
+#&gt; 3 17.49875  0.00000  0.00000 29.96562 29.77815 25.29845
+#&gt; 4 22.71319 23.52517  0.00000  0.00000 29.41379 25.90909
+#&gt; 5 23.34514  0.00000  0.00000  0.00000  0.00000 25.38975
+#&gt; 6 13.50112  0.00000  0.00000  0.00000  0.00000  0.00000</div><div class='input'>
+<span class='co'># filter for rows with at least 3 0 values</span>
+<span class='fu'>filter_zero</span><span class='op'>(</span><span class='va'>df</span>, <span class='st'>"&gt;="</span>, <span class='fu'>dplyr</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/generics/man/setops.html'>union</a></span>, <span class='st'>"ctr|trt"</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       ctr1 ctr2 ctr3 trt1 trt2     trt3
+#&gt; 5 23.34514    0    0    0    0 25.38975
+#&gt; 6 13.50112    0    0    0    0  0.00000
+#&gt; 7  0.00000    0    0    0    0  0.00000</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
