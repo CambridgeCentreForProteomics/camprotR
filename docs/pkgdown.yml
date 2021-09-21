@@ -1,9 +1,0 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1
-pkgdown_sha: ~
-articles:
-  TMT_PSM_QC_Summarisation: TMT_PSM_QC_Summarisation.html
-  crap: crap.html
-  msnset: msnset.html
-last_built: 2021-09-20T15:30Z
-
