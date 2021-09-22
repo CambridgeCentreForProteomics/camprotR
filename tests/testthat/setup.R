@@ -79,6 +79,22 @@ create_small_pep_silac_p4 <- function(df) {
               sep = "\t", row.names = FALSE, col.names = TRUE)
 }
 
+create_small_psm_silac_p4 <- function(df) {
+  # select only necessary columns
+  small_psm_silac_p4 <- df %>%
+    select(
+      Annotated.Sequence,
+      Modifications,
+      Isolation.Interference.in.Percent,
+      Quan.Channel,
+      Precursor.Abundance
+    )
+
+  # output .txt file
+  write.table(small_psm_silac_p4, file = test_path("testdata/small_psm_silac_p4.txt"),
+              sep = "\t", row.names = FALSE, col.names = TRUE)
+}
+
 #### Functions to setup and cleanup the test environment -----------------------
 
 setup_testenv <- function() {
@@ -101,6 +117,9 @@ setup_testenv <- function() {
 
   # create small .txt file from pep_silac_p4 for testing purposes
   create_small_pep_silac_p4(df = pep_silac_p4)
+
+  # create small .txt file from psm_silac_p4 for testing purposes
+  create_small_psm_silac_p4(df = psm_silac_p4)
 }
 
 cleanup_testenv <- function() {
