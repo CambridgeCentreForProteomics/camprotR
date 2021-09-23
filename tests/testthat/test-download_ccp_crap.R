@@ -22,6 +22,6 @@ test_that("download_ccp_crap() works", {
     # Use expect_snapshot_output(str()) rather than expect_snapshot_file(), which
     # should hopefully be more robust to small changes in UniProt headers or
     # sequences that can occur over time.
-    expect_snapshot_output(str(target))
+    expect_snapshot_output(str(target@ranges))
   })
 })
