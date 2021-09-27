@@ -8,7 +8,7 @@
 get_ccp_crap <- function() {
   # load ccp crap and extract accessions
   input <- Biostrings::readAAStringSet(
-    filepath = system.file("extdata", "cRAP_20190401.fasta", package = "camprotR")
+    filepath = system.file("extdata", "cRAP_20190401.fasta.gz", package = "camprotR")
   ) %>%
     names()
 
