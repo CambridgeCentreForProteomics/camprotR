@@ -9,7 +9,10 @@ test_that("sub_crap() works", {
 })
 
 test_that("download_ccp_crap() works", {
+  # create self cleaning tempfile
   withr::with_tempfile("tf", {
+
+    # download CCP cRAP fasta sequences from UniProt
     download_ccp_crap(
       file = tf,
       is_crap = TRUE,
@@ -17,11 +20,14 @@ test_that("download_ccp_crap() works", {
       verbose = TRUE
     )
 
+    # load fasta into memory
     target <- Biostrings::readAAStringSet(filepath = tf)
 
     # Use expect_snapshot_output(str()) rather than expect_snapshot_file(), which
     # should hopefully be more robust to small changes in UniProt headers or
     # sequences that can occur over time.
+
+    # compare just downloaded cRAP to snapshot
     expect_snapshot_output(str(target@ranges))
   })
 })
