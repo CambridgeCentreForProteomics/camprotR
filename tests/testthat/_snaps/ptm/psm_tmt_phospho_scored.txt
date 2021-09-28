@@ -1,0 +1,2 @@
+"Abundance.126"	"Abundance.127N"	"Abundance.127C"	"Abundance.128N"	"Abundance.128C"	"Abundance.129N"	"Abundance.129C"	"Abundance.130N"	"Abundance.130C"	"Abundance.131"	"Master.Protein.Accessions"	"PhosphoRS.Best.Site.Probabilities"	"Sequence"	"filtered_PTM_desc"	"filtered_res"	"filtered_pos"	"filtered_ptm"	"filtered_score"	"ptm_position"
+36	269.9	104.5	156	1341.1	114.8	211.8	368.1	484.9	28.7	"cRAP013"	"S10(Phospho): 100"	"VPQLEIVPNSAEER"	"S10(Phospho);100"	"S"	"10"	"Phospho"	"100"	"130"

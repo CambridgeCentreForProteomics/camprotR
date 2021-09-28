@@ -12,7 +12,9 @@ create_small_psm_tmt_phospho <- function(df) {
   e_data <- as.matrix(df_filt[, abundance_cols])
 
   # extract feature data that we want (i.e. metadata about each PSM)
-  f_data <- df_filt[, c("Master.Protein.Accessions"), drop = FALSE]
+  f_data <- df_filt[, c("Master.Protein.Accessions",
+                        "PhosphoRS.Best.Site.Probabilities",
+                        "Sequence"), drop = FALSE]
 
   # construct MSnSet
   small_psm_tmt_phospho <- MSnbase::MSnSet(exprs = e_data, fData = f_data)
