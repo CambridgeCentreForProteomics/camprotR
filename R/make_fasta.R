@@ -36,10 +36,21 @@ make_fasta <- function(accessions, file, is_crap = FALSE, overwrite = FALSE, ver
   )
 
   # query uniprot and save FASTA to disk
-  response <- httr::GET(
-    url = "https://www.uniprot.org/uploadlists/",
-    query = payload,
-    config = httr::write_disk(path = file, overwrite = overwrite)
+  # security level fix for Ubuntu 20.04
+  # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
+  httr_config <- switch(
+    Sys.info()["sysname"],
+    "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
+    httr::config()
+  )
+
+  response <- httr::with_config(
+    config = httr_config,
+    httr::GET(
+      url = "https://www.uniprot.org/uploadlists/",
+      query = payload,
+      config = httr::write_disk(path = file, overwrite = overwrite)
+    )
   )
 
   # basic http error handling
