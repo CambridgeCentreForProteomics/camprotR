@@ -130,7 +130,20 @@ sub_crap <- function(x, start = 1, width = 3) {
 #' @export
 check_uniprot_release <- function() {
   # query H. sapiens actin
-  response <- httr::GET(url = "https://www.uniprot.org/uniprot/P60709")
+  # security level fix for Ubuntu 20.04
+  # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
+  httr_config <- switch(
+    Sys.info()["sysname"],
+    "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
+    httr::config()
+  )
+
+  response <- httr::with_config(
+    config = httr_config,
+    httr::GET(
+      url = "https://www.uniprot.org/uniprot/P60709"
+    )
+  )
 
   # basic http error handling
   httr::stop_for_status(response, "query UniProt")
