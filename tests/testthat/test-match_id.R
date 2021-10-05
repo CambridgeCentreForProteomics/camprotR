@@ -1,5 +1,3 @@
-context("match_id")
-
 #### Setup ---------------------------------------------------------------------
 
 my_df <- data.frame(
@@ -22,7 +20,7 @@ ref_df <- data.frame(
 
 #### Tests ---------------------------------------------------------------------
 
-test_that("match_id defaults work", {
+test_that("match_id() defaults work", {
   my_df3 <- match_id(my_df, accession, ref_df, "entry", "gene.name")
 
   expect_equal(
@@ -30,7 +28,7 @@ test_that("match_id defaults work", {
   )
 })
 
-test_that("match_id can add multiple columns", {
+test_that("match_id() can add multiple columns", {
   my_df3 <- match_id(my_df, accession, ref_df, "entry", c("gene.name", "protein.name"))
 
   expect_equal(
@@ -42,7 +40,7 @@ test_that("match_id can add multiple columns", {
   )
 })
 
-test_that("match_id alternative regex and type coercion warning works", {
+test_that("match_id() alternative regex and type coercion warning works", {
   expect_warning(
     my_df3 <- match_id(my_df, accession, my_df2, "accession", "sample4", regex = ".*")
   )
@@ -51,9 +49,7 @@ test_that("match_id alternative regex and type coercion warning works", {
   )
 })
 
-test_that("match_id_ simplify argument outputs character", {
+test_that("match_id_() simplify argument outputs character", {
   expect_type(match_id_(my_df$accession, ref_df, "entry", "gene.name", simplify = TRUE),
               "character")
 })
-
-#### Sanity checks -------------------------------------------------------------

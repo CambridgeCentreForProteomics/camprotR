@@ -21,7 +21,7 @@ get_parsimony_pep2prot(
 
 \item{master_prot_col}{\code{string} Column name for master protein(s)}
 
-\item{compare_old_new}{\code{Logical} Compare the consensus master protein
+\item{compare_old_new}{\code{logical} Compare the consensus master protein
 assignments with the original assignments}
 }
 \value{
@@ -32,4 +32,20 @@ consensus master protein ID(s)
 Wrapper function to read in infiles,
 identify the parsimonious proteins to account for the peptides and
 then (optionally) compare the new and old master protein assignments
+}
+\examples{
+\dontrun{
+# The input in this example is 2x peptideGroups.txt outputs from Proteome
+# Discoverer. Both files must have the columns (cols) specified. This may require
+# re-exporting the peptideGroups.txt file from PD as the "Protein.Accessions"
+# column is often not there by default.
+get_parsimony_pep2prot(
+  list("peptideGroups1.txt", "peptideGroups2.txt"),
+  seq_col = "Sequence",
+  prot_col = "Protein.Accessions",
+  master_prot_col = "Master.Protein.Accessions",
+  compare_old_new = TRUE
+)
+
+}
 }

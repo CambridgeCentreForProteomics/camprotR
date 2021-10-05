@@ -50,7 +50,7 @@ psm_data <- psm_tmt_total
 The first step is to remove contaminant proteins. These were defined using the cRAP database (REF). Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
 ```{r}
 crap_fasta_inf <- system.file(
-  "extdata", "cRAP_FullIdentifiers.fasta.gz", 
+  "extdata", "cRAP_20190401.fasta.gz", 
   package = "camprotR"
 )
 

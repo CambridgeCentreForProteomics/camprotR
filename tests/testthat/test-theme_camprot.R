@@ -1,27 +1,34 @@
-context('theme_camprot')
+test_that("theme_camprot() works", {
+  p <- ggplot(data.frame(x = c(1:10), y = c(1:10)), aes(x = x, y = y)) +
+    geom_point()
 
-#### Setup ---------------------------------------------------------------------
-p <- ggplot(data.frame('x'=1:10, 'y'=1:10), aes(x, y)) + geom_point()
+  # test that defaults work
+  vdiffr::expect_doppelganger(
+    "theme-camprot-default",
+    p + theme_camprot()
+  )
 
-#### Tests ---------------------------------------------------------------------
-test_that('default theme', code={
-  expect_equal_to_reference(theme_camprot(), 'reference/theme_camprot.rds')
+  # test that you can change base size
+  vdiffr::expect_doppelganger(
+    "theme-camprot-base-size-10",
+    p + theme_camprot(base_size = 10)
+  )
+
+  # test that you can change the font family
+  vdiffr::expect_doppelganger(
+    "theme-camprot-sans-serif",
+    p + theme_camprot(base_family = "sans")
+  )
+
+  # test that you can turn off square aspect ratio
+  vdiffr::expect_doppelganger(
+    "theme-camprot-not-square",
+    p + theme_camprot(aspect_square = FALSE)
+  )
+
+  # test that you can turn off the border
+  vdiffr::expect_doppelganger(
+    "theme-camprot-no-border",
+    p + theme_camprot(border = FALSE)
+  )
 })
-
-test_that('base_size = 10', code={
-  expect_equal_to_reference(theme_camprot(base_size=10), 'reference/theme_camprot_10.rds')
-})
-
-test_that('sans serif', code={
-  expect_equal_to_reference(theme_camprot(base_family='sans'), 'reference/theme_camprot_sans.rds')
-})
-
-test_that('not square', code={
-  expect_equal_to_reference(theme_camprot(aspect_square=FALSE), 'reference/theme_camprot_not_square.rds')
-})
-
-test_that('no border', code={
-  expect_equal_to_reference(theme_camprot(border=FALSE), 'reference/theme_camprot_no_border.rds')
-})
-
-#### Sanity checks -------------------------------------------------------------

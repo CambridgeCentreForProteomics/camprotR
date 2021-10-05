@@ -1,41 +1,36 @@
-context("qc_plots")
+test_that("plot_quant() works", {
+  # load in test MSnSet
+  load(test_path("testdata/small_psm_tmt_total.rda"))
 
-#### Setup ---------------------------------------------------------------------
-load(system.file("testdata", "small_psm_tmt_total.rda",
-                 package = "camprotR"))
+  # filter out NA
+  target <- MSnbase::filterNA(small_psm_tmt_total)
 
-#### Tests ---------------------------------------------------------------------
-# test_that("plot_quant boxplot works", {
-#   expect_equal_to_reference(
-#     plot_quant(small_psm_tmt_total, method = "box", facet_by_sample = FALSE),
-#     "reference/plot_quant_box.rds"
-#   )
-# })
-#
-# test_that("plot_quant histogram works", {
-#   expect_equal_to_reference(
-#     plot_quant(small_psm_tmt_total, method = "histogram", facet_by_sample = FALSE),
-#     "reference/plot_quant_hist.rds"
-#   )
-# })
-#
-# test_that("plot_quant density works", {
-#   expect_equal_to_reference(
-#     plot_quant(small_psm_tmt_total, method = "density", facet_by_sample = FALSE),
-#     "reference/plot_quant_dens.rds"
-#   )
-# })
-#
-# test_that("plot_quant facet_by_sample works", {
-#   expect_equal_to_reference(
-#     plot_quant(small_psm_tmt_total, method = "density", facet_by_sample = TRUE),
-#     "reference/plot_quant_facet.rds"
-#   )
-# })
+  # boxplot
+  vdiffr::expect_doppelganger(
+    "plot-quant-method-box",
+    plot_quant(target, method = 'box', facet_by_sample = FALSE)
+  )
 
-#### Sanity checks -------------------------------------------------------------
-test_that("plot_quant throws error if method is nonsense", {
+  # histogram
+  vdiffr::expect_doppelganger(
+    "plot-quant-method-histogram",
+    plot_quant(target, method = 'histogram', facet_by_sample = FALSE)
+  )
+
+  # density
+  vdiffr::expect_doppelganger(
+    "plot-quant-method-density",
+    plot_quant(target, method = 'density', facet_by_sample = FALSE)
+  )
+
+  # facet_by_sample
+  vdiffr::expect_doppelganger(
+    "plot-quant-method-density-facet",
+    plot_quant(target, method = 'density', facet_by_sample = TRUE)
+  )
+
+  # error occurs if method is nonsense
   expect_error(
-    plot_quant(small_psm_tmt_total, method = "banana", facet_by_sample = FALSE)
+    plot_quant(target, method = 'banana', facet_by_sample = FALSE)
   )
 })
