@@ -144,12 +144,14 @@ parse_PTM_scores <- function(obj,
 #' to add 'filtered_pos' column
 #'
 #' @param obj `data.frame` with PD output at PSM/peptide level
-#' @param proteome_fasta `character` Filepath for proteome fasta
-#' @param master_protein_col `character` Column name for master protein
+#' @param proteome_fasta `string` Filepath for proteome fasta
+#' @param master_protein_col `string` Name of column containing master protein IDs
+#' @param sequence_col `string`. Name of column containing peptide sequences
 #'
 #' @return `data.frame`
 #' @export
-add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.Protein.Accessions") {
+add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.Protein.Accessions",
+                              sequence_col = "Sequence") {
   proteome <- Biostrings::readAAStringSet(proteome_fasta)
   names(proteome) <- sapply(base::strsplit(names(proteome), split = "\\|"), "[[", 2)
 
@@ -182,7 +184,7 @@ add_PTM_positions <- function(obj, proteome_fasta, master_protein_col = "Master.
   obj$ptm_position <- apply(
     obj,
     MARGIN = 1, function(x) combine_peptide_ptm_positions(
-      proteome, x[[master_protein_col]], x[["Sequence"]], x[["filtered_pos"]]
+      proteome, x[[master_protein_col]], x[[sequence_col]], x[["filtered_pos"]]
     )
   )
 

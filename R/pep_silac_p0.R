@@ -1,0 +1,12 @@
+#' PeptideGroups PD output for SILAC labelled MOLM-13 cells
+#'
+#' @description Passage 0, 100% light (R0K0).
+#'
+#' \describe{
+#'   \item{column name}{`class`. Description.}
+#' }
+#'
+#' @references Insert reference here when published.
+#'
+#' @keywords datasets
+"pep_silac_p0"

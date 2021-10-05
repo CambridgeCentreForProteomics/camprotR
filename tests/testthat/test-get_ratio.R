@@ -1,5 +1,3 @@
-context("get_ratio")
-
 #### Setup ---------------------------------------------------------------------
 
 df <- data.frame(
@@ -9,13 +7,13 @@ df <- data.frame(
 
 #### Tests ---------------------------------------------------------------------
 
-test_that("get_ratio outputs a data.frame by default", {
+test_that("get_ratio() outputs a data.frame by default", {
   df2 <- get_ratio(df, treatment, control)
 
   expect_s3_class(df2, "data.frame")
 })
 
-test_that("get_ratio outputs a named list if bind = FALSE", {
+test_that("get_ratio() outputs a named list if bind = FALSE", {
   df2 <- get_ratio(df, treatment, control, bind = FALSE)
 
   expect_type(df2, "list")

@@ -1,5 +1,3 @@
-context("filter_x")
-
 #### Setup ---------------------------------------------------------------------
 library(dplyr)
 library(tidyr)
@@ -49,7 +47,7 @@ test_that("filter_na with multiple regex works", {
     setop = intersect,
     regex = c("sample[1-2]", "sample[3-4]"),
     value = c(1, 0)
-    )
+  )
 
   expect_equal(nrow(data_na_filt), 5)
 })
@@ -99,5 +97,3 @@ test_that("filter_val with multiple regex works", {
 
   expect_equal(nrow(data_filt), 7)
 })
-
-#### Sanity checks -------------------------------------------------------------
