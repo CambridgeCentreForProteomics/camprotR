@@ -70,3 +70,16 @@ To get around the issue of 'ghost peptides', one can spike in
 Light material (at cell or protein extract-level) to the Heavy material
 being analysed.
 }
+\examples{
+
+\notrun{
+estimate_incorporation(
+  psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
+  peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",
+  crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+  mix = 1,
+  outdir = "Molm_13_incorporation/"
+)
+}
+
+}

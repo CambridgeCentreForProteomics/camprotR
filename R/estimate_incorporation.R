@@ -41,6 +41,19 @@
 #' incorporation, protein-level incorporation) and 1 summary table. If `outdir`
 #' is not `NULL` then the plots and table will be saved into `outdir`.
 #' @export
+#'
+#' @examples
+#'
+#' \notrun{
+#' estimate_incorporation(
+#'   psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
+#'   peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",
+#'   crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+#'   mix = 1,
+#'   outdir = "Molm_13_incorporation/"
+#' )
+#' }
+#'
 estimate_incorporation <- function(
   psm_infile,
   peptide_infile,
