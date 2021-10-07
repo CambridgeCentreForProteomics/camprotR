@@ -72,7 +72,7 @@ being analysed.
 }
 \examples{
 
-\notrun{
+\dontrun{
 estimate_incorporation(
   psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
   peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",

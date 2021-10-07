@@ -44,7 +44,7 @@
 #'
 #' @examples
 #'
-#' \notrun{
+#' \dontrun{
 #' estimate_incorporation(
 #'   psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
 #'   peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",
@@ -68,6 +68,28 @@ estimate_incorporation <- function(
   # create output directory if it does not already exist
   if (!is.null(outdir)) {if (!dir.exists(outdir)) dir.create(outdir)}
 
+  # throw an error if peptide input does not contain the required columns
+  pep_input <- utils::read.delim(peptide_infile)
+  pep_cols <- c(master_protein_col, protein_col, sequence_col, modifications_col,
+                "Quan.Info", "Number.of.Missed.Cleavages")
+
+  abundance_regex_L <- "^Abundances.Grouped.(F\\d*.)?Light$"
+  abundance_regex_H <- "^Abundances.Grouped.(F\\d*.)?Heavy$"
+
+  if (!all(pep_cols %in% colnames(pep_input))) {
+    stop(
+      paste("The peptideGroups input is missing the following required columns:",
+            pep_cols[!pep_cols %in% colnames(obj)])
+    )
+  }
+
+  if (!any(grepl(abundance_regex_L, colnames(pep_input)))) {
+    stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Light' column.")
+  }
+  if (!any(grepl(abundance_regex_H, colnames(pep_input)))) {
+    stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Heavy' column.")
+  }
+
   # for each peptide, check whether it was MS2 sequenced and what the maximum
   # isolation interference (%) was across all PSMs for that peptide
   psm_sequenced_data <- silac_psm_seq_int(
@@ -90,7 +112,7 @@ estimate_incorporation <- function(
   # parse peptideGroups.txt and filter out:
   # filter out: cRAP, non-tryptic peptides, peptides with redundant Quan
   peptide_data <- parse_features(
-    utils::read.delim(peptide_infile),
+    pep_input,
     master_protein_col = master_protein_col,
     protein_col = protein_col,
     unique_master = FALSE,
@@ -113,6 +135,7 @@ estimate_incorporation <- function(
     grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))
   ] <- "Heavy"
 
+  # throw an error if t
   # define the columns we need from peptide data
   peptide_data_cols <- c(
     "Sequence",
