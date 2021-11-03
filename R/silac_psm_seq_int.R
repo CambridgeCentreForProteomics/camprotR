@@ -21,7 +21,7 @@ silac_psm_seq_int <- function(
   interference_col='Isolation.Interference.in.Percent'){
 
   # check that input files have the necessary columns
-  required_cols <- c("Sequence", "Modifications", "Isolation.Interference.in.Percent",
+  required_cols <- c(sequence_col, mod_col, interference_col,
                      "Quan.Channel", "Precursor.Abundance")
 
   if (!all(required_cols %in% colnames(obj))) {
