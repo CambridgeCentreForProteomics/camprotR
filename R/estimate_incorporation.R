@@ -23,9 +23,11 @@
 #' Light material (at cell or protein extract-level) to the Heavy material
 #' being analysed.
 #'
-#' @param psm_infile `string`. Filepath to PSM-level PD output
-#' @param peptide_infile `string`. Filepath to peptide-level PD output
-#' @param crap_fasta `string`. Filepath to cRAP fasta used for PD search
+#' @param psm_input `string` or `data.frame`. File path to PSM-level PD output or
+#' the PSM-level PD output loaded into R using \link[utils]{read.delim}.
+#' @param peptide_input `string`. File path to peptide-level PD output or
+#' the peptide-level PD output loaded into R using \link[utils]{read.delim}.
+#' @param crap_fasta `string`. File path to cRAP fasta used for PD search
 #' @param master_protein_col `string`. Name of column containing master
 #' protein accessions.
 #' @param protein_col `string`. Name of column containing all protein
@@ -35,7 +37,7 @@
 #' @param mix `numeric`. If Light material has been spiked in,
 #' what is the abundance relative to the Heavy material? Default is `mix = 0`
 #' e.g. no Light spike in. If they are equal, `mix = 1`.
-#' @param outdir `NULL` or `string`. If not `NULL`, filepath for directory to
+#' @param outdir `NULL` or `string`. If not `NULL`, file path for directory to
 #' save the plots and summary table.
 #' @return By default returns a `list` with 3 ggplots (HL correlation, peptide-level
 #' incorporation, protein-level incorporation) and 1 summary table. If `outdir`
@@ -45,9 +47,19 @@
 #' @examples
 #'
 #' \dontrun{
+#' # input as file paths
 #' estimate_incorporation(
-#'   psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
-#'   peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",
+#'   psm_input = "data-raw/Molm_13_P4_PSMs.txt",
+#'   peptide_input = "data-raw/Molm_13_P4_PeptideGroups.txt",
+#'   crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+#'   mix = 1,
+#'   outdir = "Molm_13_incorporation/"
+#' )
+#'
+#' # input as data.frames
+#' estimate_incorporation(
+#'   psm_input = read.delim("data-raw/Molm_13_P4_PSMs.txt"),
+#'   peptide_input = read.delim("data-raw/Molm_13_P4_PeptideGroups.txt"),
 #'   crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
 #'   mix = 1,
 #'   outdir = "Molm_13_incorporation/"
@@ -55,8 +67,8 @@
 #' }
 #'
 estimate_incorporation <- function(
-  psm_infile,
-  peptide_infile,
+  psm_input,
+  peptide_input,
   crap_fasta,
   master_protein_col = "Master.Protein.Accessions",
   protein_col = "Protein.Accessions",
@@ -68,32 +80,38 @@ estimate_incorporation <- function(
   # create output directory if it does not already exist
   if (!is.null(outdir)) {if (!dir.exists(outdir)) dir.create(outdir)}
 
+  # type checking of inputs
+  stopifnot(class(psm_input) %in% c("data.frame", "character"))
+  if (class(psm_input) %in% c("character")) psm_input <- read.delim(psm_input)
+
+  stopifnot(class(peptide_input) %in% c("data.frame", "character"))
+  if (class(peptide_input) %in% c("character")) peptide_input <- read.delim(peptide_input)
+
   # throw an error if peptide input does not contain the required columns
-  pep_input <- utils::read.delim(peptide_infile)
   pep_cols <- c(master_protein_col, protein_col, sequence_col, modifications_col,
                 "Quan.Info", "Number.of.Missed.Cleavages")
 
   abundance_regex_L <- "^Abundances.Grouped.(F\\d*.)?Light$"
   abundance_regex_H <- "^Abundances.Grouped.(F\\d*.)?Heavy$"
 
-  if (!all(pep_cols %in% colnames(pep_input))) {
+  if (!all(pep_cols %in% colnames(peptide_input))) {
     stop(
       paste("The peptideGroups input is missing the following required columns:",
             pep_cols[!pep_cols %in% colnames(obj)])
     )
   }
 
-  if (!any(grepl(abundance_regex_L, colnames(pep_input)))) {
+  if (!any(grepl(abundance_regex_L, colnames(peptide_input)))) {
     stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Light' column.")
   }
-  if (!any(grepl(abundance_regex_H, colnames(pep_input)))) {
+  if (!any(grepl(abundance_regex_H, colnames(peptide_input)))) {
     stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Heavy' column.")
   }
 
   # for each peptide, check whether it was MS2 sequenced and what the maximum
   # isolation interference (%) was across all PSMs for that peptide
   psm_sequenced_data <- silac_psm_seq_int(
-    utils::read.delim(psm_infile),
+    psm_input,
     sequence_col = sequence_col,
     mod_col = modifications_col,
     interference_col = "Isolation.Interference.in.Percent"
@@ -112,7 +130,7 @@ estimate_incorporation <- function(
   # parse peptideGroups.txt and filter out:
   # filter out: cRAP, non-tryptic peptides, peptides with redundant Quan
   peptide_data <- parse_features(
-    pep_input,
+    peptide_input,
     master_protein_col = master_protein_col,
     protein_col = protein_col,
     unique_master = FALSE,
@@ -135,7 +153,6 @@ estimate_incorporation <- function(
     grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))
   ] <- "Heavy"
 
-  # throw an error if t
   # define the columns we need from peptide data
   peptide_data_cols <- c(
     "Sequence",
@@ -146,14 +163,6 @@ estimate_incorporation <- function(
     "Light",
     "Heavy"
   )
-
-  # throw an error if these columns aren't present in peptide data
-  if (!all(peptide_data_cols %in% colnames(peptide_data))) {
-    stop(
-      "The following essential columns are missing from `peptide_infile`: ",
-      paste(peptide_data_cols[!peptide_data_cols %in% colnames(peptide_data)], collapse = ", ")
-    )
-  }
 
   # subset peptide data
   peptide_data <- subset(peptide_data, select = peptide_data_cols)
@@ -235,7 +244,7 @@ estimate_incorporation <- function(
     `colnames<-`(c(master_protein_col, "n")) %>%
     subset(n > 1)
 
-  # note to self: use MsnSets here and make other combine methods available?
+  # todo: use MsnSets here and make other combine methods available?
 
   # group data by master protein
   if (mix > 0) {
@@ -271,8 +280,8 @@ estimate_incorporation <- function(
   } else {
     out <- list(
       'HL_correlation' = p1,
-      'peptide_incorporation' = p2,
-      'protein_incorporation' = p3,
+      'peptide_incorporation' = p2$p,
+      'protein_incorporation' = p3$p,
       'incorporation_table' = t1
     )
     out

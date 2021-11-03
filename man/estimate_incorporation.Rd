@@ -5,8 +5,8 @@
 \title{Estimate SILAC (2-plex) incorporation rate from PD output}
 \usage{
 estimate_incorporation(
-  psm_infile,
-  peptide_infile,
+  psm_input,
+  peptide_input,
   crap_fasta,
   master_protein_col = "Master.Protein.Accessions",
   protein_col = "Protein.Accessions",
@@ -17,11 +17,13 @@ estimate_incorporation(
 )
 }
 \arguments{
-\item{psm_infile}{\code{string}. Filepath to PSM-level PD output}
+\item{psm_input}{\code{string} or \code{data.frame}. File path to PSM-level PD output or
+the PSM-level PD output loaded into R using \link[utils]{read.delim}.}
 
-\item{peptide_infile}{\code{string}. Filepath to peptide-level PD output}
+\item{peptide_input}{\code{string}. File path to peptide-level PD output or
+the peptide-level PD output loaded into R using \link[utils]{read.delim}.}
 
-\item{crap_fasta}{\code{string}. Filepath to cRAP fasta used for PD search}
+\item{crap_fasta}{\code{string}. File path to cRAP fasta used for PD search}
 
 \item{master_protein_col}{\code{string}. Name of column containing master
 protein accessions.}
@@ -37,7 +39,7 @@ accessions.}
 what is the abundance relative to the Heavy material? Default is \code{mix = 0}
 e.g. no Light spike in. If they are equal, \code{mix = 1}.}
 
-\item{outdir}{\code{NULL} or \code{string}. If not \code{NULL}, filepath for directory to
+\item{outdir}{\code{NULL} or \code{string}. If not \code{NULL}, file path for directory to
 save the plots and summary table.}
 }
 \value{
@@ -73,9 +75,19 @@ being analysed.
 \examples{
 
 \dontrun{
+# input as file paths
 estimate_incorporation(
-  psm_infile = "data-raw/Molm_13_P4_PSMs.txt",
-  peptide_infile = "data-raw/Molm_13_P4_PeptideGroups.txt",
+  psm_input = "data-raw/Molm_13_P4_PSMs.txt",
+  peptide_input = "data-raw/Molm_13_P4_PeptideGroups.txt",
+  crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+  mix = 1,
+  outdir = "Molm_13_incorporation/"
+)
+
+# input as data.frames
+estimate_incorporation(
+  psm_input = read.delim("data-raw/Molm_13_P4_PSMs.txt"),
+  peptide_input = read.delim("data-raw/Molm_13_P4_PeptideGroups.txt"),
   crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
   mix = 1,
   outdir = "Molm_13_incorporation/"
