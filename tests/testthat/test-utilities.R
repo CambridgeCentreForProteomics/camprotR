@@ -1,10 +1,4 @@
-context("utilities")
-
-#### Setup ---------------------------------------------------------------------
-
-#### Tests ---------------------------------------------------------------------
-
-test_that("remove_dots works", {
+test_that("remove_dots() works", {
   df <- data.frame(
     column...name = c(1, 2, 3)
   )

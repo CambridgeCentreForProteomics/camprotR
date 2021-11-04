@@ -83,13 +83,22 @@ cRAP includes 5 main categories of proteins:
 According to the cRAP website, it has not been updated since 2012. Therefore,
 I would not recommend using this FASTA for your peptide searches.
 
-Nevertheless, we can download this FASTA database through R.
+Nevertheless, we can download this FASTA database through R. 
+The following chunk is not run by default as
+the URL is not always stable.
+
+```{r, eval=FALSE}
+# download cRAP
+crap_path <- tempfile(fileext = ".fasta")
+download.file("ftp://ftp.thegpm.org/fasta/cRAP/crap.fasta",
+              destfile = crap_path)
+```
+
+The GPM cRAP database is also installed with `camprotR`. You can access it
+with the following command. 
 
 ```{r}
-# download cRAP
-crap_tmp <- tempfile(fileext = ".fasta")
-download.file("ftp://ftp.thegpm.org/fasta/cRAP/crap.fasta",
-              destfile = crap_tmp)
+crap_path <- system.file("extdata", "cRAP_GPM.fasta.gz", package = "camprotR")
 ```
 
 Then we can take a look at it using the useful `Biostrings` package. 
@@ -98,7 +107,7 @@ manipulate them.
 
 ```{r}
 # load cRAP FASTA
-crap <- Biostrings::readAAStringSet(crap_tmp)
+crap <- Biostrings::readAAStringSet(crap_path)
 crap
 ```
 
@@ -175,12 +184,20 @@ the URL is not always stable.
 
 ```{r, eval=FALSE}
 # download cRAP
-mq_tmp <- tempfile(fileext = ".fasta")
+mq_path <- tempfile(fileext = ".fasta")
 download.file("http://lotus1.gwdg.de/mpg/mmbc/maxquant_input.nsf/7994124a4298328fc125748d0048fee2/$FILE/contaminants.fasta",
-              destfile = mq_tmp)
+              destfile = mq_path)
+```
+
+This FASTA is also installed with `camprotR` and you can access it in a similar
+way to the GPM cRAP FASTA.
+
+```{r}
+# get file path
+mq_path <- system.file("extdata", "contaminants.fasta.gz", package = "camprotR")
 
 # load cRAP FASTA
-mq <- Biostrings::readAAStringSet(mq_tmp)
+mq <- Biostrings::readAAStringSet(mq_path)
 mq
 
 head(names(mq))

@@ -1,41 +1,33 @@
-context('combine_runs')
+snap_get_parsimony_pep2prot <- function(infiles) {
+  # make a tempfile to compare against snapshot file
+  path <- tempfile(tmpdir = test_path("testdata"), fileext = ".txt")
 
-#### Setup ---------------------------------------------------------------------
+  # run function to test and capture output
+  out <- get_parsimony_pep2prot(
+    infiles = infiles,
+    seq_col = "Sequence",
+    prot_col = "Protein.Accessions",
+    master_prot_col = "Master.Protein.Accessions",
+    compare_old_new = TRUE
+  )
 
+  # save output to tempfile
+  write.table(out, file = path,
+              sep = "\t", row.names = FALSE, col.names = TRUE)
 
-#### Tests ---------------------------------------------------------------------
-test_that("get_parsimony_pep2prot works on some SILAC peptide data", {
-  expect_equal_to_reference(
-    get_parsimony_pep2prot(list(
-      system.file("testdata", "small_pep_silac.txt", package = "camprotR"),
-      system.file("testdata", "small_pep_silac2.txt", package = "camprotR"))),
-    "reference/get_parsimony_pep2prot.rds"
+  # return path of tempfile
+  return(path)
+}
+
+test_that("get_parsimony_pep2prot() works", {
+  # compare tempfile to snapshot file
+  expect_snapshot_file(
+    snap_get_parsimony_pep2prot(
+      list(
+        test_path("testdata/small_pep_silac_p0.txt"),
+        test_path("testdata/small_pep_silac_p4.txt")
+      )
+    ),
+    "parsimony.txt"
   )
 })
-
-test_that("single protein, matched", {
-  expect_true(camprotR:::match_proteins('prot1', 'prot1'))
-})
-
-test_that("single protein, unmatched", {
-  expect_false(camprotR:::match_proteins('prot1', 'prot2'))
-})
-
-test_that("multiple proteins, matched, same order", {
-  expect_true(camprotR:::match_proteins('prot1; prot2', 'prot1; prot2'))
-})
-
-test_that("multiple proteins, matched, different order", {
-  expect_true(camprotR:::match_proteins('prot1; prot2', 'prot2; prot1'))
-})
-
-test_that("multiple proteins, matched, different sep ", {
-  expect_true(camprotR:::match_proteins('prot1:prot2', 'prot2; prot1',
-                                        sep1=':', sep2='; '))
-})
-
-test_that("multiple proteins, unmatched", {
-  expect_false(camprotR:::match_proteins('prot1; prot2', 'prot2; prot3'))
-})
-
-#### Sanity checks -------------------------------------------------------------

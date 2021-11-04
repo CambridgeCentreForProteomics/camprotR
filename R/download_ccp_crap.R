@@ -1,3 +1,30 @@
+#' Get the UniProt sequences in CCP cRAP
+#'
+#' @description This function take no inputs and simply outputs a vector of the
+#' UniProt accessions for the sequences in the CCP cRAP FASTA.
+#'
+#' @return Returns a `character vector` of UniProt accessions.
+#' @export
+get_ccp_crap <- function() {
+  # load ccp crap and extract accessions
+  input <- Biostrings::readAAStringSet(
+    filepath = system.file("extdata", "cRAP_20190401.fasta.gz", package = "camprotR")
+  ) %>%
+    names()
+
+  accessions <- regmatches(
+    input,
+    gregexpr("(?<=\\|)[A-Z,0-9]{6}(?=\\|)", input, perl = TRUE)
+  ) %>%
+    unlist()
+
+  accessions[!accessions %in% "000000"]
+
+  # deal with alpha amylase proteins specifically
+  accessions[4:6] <- c("P0DUB6", "P0DTE7", "P0DTE8")
+  accessions
+}
+
 #' Download CCP cRAP FASTA file
 #'
 #' @description This function is used to download the Cambridge Centre for

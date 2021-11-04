@@ -47,7 +47,7 @@ for example: \code{c("P02768")} which is serum albumin.}
 match a cRAP associated protein.}
 }
 \value{
-\code{data.frame} with the filtered Proteome Discoverer output.
+Returns a \code{data.frame} with the filtered Proteome Discoverer output.
 }
 \description{
 This function parses the output .txt files (peptide groups or PSMs) from
@@ -80,5 +80,61 @@ f3       protein2                   protein2
 }
 }
 \examples{
-# need to write example
+\dontrun{
+
+#### PSMs.txt example ####
+# load PD PSMs.txt output
+psm <- read.delim("data-raw/PSMs.txt")
+
+# load the cRAP FASTA used for the PD search
+crap_fasta <- Biostrings::fasta.index(
+  "2021-06_CCP_cRAP.fasta", seqtype = "AA"
+)
+
+# extract the UniProt accessions from the cRAP FASTA headers
+crap_accessions <- regmatches(
+  crap_fasta$desc,
+  gregexpr("(?<=\\\\|).*?(?=\\\\|)", crap_fasta$desc, perl = TRUE)
+) \%>\%
+  unlist()
+
+# parse peptides from an e.g. TMT experiment
+psm2 <- parse_features(
+  data = psm,
+  master_protein_col = "Master.Protein.Accessions",
+  protein_col = "Protein.Accessions",
+  unique_master = TRUE,
+  TMT = TRUE,
+  level = "PSM",
+  filter_crap = TRUE,
+  crap_proteins = crap_accessions,
+  filter_associated_crap = TRUE
+)
+
+#### peptideGroups.txt example ####
+# load PD peptideGroups.txt output
+pep_group <- read.delim("data-raw/peptideGroups.txt")
+
+# load the cRAP FASTA used for the PD search
+crap_fasta <- Biostrings::fasta.index(
+  "2021-06_CCP_cRAP.fasta", seqtype = "AA"
+)
+
+# extract the UniProt accessions from the cRAP FASTA headers
+crap_accessions <- regmatches(
+
+# parse peptides from an e.g. SILAC experiment
+pep_group2 <- parse_features(
+  data = pep_group,
+  master_protein_col = "Master.Protein.Accessions",
+  protein_col = "Protein.Accessions",
+  unique_master = TRUE,
+  silac = TRUE,
+  level = "peptide",
+  filter_crap = TRUE,
+  crap_proteins = crap_accessions,
+  filter_associated_crap = TRUE
+)
+
+}
 }

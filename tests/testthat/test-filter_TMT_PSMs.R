@@ -1,22 +1,85 @@
-context('filter_TMT_PSMs')
+snap_update_average_sn <- function(msnset) {
+  # make a tempfile to compare against snapshot file
+  path <- tempfile(tmpdir = test_path("testdata"), fileext = ".txt")
 
-#### Setup ---------------------------------------------------------------------
-load(system.file("testdata", "small_psm_tmt_total.rda",
-                 package = "camprotR"))
+  # run function to test and capture output
+  out <- update_average_sn(
+    obj = msnset,
+    sn_col = "Average.Reporter.SN"
+  )
 
-#### Tests ---------------------------------------------------------------------
-test_that("Filter TMT PSMs", {
-  filtered <-  filter_TMT_PSMs(small_psm_tmt_total, inter_thresh=0, sn_thresh=10)
-  expect_equal_to_reference(
-    MSnbase::exprs(filtered), file='reference/filtered_tmt_psm_e.rds')
-  expect_equal_to_reference(
-    MSnbase::fData(filtered), file='reference/filtered_tmt_psm_f.rds')
+  # save output to tempfile
+  write.table(out, file = path,
+              sep = "\t", row.names = FALSE, col.names = TRUE)
+
+  # return path of tempfile
+  return(path)
+}
+
+test_that("update_average_sn() works", {
+  # load in test MSnSet
+  load(test_path("testdata/small_psm_tmt_total.rda"))
+
+  # compare tempfile to snapshot file
+  expect_snapshot_file(
+    snap_update_average_sn(
+      msnset = small_psm_tmt_total
+    ),
+    "update_average_sn.txt"
+  )
 })
 
-test_that("Update average S/N", {
-  filtered <-  update_average_sn(small_psm_tmt_total)
-  expect_equal_to_reference(
-    MSnbase::fData(filtered), file='reference/tmt_psm_f_update_sn.rds')
-})
+snap_filter_TMT_PSMs <- function(msnset, inter_thresh, sn_thresh, output = c("exprs", "fData")) {
+  # make a tempfile to compare against snapshot file
+  path <- tempfile(tmpdir = test_path("testdata"), fileext = ".txt")
 
-#### Sanity checks -------------------------------------------------------------
+  # run function to test and capture output
+  out <- filter_TMT_PSMs(
+    obj = msnset,
+    inter_thresh = inter_thresh,
+    sn_thresh = sn_thresh,
+    master_protein_col = "Master.Protein.Accessions",
+    inter_col = "Isolation.Interference.in.Percent",
+    sn_col = "Average.Reporter.SN",
+    verbose = TRUE
+  )
+
+  # extract data from output MSnSet and save to tempfile
+  if (output == "exprs") {
+    write.table(MSnbase::exprs(out), file = path, sep = "\t",
+                row.names = FALSE, col.names = TRUE)
+  } else if (output == "fData") {
+    write.table(MSnbase::fData(out), file = path, sep = "\t",
+                row.names = FALSE, col.names = TRUE)
+  }
+
+  # return path of tempfile
+  return(path)
+}
+
+test_that("filter_TMT_PSMs() works", {
+  # load in test MSnSet
+  load(test_path("testdata/small_psm_tmt_total.rda"))
+
+  # compare tempfile (expression data) to snapshot file
+  expect_snapshot_file(
+    snap_filter_TMT_PSMs(
+      msnset = small_psm_tmt_total,
+      inter_thresh = 0,
+      sn_thresh = 10,
+      output = "exprs"
+    ),
+    "filter_TMT_PSMs_exprs.txt"
+  )
+
+  # compare tempfile (feature data) to snapshot file
+  expect_snapshot_file(
+    snap_filter_TMT_PSMs(
+      msnset = small_psm_tmt_total,
+      inter_thresh = 0,
+      sn_thresh = 10,
+      output = "fData"
+    ),
+    "filter_TMT_PSMs_fData.txt"
+  )
+})

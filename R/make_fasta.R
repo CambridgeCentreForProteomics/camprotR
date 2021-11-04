@@ -1,30 +1,3 @@
-#' Get the UniProt sequences in CCP cRAP
-#'
-#' @description This function take no inputs and simply outputs a vector of the
-#' UniProt accessions for the sequences in the CCP cRAP FASTA.
-#'
-#' @return Returns a `character vector` of UniProt accessions.
-#' @export
-get_ccp_crap <- function() {
-  # load ccp crap and extract accessions
-  input <- Biostrings::readAAStringSet(
-    filepath = system.file("extdata", "cRAP_20190401.fasta", package = "camprotR")
-  ) %>%
-    names()
-
-  accessions <- regmatches(
-    input,
-    gregexpr("(?<=\\|)[A-Z,0-9]{6}(?=\\|)", input, perl = TRUE)
-  ) %>%
-    unlist()
-
-  accessions[!accessions %in% "000000"]
-
-  # deal with alpha amylase proteins specifically
-  accessions[4:6] <- c("P0DUB6", "P0DTE7", "P0DTE8")
-  accessions
-}
-
 #' Make a FASTA using UniProt accessions
 #'
 #' @description Given a vector of UniProt accessions, this function will:
@@ -63,10 +36,21 @@ make_fasta <- function(accessions, file, is_crap = FALSE, overwrite = FALSE, ver
   )
 
   # query uniprot and save FASTA to disk
-  response <- httr::GET(
-    url = "https://www.uniprot.org/uploadlists/",
-    query = payload,
-    config = httr::write_disk(path = file, overwrite = overwrite)
+  # security level fix for Ubuntu 20.04
+  # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
+  httr_config <- switch(
+    Sys.info()["sysname"],
+    "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
+    httr::config()
+  )
+
+  response <- httr::with_config(
+    config = httr_config,
+    httr::GET(
+      url = "https://www.uniprot.org/uploadlists/",
+      query = payload,
+      config = httr::write_disk(path = file, overwrite = overwrite)
+    )
   )
 
   # basic http error handling
@@ -146,7 +130,20 @@ sub_crap <- function(x, start = 1, width = 3) {
 #' @export
 check_uniprot_release <- function() {
   # query H. sapiens actin
-  response <- httr::GET(url = "https://www.uniprot.org/uniprot/P60709")
+  # security level fix for Ubuntu 20.04
+  # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
+  httr_config <- switch(
+    Sys.info()["sysname"],
+    "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
+    httr::config()
+  )
+
+  response <- httr::with_config(
+    config = httr_config,
+    httr::GET(
+      url = "https://www.uniprot.org/uniprot/P60709"
+    )
+  )
 
   # basic http error handling
   httr::stop_for_status(response, "query UniProt")

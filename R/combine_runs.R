@@ -239,10 +239,25 @@ compare_single_master <- function(seq2new_master_prot, master_prot_col){
 #' @param seq_col `string` Column name for peptide sequence
 #' @param prot_col `string` Column name for protein(s)
 #' @param master_prot_col `string` Column name for master protein(s)
-#' @param compare_old_new `Logical` Compare the consensus master protein
+#' @param compare_old_new `logical` Compare the consensus master protein
 #' assignments with the original assignments
 #' @return Returns an `data.frame` object which maps peptide sequences to
 #' consensus master protein ID(s)
+#' @examples
+#' \dontrun{
+#' # The input in this example is 2x peptideGroups.txt outputs from Proteome
+#' # Discoverer. Both files must have the columns (cols) specified. This may require
+#' # re-exporting the peptideGroups.txt file from PD as the "Protein.Accessions"
+#' # column is often not there by default.
+#' get_parsimony_pep2prot(
+#'   list("peptideGroups1.txt", "peptideGroups2.txt"),
+#'   seq_col = "Sequence",
+#'   prot_col = "Protein.Accessions",
+#'   master_prot_col = "Master.Protein.Accessions",
+#'   compare_old_new = TRUE
+#' )
+#'
+#' }
 #' @export
 get_parsimony_pep2prot <- function(infiles, seq_col='Sequence',
                                   prot_col='Protein.Accessions',

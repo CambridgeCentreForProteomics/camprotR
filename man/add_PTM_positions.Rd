@@ -7,15 +7,18 @@
 add_PTM_positions(
   obj,
   proteome_fasta,
-  master_protein_col = "Master.Protein.Accessions"
+  master_protein_col = "Master.Protein.Accessions",
+  sequence_col = "Sequence"
 )
 }
 \arguments{
 \item{obj}{\code{data.frame} with PD output at PSM/peptide level}
 
-\item{proteome_fasta}{\code{character} Filepath for proteome fasta}
+\item{proteome_fasta}{\code{string} Filepath for proteome fasta}
 
-\item{master_protein_col}{\code{character} Column name for master protein}
+\item{master_protein_col}{\code{string} Name of column containing master protein IDs}
+
+\item{sequence_col}{\code{string}. Name of column containing peptide sequences}
 }
 \value{
 \code{data.frame}
