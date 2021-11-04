@@ -22,8 +22,9 @@ test_that("plot_incorporation() works with no mixing", {
   # target is a list of length == 2
   # list contains a plot and another list
   target <- plot_incorporation(
-    obj = fake_HL_ratios,
-    level = "Peptide",
+    data = fake_HL_ratios,
+    incorporation_col = "incorporation",
+    level = "peptide",
     mix = 0
   )
 
@@ -52,8 +53,10 @@ test_that("plot_incorporation() works with mixing", {
   # target is a list of length == 2
   # list contains a plot and another list
   target <- plot_incorporation(
-    obj = fake_HL_ratios,
-    level = "Peptide",
+    data = fake_HL_ratios,
+    incorporation_col = "incorporation",
+    corrected_col = "corrected_incorporation",
+    level = "peptide",
     mix = 0.5
   )
 

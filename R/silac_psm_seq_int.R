@@ -20,6 +20,17 @@ silac_psm_seq_int <- function(
   mod_col='Modifications',
   interference_col='Isolation.Interference.in.Percent'){
 
+  # check that input files have the necessary columns
+  required_cols <- c(sequence_col, mod_col, interference_col,
+                     "Quan.Channel", "Precursor.Abundance")
+
+  if (!all(required_cols %in% colnames(obj))) {
+    stop(
+      paste("The PSM input is missing the following required columns:",
+            required_cols[!required_cols %in% colnames(obj)])
+    )
+  }
+
   obj <- obj %>%
     filter(.data$Quan.Channel!='') %>%
     rowwise() %>%

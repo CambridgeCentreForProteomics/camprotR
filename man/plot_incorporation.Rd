@@ -4,27 +4,40 @@
 \alias{plot_incorporation}
 \title{Plot annotated histogram of incorporation values}
 \usage{
-plot_incorporation(obj, level = "Peptide", mix = 0)
+plot_incorporation(
+  data,
+  incorporation_col = "Incorporation",
+  corrected_col = "Incorporation.corrected",
+  level = "peptide",
+  mix = 0
+)
 }
 \arguments{
-\item{obj}{\code{data.frame} containing features with column 'incorporation'.
+\item{data}{\code{data.frame} containing features with column 'incorporation'.
 If mix>0, must also contain column 'corrected_incorporation' where incorporation
 is calculated using the corrected light peptide intensity}
 
-\item{level}{\code{string}. Name for feature level. e.g 'Peptide' or 'Protein'}
+\item{incorporation_col}{\code{string}. Name of the column containing incorporation values
+which can be calculated with \code{\link{get_incorporation}}.}
 
-\item{mix}{\code{numeric}. Default is 0. Otherwise use a number greater than zero
-(i.e. the 'Heavy' to 'Light' mix ratio).}
+\item{corrected_col}{\code{string} Optional, but required if mix > 0. Name of the
+column containing mix-corrected incorporation values which can be calculated
+with \code{\link{get_incorporation}}.}
+
+\item{level}{\code{string}. Name for feature level, either 'peptide' or 'protein'.}
+
+\item{mix}{\code{numeric}. The 'Heavy' to 'Light' mix ratio. Default is 0, otherwise
+use a number greater than 0.}
 }
 \value{
-\code{list} with \code{p}=\code{ggplot} plot and \code{incorporation_estimates}=\code{list} of
-incorporation estimates
+Returns a \code{list} with \code{p} = \code{ggplot} plot and
+\code{incorporation_estimates} = \code{list} of incorporation estimates.
 }
 \description{
-Incorporation is estimated from the set of observed features. If
-the test sample contains cells grown in 'heavy' media only, incorporation is
-simply the mean observed incorporation. If the test sample contains a mixture of
+SILAC (2-plex) label incorporation is estimated from the set of
+observed features (peptides or proteins). If the test sample contains cells
+grown in 'Heavy' media only, incorporation is simply the mean observed
+incorporation. If the test sample contains a mixture of
 'Heavy' and 'Light', the incorporation is best calculated from the median
 incorporation using the corrected 'Light' intensity.
-From a \code{data.frame}, with
 }

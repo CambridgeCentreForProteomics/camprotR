@@ -2,62 +2,96 @@
 % Please edit documentation in R/estimate_incorporation.R
 \name{estimate_incorporation}
 \alias{estimate_incorporation}
-\title{Estimate the incorporation rate directly from PD output}
+\title{Estimate SILAC (2-plex) incorporation rate from PD output}
 \usage{
 estimate_incorporation(
-  psm_infile,
-  peptide_infile,
+  psm_input,
+  peptide_input,
   crap_fasta,
   master_protein_col = "Master.Protein.Accessions",
   protein_col = "Protein.Accessions",
   sequence_col = "Sequence",
   modifications_col = "Modifications",
   mix = 0,
-  outdir
+  outdir = NULL
 )
 }
 \arguments{
-\item{psm_infile}{\code{string} filepath to psm-level PD output}
+\item{psm_input}{\code{string} or \code{data.frame}. File path to PSM-level PD output or
+the PSM-level PD output loaded into R using \link[utils]{read.delim}.}
 
-\item{peptide_infile}{\code{string} filepath to peptide-level PD output}
+\item{peptide_input}{\code{string}. File path to peptide-level PD output or
+the peptide-level PD output loaded into R using \link[utils]{read.delim}.}
 
-\item{crap_fasta}{\code{string}. filepath to cRAP fasta}
+\item{crap_fasta}{\code{string}. File path to cRAP fasta used for PD search}
 
 \item{master_protein_col}{\code{string}. Name of column containing master
-proteins.}
+protein accessions.}
 
 \item{protein_col}{\code{string}. Name of column containing all protein
-matches.}
+accessions.}
 
-\item{sequence_col}{\code{string}. Name of column containing peptide sequences}
+\item{sequence_col}{\code{string}. Name of column containing peptide sequences.}
 
-\item{modifications_col}{\code{string}. Name of column containing peptide modifications}
+\item{modifications_col}{\code{string}. Name of column containing peptide modifications.}
 
-\item{mix}{\code{numeric}. If Light material has been spiked in, what is the abundance
-relative to the heavy material. E.g if they are equal, mix=1.
-Default value = 0, e.g no Light spike in}
+\item{mix}{\code{numeric}. If Light material has been spiked in,
+what is the abundance relative to the Heavy material? Default is \code{mix = 0}
+e.g. no Light spike in. If they are equal, \code{mix = 1}.}
 
-\item{outdir}{\code{string} filepath to directory for plots and incorporation summary table}
+\item{outdir}{\code{NULL} or \code{string}. If not \code{NULL}, file path for directory to
+save the plots and summary table.}
 }
 \value{
-\code{incorporation}
+By default returns a \code{list} with 3 ggplots (HL correlation, peptide-level
+incorporation, protein-level incorporation) and 1 summary table. If \code{outdir}
+is not \code{NULL} then the plots and table will be saved into \code{outdir}.
 }
 \description{
-SILAC incorporation can be estimated from peptide-level PD output
-and summarised at peptide or protein level.
+SILAC (2-plex) incorporation can be estimated using the PSM and
+peptide groups PD outputs, and summarised at the peptide or protein level.
+
+This function takes the PSM.txt and PeptideGroups.txt files as inputs and
+outputs 3 plots and a .tsv file into the designated output directory.
 }
 \details{
 \strong{Peptide sequencing/mass shift identification}
-In SILAC, Peptide identity of ions can be established through MS2 fragmentation
-('peptide sequencing') or by mass shift (within tolerance limits) relative to
-a sequenced peptide. Ideally, the correlation between heavy and light intensities
-is the same regardless of whether light or heavy peptides are identified by
-mass shift or sequencing. If e.g light peptide intensities are not well correlated
-when they are identified by mass shift, this may indicate the mass shift identifications
-are erroneously picking up 'ghost peptide', which will make incorporation estimation
-difficult
+In SILAC, the peptide identity of ions can be established through MS2
+fragmentation ('peptide sequencing') or by mass shift (within tolerance
+limits) relative to a sequenced peptide.
+
+For 2-plex SILAC experiments, ideally, the correlation between Heavy and
+Light peptide intensities is the same regardless of whether Light or Heavy
+peptides are identified by mass shift or sequencing. If e.g Light peptide
+intensities are not well correlated when they are identified by mass shift,
+this may indicate that the mass shift identifications are erroneously
+picking up ghost peptides', which will make incorporation estimation difficult.
 
 \strong{Mixing Heavy and Light material for incorporation rate testing}
-To get around the issue of 'ghost peptide', one can spike in Light material (
-at cell or protein extract-level) to the Heavy material being analysed.
+To get around the issue of 'ghost peptides', one can spike in
+Light material (at cell or protein extract-level) to the Heavy material
+being analysed.
+}
+\examples{
+
+\dontrun{
+# input as file paths
+estimate_incorporation(
+  psm_input = "data-raw/Molm_13_P4_PSMs.txt",
+  peptide_input = "data-raw/Molm_13_P4_PeptideGroups.txt",
+  crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+  mix = 1,
+  outdir = "Molm_13_incorporation/"
+)
+
+# input as data.frames
+estimate_incorporation(
+  psm_input = read.delim("data-raw/Molm_13_P4_PSMs.txt"),
+  peptide_input = read.delim("data-raw/Molm_13_P4_PeptideGroups.txt"),
+  crap_fasta = "inst/extdata/cRAP_20190401.fasta.gz",
+  mix = 1,
+  outdir = "Molm_13_incorporation/"
+)
+}
+
 }

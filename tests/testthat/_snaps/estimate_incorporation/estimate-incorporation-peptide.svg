@@ -57,18 +57,18 @@
 <rect x='422.68' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='438.60' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='454.53' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='470.45' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='470.45' y='283.42' width='15.92' height='238.83' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='486.37' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='502.29' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='518.21' y='44.59' width='15.92' height='477.65' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='518.21' y='522.25' width='15.92' height='0.00' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='534.13' y='44.59' width='15.92' height='477.65' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='550.06' y='44.59' width='15.92' height='477.65' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='565.98' y='44.59' width='15.92' height='477.65' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='581.90' y='44.59' width='15.92' height='477.65' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='565.98' y='283.42' width='15.92' height='238.83' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='581.90' y='283.42' width='15.92' height='238.83' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
 <rect x='597.82' y='283.42' width='15.92' height='238.83' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<text x='144.05' y='41.82' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='47.46px' lengthAdjust='spacingAndGlyphs'>Peptides: 11</text>
-<text x='144.05' y='54.11' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='115.79px' lengthAdjust='spacingAndGlyphs'>Median incorporation: 50.00 %</text>
-<text x='144.05' y='66.40' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='158.02px' lengthAdjust='spacingAndGlyphs'>Corrected median incorporation:100.00 %</text>
+<text x='144.05' y='41.82' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='42.71px' lengthAdjust='spacingAndGlyphs'>Peptides: 8</text>
+<text x='144.05' y='54.11' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='115.79px' lengthAdjust='spacingAndGlyphs'>Median incorporation: 50.94 %</text>
+<text x='144.05' y='66.40' style='font-size: 8.54px; fill: #2271B2; font-family: sans;' textLength='158.02px' lengthAdjust='spacingAndGlyphs'>Corrected median incorporation:103.85 %</text>
 <rect x='112.21' y='20.71' width='525.42' height='525.42' style='stroke-width: 2.37;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -83,13 +83,15 @@
 <polyline points='109.72,164.01 112.21,164.01 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
 <polyline points='109.72,44.59 112.21,44.59 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
 <polyline points='144.05,548.62 144.05,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='311.95,548.62 311.95,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='479.86,548.62 479.86,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='308.16,548.62 308.16,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='472.28,548.62 472.28,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='636.39,548.62 636.39,546.13 ' style='stroke-width: 1.19; stroke: #333333; stroke-linecap: butt;' />
 <text x='144.05' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='5.56px' lengthAdjust='spacingAndGlyphs'>0</text>
-<text x='311.95' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='11.12px' lengthAdjust='spacingAndGlyphs'>20</text>
-<text x='479.86' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='11.12px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text x='308.16' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='11.12px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='472.28' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='11.12px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text x='636.39' y='557.49' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='11.12px' lengthAdjust='spacingAndGlyphs'>60</text>
 <text x='374.92' y='568.94' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='122.29px' lengthAdjust='spacingAndGlyphs'>Observed incorporation (%)</text>
 <text transform='translate(89.26,283.42) rotate(-90)' text-anchor='middle' style='font-size: 10.00px; font-family: sans;' textLength='26.69px' lengthAdjust='spacingAndGlyphs'>Count</text>
-<text x='112.21' y='13.24' style='font-size: 12.00px; font-family: sans;' textLength='115.39px' lengthAdjust='spacingAndGlyphs'>plot-incorporation-mix</text>
+<text x='112.21' y='13.24' style='font-size: 12.00px; font-family: sans;' textLength='162.10px' lengthAdjust='spacingAndGlyphs'>estimate-incorporation-peptide</text>
 </g>
 </svg>
