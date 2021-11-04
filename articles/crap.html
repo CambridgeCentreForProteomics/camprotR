@@ -81,7 +81,7 @@
       <h1 data-toc-skip>cRAP databases</h1>
                         <h4 class="author">Charlotte Dawson</h4>
             
-            <h4 class="date">2021-10-07</h4>
+            <h4 class="date">2021-11-04</h4>
       
       
       <div class="hidden name"><code>crap.Rmd</code></div>
@@ -155,7 +155,7 @@
 <span class="co">#&gt; [116]   271 MSHIQRETSCSRPRLNSNLDAD...KYGIDNPDMNKLQFHLMLDEFF KKA1_ECOLX</span></code></pre></div>
 <p>We can see that there are 116 sequences in cRAP.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">crap</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">crap</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sp|ALBU_BOVIN|" "sp|AMYS_HUMAN|" "sp|CAS1_BOVIN|" "sp|CAS2_BOVIN|"</span>
 <span class="co">#&gt; [5] "sp|CASB_BOVIN|" "sp|CASK_BOVIN|"</span></code></pre></div>
 <p>We can see that the headers for each sequence in the FASTA file have very little information in them. Another reason not to use this cRAP database as your contaminants database.</p>
@@ -188,7 +188,7 @@
 <span class="co">#&gt; [125]   261 AGYRDGFGASGSCEVDAVCATQ...GVYSQISRYFAPHQHQHQHQHQ sp|cRAP127|000000...</span></code></pre></div>
 <p>We can see there are 125 sequences. Now lets have a look at some of the sequence headers.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ccp_crap</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ccp_crap</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sp|cRAP001|P00330|ADH1_YEAST Alcohol dehydrogenase 1 OS=Saccharomyces cerevisiae (strain ATCC 204508 / S288c) OX=559292 GN=ADH1 PE=1 SV=5"</span>
 <span class="co">#&gt; [2] "sp|cRAP002|P02768|ALBU_HUMAN Albumin OS=Homo sapiens OX=9606 GN=ALB PE=1 SV=2"                                                            </span>
 <span class="co">#&gt; [3] "sp|cRAP003|P00883|ALDOA_RABIT Fructose-bisphosphate aldolase A OS=Oryctolagus cuniculus OX=9986 GN=ALDOA PE=1 SV=2"                       </span>
@@ -231,7 +231,7 @@
 <span class="co">#&gt; [244]  1477 MGKNKLLYPSLTLLLLLLLPTD...YETDEFAVAEYSAPCSKDIGNA ENSEMBL:ENSBTAP00...</span>
 <span class="co">#&gt; [245]   604 MKQLKLTGFVIFFFFLTESLTL...AQEPEACFKEESPKLAAKSQAA REFSEQ:XP_585019 ...</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mq</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mq</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "P00761 SWISS-PROT:P00761|TRYP_PIG Trypsin - Sus scrofa (Pig)."                           </span>
 <span class="co">#&gt; [2] "Q32MB2 TREMBL:Q32MB2;Q86Y46 Tax_Id=9606 Gene_Symbol=KRT73 Keratin-73"                    </span>
 <span class="co">#&gt; [3] "P19013 SWISS-PROT:P19013 Tax_Id=9606 Gene_Symbol=KRT4 keratin 4"                         </span>
@@ -253,13 +253,13 @@
 <p>We can download sequences from UniProt automatically using the <code><a href="../reference/make_fasta.html">make_fasta()</a></code> function. This function takes a character vector of UniProt accessions, downloads their sequences, and then saves the sequences into a FASTA file. We don’t want to add the <code>cRAP00X</code> numbering to the sequence headers just yet so we set <code>is_crap = FALSE</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">griseus_tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".fasta"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/make_fasta.html">make_fasta</a></span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P00776"</span>, <span class="st">"P00777"</span>, <span class="st">"P80561"</span><span class="op">)</span>,
+<span class="fu"><a href="../reference/make_fasta.html">make_fasta</a></span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"P00776"</span>, <span class="st">"P00777"</span>, <span class="st">"P80561"</span><span class="op">)</span>,
                 file <span class="op">=</span> <span class="va">griseus_tmp</span>,
                 is_crap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; Downloading from UniProtKB release: 2021_03</span></code></pre></div>
 <p>Before we add these to our CCP cRAP FASTA, we just need to take note of what cRAP number the sequences headers stop at.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ccp_crap</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ccp_crap</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "sp|cRAP120|P12763|FETUA_BOVIN Alpha-2-HS-glycoprotein OS=Bos taurus OX=9913 GN=AHSG PE=1 SV=2"                      </span>
 <span class="co">#&gt; [2] "sp|cRAP121|Q58D62|FETUB_BOVIN Fetuin-B OS=Bos taurus OX=9913 GN=FETUB PE=1 SV=1"                                    </span>
 <span class="co">#&gt; [3] "sp|cRAP122|Q28153|CELA1_BOVIN Chymotrypsin-like elastase family member 1 OS=Bos taurus OX=9913 GN=CELA1 PE=2 SV=1"  </span>

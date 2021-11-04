@@ -81,7 +81,7 @@
       <h1 data-toc-skip>Working with MSnSets</h1>
                         <h4 class="author">Charlotte Dawson</h4>
             
-            <h4 class="date">2021-10-07</h4>
+            <h4 class="date">2021-11-04</h4>
       
       
       <div class="hidden name"><code>msnset.Rmd</code></div>
@@ -137,7 +137,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt;   ..@ experimentData   :Formal class 'MIAPE' [package "MSnbase"] with 30 slots</span>
 <span class="co">#&gt;   ..@ processingData   :Formal class 'MSnProcess' [package "MSnbase"] with 10 slots</span>
 <span class="co">#&gt;   ..@ qual             :'data.frame':    220 obs. of  7 variables:</span>
-<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x56473baded70&gt; </span>
+<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x560073112690&gt; </span>
 <span class="co">#&gt;   ..@ phenoData        :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ featureData      :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ annotation       : chr "No annotation"</span>
@@ -148,9 +148,9 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <h3 class="hasAnchor">
 <a href="#assaydata" class="anchor"></a>assayData</h3>
 <p>The <code>assayData</code> slot contains the quantitative data from the experiment, i.e. how much of each feature (spectra/PSM, peptide, or protein) was detected in each sample. <strong>This is the essential part of an MSnSet.</strong> All other slots are optional.</p>
-<p>We can extract this information from the MSnSet into a numeric matrix with the <code>exprs()</code> function.</p>
+<p>We can extract this information from the MSnSet into a numeric matrix with the <code><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs()</a></code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">msnset_exprs</span> <span class="op">&lt;-</span> <span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">msnset_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
 <p>Lets look at its structure.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">msnset_exprs</span><span class="op">)</span>
@@ -165,9 +165,9 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <h3 class="hasAnchor">
 <a href="#featuredata" class="anchor"></a>featureData</h3>
 <p>The <code>featureData</code> slot contains metadata about the ‘features’ (e.g. PSMs, peptides, proteins).</p>
-<p>We can extract this information from the MSnSet into a data.frame with the <code>fData()</code> function.</p>
+<p>We can extract this information from the MSnSet into a data.frame with the <code><a href="https://rdrr.io/pkg/Biobase/man/featureData.html">fData()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">msnset_fdata</span> <span class="op">&lt;-</span> <span class="fu">fData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">msnset_fdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html">fData</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
 <p>Lets look at its structure.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">msnset_fdata</span><span class="op">)</span>
@@ -190,7 +190,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>It is a 55 by 4 data.frame. The data it contains is metadata about each ‘feature,’ which are PSMs in this case. The type of metadata included is entirely arbitrary and there can be as many or as few columns as you want.</p>
 <p>Each <strong>column</strong> of this matrix refers to a particular type of metadata. Each <strong>row</strong> of this matrix corresponds to a <strong>‘feature’</strong> which in this case is a PSM. Thus, the number of rows in <code>featureData</code> is the same as the number of rows in <code>assayData</code>. Also note that the row names of <code>featureData</code> exactly match the row names of <code>assayData</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html">fData</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
 <span class="co">#&gt; [16] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
 <span class="co">#&gt; [31] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</span>
@@ -200,9 +200,9 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <h3 class="hasAnchor">
 <a href="#phenodata" class="anchor"></a>phenoData</h3>
 <p>The <code>phenoData</code> slot contains metadata about the ‘samples.’</p>
-<p>We can extract this information from the MSnSet into a data.frame with the <code>pData()</code> function.</p>
+<p>We can extract this information from the MSnSet into a data.frame with the <code><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html">pData()</a></code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">msnset_pdata</span> <span class="op">&lt;-</span> <span class="fu">pData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">msnset_pdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html">pData</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span></code></pre></div>
 <p>Let’s look at its structure.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">msnset_pdata</span><span class="op">)</span>
@@ -212,7 +212,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>It is a 55 by 4 data.frame. The data it contains is metadata about each ‘sample,’ which are iTRAQ tags in this case. The type of metadata included is entirely arbitrary and there can be as many or as few columns as you want.</p>
 <p>Each <strong>column</strong> of this matrix refers to a particular type of metadata. Each <strong>row</strong> of this matrix corresponds to a <strong>‘sample’</strong> which in this case is an iTRAQ tag. Thus, the number of rows in <code>phenoData</code> is the same as the number of columns in <code>assayData</code>. Also note that the row names of <code>phenoData</code> exactly match the column names of <code>assayData</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html">pData</a></span><span class="op">(</span><span class="va">msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE TRUE TRUE TRUE</span></code></pre></div>
 </div>
 </div>
@@ -287,17 +287,17 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>First we extract the columns with the quantitative data and convert them to a numeric matrix.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># abundance columns for TMT PD output start with Abundance </span>
-<span class="va">abundance_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+<span class="va">abundance_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html">grepl</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
 
 <span class="va">tmt_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">[</span>, <span class="va">abundance_cols</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p>Then we remove the word ‘Abundance’ from the column names to make them more concise.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># update the column names to remove the 'Abundance.` prefix</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="st">''</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="st">''</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Lastly, we use the unique <code>PSMs.Peptide.ID</code> column to define unique row names. This is important for extracting and combining data down the line. Row names must be unique!</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># use PSMs.Peptide.ID, which are unique, to define rownames</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span><span class="op">$</span><span class="va">PSMs.Peptide.ID</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span><span class="op">$</span><span class="va">PSMs.Peptide.ID</span></code></pre></div>
 <p>Our quantitative data are now ready.</p>
 </div>
 <div id="featuredata-1" class="section level3">
@@ -308,13 +308,13 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>First we extract the columns with the metadata of interest. Here we want everything but the <code>Abundance</code> columns and the unique IDs.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get all columns except Abundance columns identified earlier</span>
-<span class="va">metadata_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">abundance_cols</span>, <span class="st">"PSMs.Peptide.ID"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">metadata_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_tmt_total</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="va">abundance_cols</span>, <span class="st">"PSMs.Peptide.ID"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">tmt_fdata</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span><span class="op">[</span>, <span class="va">metadata_cols</span><span class="op">]</span></code></pre></div>
 <p>Again, we use the unique <code>PSMs.Peptide.ID</code> column to define unique row names. <strong>This must match <code>tmt_exprs</code>!</strong></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># use PSMs.Peptide.ID, which are unique, to define rownames</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_fdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span><span class="op">$</span><span class="va">PSMs.Peptide.ID</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_fdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span><span class="op">$</span><span class="va">PSMs.Peptide.ID</span></code></pre></div>
 <p>Our metadata are now ready.</p>
 </div>
 <div id="phenodata-1" class="section level3">
@@ -328,10 +328,10 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>Then we can add some metadata. In this example we will just add some fake sample names and fake treatment conditions.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmt_pdata</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
-<span class="va">tmt_pdata</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"trt"</span>, <span class="st">"ctrl"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<span class="va">tmt_pdata</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"trt"</span>, <span class="st">"ctrl"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p>The rownames must be identical to the column names of <code>tmt_exprs</code>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_pdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">tmt_pdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">tmt_exprs</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="make-the-msnset" class="section level3">
 <h3 class="hasAnchor">
@@ -347,7 +347,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt;   ..@ processingData   :Formal class 'MSnProcess' [package "MSnbase"] with 10 slots</span>
 <span class="co">#&gt;   ..@ qual             :'data.frame':    0 obs. of  0 variables</span>
 <span class="co">#&gt; Formal class 'data.frame' [package "methods"] with 4 slots</span>
-<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x56473ae57ec8&gt; </span>
+<span class="co">#&gt;   ..@ assayData        :&lt;environment: 0x560073390958&gt; </span>
 <span class="co">#&gt;   ..@ phenoData        :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ featureData      :Formal class 'AnnotatedDataFrame' [package "Biobase"] with 4 slots</span>
 <span class="co">#&gt;   ..@ annotation       : chr(0) </span>
@@ -356,7 +356,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <p>As before we can access the different slots as follows.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># access the quantitative data</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">exprs</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;           126  127N  127C  128N  128C  129N  129C  130N  130C   131</span>
 <span class="co">#&gt; 2151442 465.7 341.9 156.6   8.3  10.4  12.4  11.0  12.2  17.2  11.4</span>
 <span class="co">#&gt; 2803862  96.8  82.2  92.3  81.8  50.7  26.9  25.3  18.2  11.0  72.3</span>
@@ -366,7 +366,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt; 3972741  52.6  49.6  39.8  40.5  14.6   5.3   6.4   0.6   7.4  12.2</span>
 
 <span class="co"># access the PSM metadata</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">fData</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html">fData</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;         PSMs.Workflow.ID Checked Confidence Identifying.Node PSM.Ambiguity</span>
 <span class="co">#&gt; 2151442             -219   False       High  Sequest HT (A2)   Unambiguous</span>
 <span class="co">#&gt; 2803862             -219   False       High  Sequest HT (A2)   Unambiguous</span>
@@ -446,7 +446,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <span class="co">#&gt; 3972741                        1       5.221000e-05   2.095000e-05</span>
 
 <span class="co"># access the sample metadata</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">pData</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/phenoData.html">pData</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;       sample treatment</span>
 <span class="co">#&gt; 126  sample1       trt</span>
 <span class="co">#&gt; 127N sample2       trt</span>
@@ -465,14 +465,14 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <code class="sourceCode R"><span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html">write.exprs</a></span><span class="op">(</span>
   <span class="va">tmt_msnset</span>, 
   file <span class="op">=</span> <span class="st">"results.csv"</span>,
-  fDataCols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Percolator.q.Value"</span>, <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span>,
+  fDataCols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Percolator.q.Value"</span>, <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span>,
   sep <span class="op">=</span> <span class="st">","</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>, col.names <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p>Alternatively you can manually combine the results manually.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span><span class="op">(</span>
-  <span class="fu">exprs</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM quantitative data</span>
-  <span class="fu">fData</span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM metadata</span>
+<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-merge.html">merge</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html">exprs</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM quantitative data</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html">fData</a></span><span class="op">(</span><span class="va">tmt_msnset</span><span class="op">)</span>, <span class="co"># extract PSM metadata</span>
   by <span class="op">=</span> <span class="fl">0</span> <span class="co"># join by rownames</span>
 <span class="op">)</span></code></pre></div>
 <p>And then use the <code>writexl</code> package to save to Excel.</p>
@@ -490,7 +490,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <ul>
 <li>Access with <code>exprs(MSnSet)</code>
 </li>
-<li>Object = a matrix of expression values, access the dimensions with <code><a href="https://lgatto.github.io/MSnbase/reference/pSet-class.html">dim(MSnSet)</a></code>
+<li>Object = a matrix of expression values, access the dimensions with <code>dim(MSnSet)</code>
 <ul>
 <li>row names = feature names (e.g. PSMs, peptides, proteins), must be unique (e.g. UniProt accessions in protein groups like <code>Q12345;Q98765</code>), access with <code>featureNames(MSnSet)</code>
 </li>
@@ -625,7 +625,7 @@ Dimension requirements for the assayData (aka. expression data), featureData and
 <a href="#processingdata" class="anchor"></a>processingData</h3>
 <p>Contains the version of MSnbase used to construct the MSnSet and also a log of what processes have been applied to the MSnSet.</p>
 <ul>
-<li>Access the overall object with <code><a href="https://lgatto.github.io/MSnbase/reference/pSet-class.html">processingData(MSnSet)</a></code>
+<li>Access the overall object with <code>processingData(MSnSet)</code>
 </li>
 <li>Object = an <code>MSnProcess</code> object, which contains several sub-objects that can be accessed using <code>processingData(MSnSet)@</code>
 <ul>

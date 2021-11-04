@@ -81,7 +81,7 @@
       <h1 data-toc-skip>TMT QC PSM-level quantification and summarisation to protein-level abundance</h1>
                         <h4 class="author">Tom Smith</h4>
             
-            <h4 class="date">2021-10-07</h4>
+            <h4 class="date">2021-11-04</h4>
       
       
       <div class="hidden name"><code>TMT_PSM_QC_Summarisation.Rmd</code></div>
@@ -124,16 +124,16 @@
 <span class="co"># Define a base R version of stringr::str_extract_all()</span>
 <span class="co"># base R str_extract</span>
 <span class="va">str_extract_all</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pattern</span>, <span class="va">string</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gregexpr</a></span><span class="op">(</span><span class="va">pattern</span>, <span class="va">string</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/regmatches.html">regmatches</a></span><span class="op">(</span><span class="va">string</span>, <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gregexpr</a></span><span class="op">(</span><span class="va">pattern</span>, <span class="va">string</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/base/regmatches.html">regmatches</a></span><span class="op">(</span><span class="va">string</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
 <span class="co"># Extract the non cRAP UniProt accessions associated with each cRAP protein</span>
-<span class="va">crap.accessions</span> <span class="op">&lt;-</span> <span class="va">crap.fasta</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">desc</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">str_extract_all</span><span class="op">(</span><span class="st">"(?&lt;=\\|).*?(?=\\|)"</span>, <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">crap.accessions</span> <span class="op">&lt;-</span> <span class="va">crap.fasta</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">desc</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">str_extract_all</span><span class="op">(</span><span class="st">"(?&lt;=\\|).*?(?=\\|)"</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>We can then supply these cRAP protein IDs to <code>parse_features</code> which will remove features which may originate from contaminants, as well as features which don’t have a unique master protein. See <code><a href="../reference/parse_features.html">?parse_features</a></code> for further details, including the removal of ‘associated cRAP.’</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">psm_data_flt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/parse_features.html">parse_features</a></span><span class="op">(</span>
@@ -153,13 +153,13 @@
 <p>We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Abundance columns for TMT PD-output start with Abundance </span>
-<span class="va">abundance_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+<span class="va">abundance_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html">grepl</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
 
 <span class="va">psm.e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">[</span>, <span class="va">abundance_cols</span><span class="op">]</span><span class="op">)</span>
-<span class="va">psm.f</span> <span class="op">&lt;-</span> <span class="va">psm_data_flt</span><span class="op">[</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span>, <span class="va">abundance_cols</span><span class="op">)</span><span class="op">]</span>
+<span class="va">psm.f</span> <span class="op">&lt;-</span> <span class="va">psm_data_flt</span><span class="op">[</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span>, <span class="va">abundance_cols</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># update the column names to remove the 'Abundance.` prefix</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm.e</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="st">''</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm.e</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm.e</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="st">''</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">psm.e</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># we don't have 'phenotype' data to add so we just define the </span>
 <span class="co"># 'expression' data and 'feature' data</span>
@@ -232,11 +232,11 @@ Notch plots after filtering
 </p>
 </div>
 <p>Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances.</p>
-<p>For PSM to protein summarisation, we will use <code><a href="https://lgatto.github.io/MSnbase/reference/combineFeatures.html">MSnbase::combineFeatures(method = 'robust')</a></code>. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.</p>
+<p>For PSM to protein summarisation, we will use <code>MSnbase::combineFeatures(method = 'robust')</code>. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.</p>
 <p>Here, we will use PSMs with at most 5/10 <code>NA</code>s and proteins with at least three finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and <code>NA</code> values. For example, if a protein has 3 PSMs and the PSMs have missing values such that some samples are still quantified in all 3 PSMs, then the protein will be quantified in these samples, but <code>NA</code> where missing values are present. Thus, each protein-level quantification will be derived from at least 3 PSM intensities, where each PSM was quantified in at least 5 samples.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">psm_filt_sn_int_missing</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int</span> <span class="op">%&gt;%</span> 
-  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html">filterNA</a></span><span class="op">(</span>pNA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># remove features observed in fewer than </span>
+<code class="sourceCode R"><span class="va">psm_filt_sn_int_missing</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html">filterNA</a></span><span class="op">(</span>pNA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># remove features observed in fewer than </span>
   <span class="fu"><a href="../reference/restrict_features_per_protein.html">restrict_features_per_protein</a></span><span class="op">(</span>min_features <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
 <div class="figure">
@@ -248,8 +248,8 @@ Tally of PSMs per protein
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prot_group</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu">fData</span><span class="op">(</span><span class="va">psm_filt_sn_int_missing</span><span class="op">)</span><span class="op">$</span><span class="va">Master.Protein.Accessions</span>
 
-<span class="va">protein</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int_missing</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">protein</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int_missing</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/combineFeatures.html">combineFeatures</a></span><span class="op">(</span>groupBy <span class="op">=</span> <span class="va">prot_group</span>, method <span class="op">=</span> <span class="st">'robust'</span>, maxit <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="co">#&gt; Your data contains missing values. Please read the relevant section in</span>
 <span class="co">#&gt; the combineFeatures manual page for details on the effects of missing</span>

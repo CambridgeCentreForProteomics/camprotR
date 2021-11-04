@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimate the incorporation rate directly from PD output — estimate_incorporation • camprotR</title>
+<title>Estimate SILAC (2-plex) incorporation rate from PD output — estimate_incorporation • camprotR</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,11 @@
 
 
 
-<meta property="og:title" content="Estimate the incorporation rate directly from PD output — estimate_incorporation" />
-<meta property="og:description" content="SILAC incorporation can be estimated from peptide-level PD output
-and summarised at peptide or protein level." />
+<meta property="og:title" content="Estimate SILAC (2-plex) incorporation rate from PD output — estimate_incorporation" />
+<meta property="og:description" content="SILAC (2-plex) incorporation can be estimated using the PSM and
+peptide groups PD outputs, and summarised at the peptide or protein level.
+This function takes the PSM.txt and PeptideGroups.txt files as inputs and
+outputs 3 plots and a .tsv file into the designated output directory." />
 
 
 
@@ -122,91 +124,123 @@ and summarised at peptide or protein level." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimate the incorporation rate directly from PD output</h1>
+    <h1>Estimate SILAC (2-plex) incorporation rate from PD output</h1>
     
     <div class="hidden name"><code>estimate_incorporation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>SILAC incorporation can be estimated from peptide-level PD output
-and summarised at peptide or protein level.</p>
+    <p>SILAC (2-plex) incorporation can be estimated using the PSM and
+peptide groups PD outputs, and summarised at the peptide or protein level.</p>
+<p>This function takes the PSM.txt and PeptideGroups.txt files as inputs and
+outputs 3 plots and a .tsv file into the designated output directory.</p>
     </div>
 
     <pre class="usage"><span class='fu'>estimate_incorporation</span><span class='op'>(</span>
-  <span class='va'>psm_infile</span>,
-  <span class='va'>peptide_infile</span>,
+  <span class='va'>psm_input</span>,
+  <span class='va'>peptide_input</span>,
   <span class='va'>crap_fasta</span>,
   master_protein_col <span class='op'>=</span> <span class='st'>"Master.Protein.Accessions"</span>,
   protein_col <span class='op'>=</span> <span class='st'>"Protein.Accessions"</span>,
   sequence_col <span class='op'>=</span> <span class='st'>"Sequence"</span>,
   modifications_col <span class='op'>=</span> <span class='st'>"Modifications"</span>,
   mix <span class='op'>=</span> <span class='fl'>0</span>,
-  <span class='va'>outdir</span>
+  outdir <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>psm_infile</th>
-      <td><p><code>string</code> filepath to psm-level PD output</p></td>
+      <th>psm_input</th>
+      <td><p><code>string</code> or <code>data.frame</code>. File path to PSM-level PD output or
+the PSM-level PD output loaded into R using <a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a>.</p></td>
     </tr>
     <tr>
-      <th>peptide_infile</th>
-      <td><p><code>string</code> filepath to peptide-level PD output</p></td>
+      <th>peptide_input</th>
+      <td><p><code>string</code>. File path to peptide-level PD output or
+the peptide-level PD output loaded into R using <a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a>.</p></td>
     </tr>
     <tr>
       <th>crap_fasta</th>
-      <td><p><code>string</code>. filepath to cRAP fasta</p></td>
+      <td><p><code>string</code>. File path to cRAP fasta used for PD search</p></td>
     </tr>
     <tr>
       <th>master_protein_col</th>
       <td><p><code>string</code>. Name of column containing master
-proteins.</p></td>
+protein accessions.</p></td>
     </tr>
     <tr>
       <th>protein_col</th>
       <td><p><code>string</code>. Name of column containing all protein
-matches.</p></td>
+accessions.</p></td>
     </tr>
     <tr>
       <th>sequence_col</th>
-      <td><p><code>string</code>. Name of column containing peptide sequences</p></td>
+      <td><p><code>string</code>. Name of column containing peptide sequences.</p></td>
     </tr>
     <tr>
       <th>modifications_col</th>
-      <td><p><code>string</code>. Name of column containing peptide modifications</p></td>
+      <td><p><code>string</code>. Name of column containing peptide modifications.</p></td>
     </tr>
     <tr>
       <th>mix</th>
-      <td><p><code>numeric</code>. If Light material has been spiked in, what is the abundance
-relative to the heavy material. E.g if they are equal, mix=1.
-Default value = 0, e.g no Light spike in</p></td>
+      <td><p><code>numeric</code>. If Light material has been spiked in,
+what is the abundance relative to the Heavy material? Default is <code>mix = 0</code>
+e.g. no Light spike in. If they are equal, <code>mix = 1</code>.</p></td>
     </tr>
     <tr>
       <th>outdir</th>
-      <td><p><code>string</code> filepath to directory for plots and incorporation summary table</p></td>
+      <td><p><code>NULL</code> or <code>string</code>. If not <code>NULL</code>, file path for directory to
+save the plots and summary table.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>incorporation</code></p>
+    <p>By default returns a <code>list</code> with 3 ggplots (HL correlation, peptide-level
+incorporation, protein-level incorporation) and 1 summary table. If <code>outdir</code>
+is not <code>NULL</code> then the plots and table will be saved into <code>outdir</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><strong>Peptide sequencing/mass shift identification</strong>
-In SILAC, Peptide identity of ions can be established through MS2 fragmentation
-('peptide sequencing') or by mass shift (within tolerance limits) relative to
-a sequenced peptide. Ideally, the correlation between heavy and light intensities
-is the same regardless of whether light or heavy peptides are identified by
-mass shift or sequencing. If e.g light peptide intensities are not well correlated
-when they are identified by mass shift, this may indicate the mass shift identifications
-are erroneously picking up 'ghost peptide', which will make incorporation estimation
-difficult</p>
+In SILAC, the peptide identity of ions can be established through MS2
+fragmentation ('peptide sequencing') or by mass shift (within tolerance
+limits) relative to a sequenced peptide.</p>
+<p>For 2-plex SILAC experiments, ideally, the correlation between Heavy and
+Light peptide intensities is the same regardless of whether Light or Heavy
+peptides are identified by mass shift or sequencing. If e.g Light peptide
+intensities are not well correlated when they are identified by mass shift,
+this may indicate that the mass shift identifications are erroneously
+picking up ghost peptides', which will make incorporation estimation difficult.</p>
 <p><strong>Mixing Heavy and Light material for incorporation rate testing</strong>
-To get around the issue of 'ghost peptide', one can spike in Light material (
-at cell or protein extract-level) to the Heavy material being analysed.</p>
+To get around the issue of 'ghost peptides', one can spike in
+Light material (at cell or protein extract-level) to the Heavy material
+being analysed.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='co'># input as file paths</span></span>
+<span class='r-in'><span class='fu'>estimate_incorporation</span><span class='op'>(</span></span>
+<span class='r-in'>  psm_input <span class='op'>=</span> <span class='st'>"data-raw/Molm_13_P4_PSMs.txt"</span>,</span>
+<span class='r-in'>  peptide_input <span class='op'>=</span> <span class='st'>"data-raw/Molm_13_P4_PeptideGroups.txt"</span>,</span>
+<span class='r-in'>  crap_fasta <span class='op'>=</span> <span class='st'>"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span>
+<span class='r-in'>  mix <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span class='r-in'>  outdir <span class='op'>=</span> <span class='st'>"Molm_13_incorporation/"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># input as data.frames</span></span>
+<span class='r-in'><span class='fu'>estimate_incorporation</span><span class='op'>(</span></span>
+<span class='r-in'>  psm_input <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a></span><span class='op'>(</span><span class='st'>"data-raw/Molm_13_P4_PSMs.txt"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  peptide_input <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.delim</a></span><span class='op'>(</span><span class='st'>"data-raw/Molm_13_P4_PeptideGroups.txt"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  crap_fasta <span class='op'>=</span> <span class='st'>"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span>
+<span class='r-in'>  mix <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span class='r-in'>  outdir <span class='op'>=</span> <span class='st'>"Molm_13_incorporation/"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

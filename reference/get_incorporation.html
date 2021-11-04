@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determine the SILAC incorporation rate given intensity values for light and heavy — get_incorporation • camprotR</title>
+<title>Determine SILAC (2-plex) incorporation rate given intensity values for Light and Heavy — get_incorporation • camprotR</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Determine the SILAC incorporation rate given intensity values for light and heavy — get_incorporation" />
-<meta property="og:description" content="SILAC incorporation is estimated by H / (H + L), where H=Heavy
-and L=Light labelled peptide intensity. If L is NA, incorporation==1, if H is
-NA, incorproration==0" />
+<meta property="og:title" content="Determine SILAC (2-plex) incorporation rate given intensity values for Light and Heavy — get_incorporation" />
+<meta property="og:description" content="SILAC incorporation is estimated by H / (H + L), where H = Heavy
+and L = Light labelled peptide intensity. If L is NA, incorporation == 1
+and if H is NA, incorporation == 0." />
 
 
 
@@ -123,15 +123,15 @@ NA, incorproration==0" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determine the SILAC incorporation rate given intensity values for light and heavy</h1>
+    <h1>Determine SILAC (2-plex) incorporation rate given intensity values for Light and Heavy</h1>
     
     <div class="hidden name"><code>get_incorporation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>SILAC incorporation is estimated by H / (H + L), where H=Heavy
-and L=Light labelled peptide intensity. If L is NA, incorporation==1, if H is
-NA, incorproration==0</p>
+    <p>SILAC incorporation is estimated by H / (H + L), where H = Heavy
+and L = Light labelled peptide intensity. If L is <code>NA</code>, incorporation == 1
+and if H is <code>NA</code>, incorporation == 0.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_incorporation</span><span class='op'>(</span><span class='va'>light</span>, <span class='va'>heavy</span><span class='op'>)</span></pre>
@@ -141,17 +141,17 @@ NA, incorproration==0</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>light</th>
-      <td><p><code>numeric</code> Light peptide intensity</p></td>
+      <td><p><code>numeric</code>. Light peptide intensity.</p></td>
     </tr>
     <tr>
       <th>heavy</th>
-      <td><p><code>numeric</code> Heavy peptide intensity</p></td>
+      <td><p><code>numeric</code>. Heavy peptide intensity.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>incorporation</code></p>
+    <p>Returns a <code>numeric</code> from 0 to 1 (or <code>NA</code> if <code>light</code> and <code>heavy</code> are both <code>NA</code>)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -156,35 +156,36 @@ This function returns the number of features per protein per sample.</p>
     <p><code>tibble</code> with feature counts per sample per protein.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Use a small example TMT dataset included with the camprotR package</span>
-<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='va'>psm_tmt_total</span>
-
-<span class='co'># Make an MSnSet</span>
-<span class='va'>df_exprs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"Abundance"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df_exprs</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"Abundance\\."</span>, <span class='st'>""</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df_exprs</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>df_fData</span> <span class='op'>&lt;-</span> <span class='va'>df</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"Abundance"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>, invert <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span>
-
-<span class='va'>psm</span> <span class='op'>&lt;-</span> <span class='fu'>MSnbase</span><span class='fu'>::</span><span class='fu'><a href='https://lgatto.github.io/MSnbase/reference/MSnSet-class.html'>MSnSet</a></span><span class='op'>(</span>exprs <span class='op'>=</span> <span class='va'>df_exprs</span>, fData <span class='op'>=</span> <span class='va'>df_fData</span><span class='op'>)</span>
-
-<span class='co'># Count the number of PSMs per protein</span>
-<span class='fu'>count_features_per_protein</span><span class='op'>(</span><span class='va'>psm</span>, master_prot_col <span class='op'>=</span> <span class='st'>"Master.Protein.Accessions"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 23,542 × 3</span>
-#&gt; <span style='color: #949494;'># Groups:   sample [10]</span>
-#&gt;    sample Master.Protein.Accessions     n
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> 126    <span style='color: #949494;'>""</span>                            2
-#&gt; <span style='color: #BCBCBC;'> 2</span> 126    <span style='color: #949494;'>"</span>A0AVT1<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 3</span> 126    <span style='color: #949494;'>"</span>A0PJZ3<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 4</span> 126    <span style='color: #949494;'>"</span>A0PK00<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 5</span> 126    <span style='color: #949494;'>"</span>A1L020<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 6</span> 126    <span style='color: #949494;'>"</span>A1L0T0<span style='color: #949494;'>"</span>                      4
-#&gt; <span style='color: #BCBCBC;'> 7</span> 126    <span style='color: #949494;'>"</span>A1L390<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 8</span> 126    <span style='color: #949494;'>"</span>A1X283<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'> 9</span> 126    <span style='color: #949494;'>"</span>A3KMH1<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #BCBCBC;'>10</span> 126    <span style='color: #949494;'>"</span>A3KN83<span style='color: #949494;'>"</span>                      1
-#&gt; <span style='color: #949494;'># … with 23,532 more rows</span></div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># Use a small example TMT dataset included with the camprotR package</span></span>
+<span class='r-in'><span class='va'>df</span> <span class='op'>&lt;-</span> <span class='va'>psm_tmt_total</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Make an MSnSet</span></span>
+<span class='r-in'><span class='va'>df_exprs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"Abundance"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df_exprs</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"Abundance\\."</span>, <span class='st'>""</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df_exprs</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>df_fData</span> <span class='op'>&lt;-</span> <span class='va'>df</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"Abundance"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>, invert <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>psm</span> <span class='op'>&lt;-</span> <span class='fu'>MSnbase</span><span class='fu'>::</span><span class='fu'><a href='https://lgatto.github.io/MSnbase/reference/MSnSet-class.html'>MSnSet</a></span><span class='op'>(</span>exprs <span class='op'>=</span> <span class='va'>df_exprs</span>, fData <span class='op'>=</span> <span class='va'>df_fData</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Count the number of PSMs per protein</span></span>
+<span class='r-in'><span class='fu'>count_features_per_protein</span><span class='op'>(</span><span class='va'>psm</span>, master_prot_col <span class='op'>=</span> <span class='st'>"Master.Protein.Accessions"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 23,542 × 3</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># Groups:   sample [10]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    sample Master.Protein.Accessions     n</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> 126    <span style='color: #949494;'>""</span>                            2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> 126    <span style='color: #949494;'>"</span>A0AVT1<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> 126    <span style='color: #949494;'>"</span>A0PJZ3<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> 126    <span style='color: #949494;'>"</span>A0PK00<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> 126    <span style='color: #949494;'>"</span>A1L020<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> 126    <span style='color: #949494;'>"</span>A1L0T0<span style='color: #949494;'>"</span>                      4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> 126    <span style='color: #949494;'>"</span>A1L390<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> 126    <span style='color: #949494;'>"</span>A1X283<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> 126    <span style='color: #949494;'>"</span>A3KMH1<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> 126    <span style='color: #949494;'>"</span>A3KN83<span style='color: #949494;'>"</span>                      1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 23,532 more rows</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
