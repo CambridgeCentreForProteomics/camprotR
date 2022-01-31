@@ -17,27 +17,23 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup}
+library(dplyr)
+library(camprotR)
+```
 
 Stable Isotope Labeling by/with Amino acids in Cell culture (SILAC) is a form of quantitative proteomics where different conditions are quantified in the same run by differential labelling with isotopes (ref). Intially designed to provide pairwise comparisons between cell cultures, it has now been extended to more than two labels (ref) and whole organisms (ref). This elegant experimental design enables quantification of ratios between conditions with very little technical variation, since the samples from separate conditions are pooled as early as possible in the sample handling. Furthermore, the use of different isotopes has been extended to study the turnover of protein (e.g switch from one label to another) in pulsed SILAC, and relative turnover between conditions (e.g two condition on the same label and switch each condition to a different label; requires triple SILAC).
 
 The analysis of SILAC data is relatively straightforward, since technical noise is low and normalisation is not normally required. Before performing a SILAC experiment, it is neccessary to confirm complete (e.g > 95%) incorporation of the isotope from the media the cells are being grown in. 
 
-Here, we process data from an OOPS (ref) experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. 2 plates were switched from
-
-```{r setup}
-library(camprotR)
-```
-
+As an example, we show how to do this with `camprotR::estimate_incorporation()` below. Calculating the incorporation is simple, but this function has the advantage of supporting the use of mixes of heavy and light labelled material. Here, we mized heavy and light labelled material 50:50. The observed incorporation is 50.94 at the peptide-level and 50.17 at the protein level. Correcting for the mixing proportions this gives us incorporation rate estimates just over 100%, which suggests the true incorporation rate is likely to be very close to 100%.
 
 ```{r}
 crap_fasta_inf <- system.file(
   "extdata", "cRAP_20190401.fasta.gz", 
   package = "camprotR"
 )
-```
 
-
-```{r}
 incorporation_results <- camprotR::estimate_incorporation(
   psm_input=psm_silac_p4,
   peptide_input=pep_silac_p4,
@@ -46,8 +42,16 @@ incorporation_results <- camprotR::estimate_incorporation(
   )
 
 print(incorporation_results)
+
+
 ```
-The first step is to remove contaminant proteins. These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
+
+
+
+Now, onto some experimental data. Here, we process data from an OOPS (ref) experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. 2 plates were switched from
+
+
+The first step is to read in the data and remove contaminant proteins and features without quantification data . These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
 ```{r}
 
 
@@ -69,16 +73,29 @@ crap.accessions <- crap.fasta %>%
   unlist()
 ```
 
-We can then supply these cRAP protein IDs to `parse_features` which will remove features which may originate from contaminants, as well as features which don't have a unique master protein. See `?parse_features` for further details, including the removal of 'associated cRAP'.
-```{r}
-OOPS_1_PSMs <- '../data/OOPS_1_PSMs.rda'
+We can then supply these cRAP protein IDs to parse_features` which will remove features which may originate from contaminants, as well as features which don't have a unique master protein. See `?parse_features` for further details, including the removal of 'associated cRAP'.
 
+```{r}
+pep_data <- list(pep_oops_1, pep_oops_2, pep_oops_3, pep_oops_4)
+names(pep_data) <- c('pep_1', 'pep_2', 'pep_3', 'pep_4')
+
+pep_data_parsed <- pep_data %>% lapply(function(infdata){
+  parse_features(infdata,
+                 silac = TRUE,
+                 crap_proteins = crap.accessions,
+                 unique_master=FALSE)
+
+})
+```
+
+
+```{r}
 psm_data <- list(psm_oops_1, psm_oops_2, psm_oops_3, psm_oops_4)
 names(psm_data) <- c('psm_1', 'psm_2', 'psm_3', 'psm_4')
   
-psm_data_flt <- psm_data %>% lapply(function(x){
+psm_data_flt <- psm_data %>% lapply(function(infdata){
   parse_features(
-    x, 
+    infdata, 
     crap_proteins = crap.accessions,
     silac =  TRUE,
     level = 'PSM'
@@ -101,9 +118,116 @@ psm_sequenced_data <- psm_data %>%
     camprotR::silac_psm_seq_int(x, sequence_col='Sequence')
     })
 
-names(psm_sequenced_data) <- names(psm_data)
+```
+
+```{r}
+pep_annot_seq <- pep_data_parsed %>% names() %>%
+  lapply(function(experiment){
+    
+  # In this case, the replicate number is after the '_'
+  rep_n <- sapply(strsplit(experiment, split='_'), '[[', 2) 
+  
+  .data <- pep_data_parsed[[experiment]]
+  
+  # Identify the 
+  abundance_light_col <- colnames(.data)[grepl('Abundance.*.Light.Sample', colnames(.data))]
+  abundance_heavy_col <- colnames(.data)[grepl('Abundance.*.Heavy.Sample', colnames(.data))]
+  
+  # Label-swap info in cell above defines whether heavy or light is CL
+  cl_col <- ifelse(rep_n %in% 1:2, abundance_heavy_col, abundance_light_col) 
+  nc_col <- ifelse(rep_n %in% 1:2, abundance_light_col, abundance_heavy_col)
+  cl_sequenced <- ifelse(rep_n %in% 1:2, 'Sequenced_Heavy', 'Sequenced_Light') 
+  nc_sequenced <- ifelse(rep_n %in% 1:2, 'Sequenced_Light', 'Sequenced_Heavy')
+
+  # Get the 'sequenced' information from the PSM-level data
+  sequenced_peptides <- psm_sequenced_data[[paste0('psm_', rep_n)]]
+
+  # merge the sequenced information and add new columns for the CL/NC and CL/NC sequenced information
+  .data <- .data %>%
+    # Update the modifications column for the peptide object so it doesn't include silac modifications 
+    mutate(Modifications=remove_silac_modifications(Modifications, level='peptide')) %>%
+    # Update the sequence column to all uppercase
+    rowwise() %>% mutate(Sequence=toupper(Sequence)) %>%
+    # Merge with the sequenced information
+    merge(sequenced_peptides, by=c('Sequence', 'Modifications'))  %>%
+    # Add new columns with CL/NC and CL/NC sequenced information
+    mutate('CL'=!!sym(cl_col),
+           'NC'=!!sym(nc_col),
+           'Sequenced_CL'=!!sym(cl_sequenced),
+           'Sequenced_NC'=!!sym(nc_sequenced),
+           replicate=rep_n) %>%
+    # And subset to these columns
+    dplyr::select(Master.Protein.Accessions, CL, NC, Sequenced_CL ,Sequenced_NC,
+                  max_interference, replicate, Sequence, Modifications)
+  })
+
+# Re-annotate with names
+names(pep_annot_seq) <- names(pep_data_parsed)
+```
+
+```{r}
+abundance_data_complete <- do.call('rbind', pep_annot_seq) %>% tibble::remove_rownames()
+```
+
+
+How many ratios have we quantified with each method replicate
+```{r}
+abundance_data_complete %>% 
+  filter((is.finite(CL) & is.finite(NC))) %>%
+  group_by(replicate) %>%
+  tally()
+```
+
+
+```{r}
+ratios <- abundance_data_complete %>%
+  filter((is.finite(CL) | is.finite(NC))) %>%
+  mutate(CL=log2(CL), NC=log2(NC)) %>%
+  get_ratio(CL, NC, bind = TRUE) %>%
+  mutate(sequenced=interaction(Sequenced_CL, Sequenced_NC)) %>%
+      mutate(sequenced=factor(recode(sequenced,
+                                    'TRUE.TRUE'='Both sequenced',
+                                    'TRUE.FALSE'='CL sequenced',
+                                    'FALSE.TRUE'='NC sequenced'), 
+    levels=c('Both sequenced', 'CL sequenced', 'NC sequenced')))
+```
+
+How many proteins have we quantified in each replicate
+
+```{r}
+
+ratios %>%
+  filter(missing!='CL Missing', is.finite(ratio)) %>%
+  select(replicate, Master.Protein.Accessions) %>%
+  distinct() %>%
+  group_by(replicate) %>%
+  tally()
+
 
 ```
 
 
+Tally and plot the missing values per replicate for each method. Note we have far fewer missing values in InfOOPS without any impact on the number of proteins in any class being identified
+```{r}
+library(ggplot2)
 
+ratios %>%
+  group_by(replicate, missing) %>%
+  tally() %>%
+  ggplot(aes(replicate, n, fill=missing)) +
+  geom_bar(stat='identity', position='fill', colour='grey50') +
+  theme_camprot(border=FALSE) +
+  ylab('Fraction') +
+  xlab('Replicate') +
+  scale_fill_manual(values=get_cat_palette(3), name='')
+
+ratios %>%
+  group_by(replicate, missing) %>%
+  tally() %>%
+  ggplot(aes(replicate, n, fill=missing)) +
+  geom_bar(stat='identity', position='stack', colour='grey50') +
+  theme_camprot(border=FALSE) +
+  ylab('Peptides') +
+  xlab('Replicate') +
+  scale_fill_manual(values=get_cat_palette(3), name='')
+```
