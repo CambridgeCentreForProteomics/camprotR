@@ -1,0 +1,109 @@
+---
+title: "Processing SILAC data and QC isotopes"
+author: "Tom Smith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: camprot_references.json
+vignette: >
+  %\VignetteIndexEntry{SILAC}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Stable Isotope Labeling by/with Amino acids in Cell culture (SILAC) is a form of quantitative proteomics where different conditions are quantified in the same run by differential labelling with isotopes (ref). Intially designed to provide pairwise comparisons between cell cultures, it has now been extended to more than two labels (ref) and whole organisms (ref). This elegant experimental design enables quantification of ratios between conditions with very little technical variation, since the samples from separate conditions are pooled as early as possible in the sample handling. Furthermore, the use of different isotopes has been extended to study the turnover of protein (e.g switch from one label to another) in pulsed SILAC, and relative turnover between conditions (e.g two condition on the same label and switch each condition to a different label; requires triple SILAC).
+
+The analysis of SILAC data is relatively straightforward, since technical noise is low and normalisation is not normally required. Before performing a SILAC experiment, it is neccessary to confirm complete (e.g > 95%) incorporation of the isotope from the media the cells are being grown in. 
+
+Here, we process data from an OOPS (ref) experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. 2 plates were switched from
+
+```{r setup}
+library(camprotR)
+```
+
+
+```{r}
+crap_fasta_inf <- system.file(
+  "extdata", "cRAP_20190401.fasta.gz", 
+  package = "camprotR"
+)
+```
+
+
+```{r}
+incorporation_results <- camprotR::estimate_incorporation(
+  psm_input=psm_silac_p4,
+  peptide_input=pep_silac_p4,
+  crap_fasta=crap_fasta_inf,
+  mix=1 # This incorporation test was performed with a 50:50 H/L mix
+  )
+
+print(incorporation_results)
+```
+The first step is to remove contaminant proteins. These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
+```{r}
+
+
+# Load the cRAP FASTA used for the PD search
+crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
+
+# Define a base R version of stringr::str_extract_all()
+# base R str_extract
+str_extract_all <- function(pattern, string) {
+  gregexpr(pattern, string, perl = TRUE) %>% 
+    regmatches(string, .) %>% 
+    unlist()
+}
+
+# Extract the non cRAP UniProt accessions associated with each cRAP protein
+crap.accessions <- crap.fasta %>% 
+  pull(desc) %>% 
+  str_extract_all("(?<=\\|).*?(?=\\|)", .) %>% 
+  unlist()
+```
+
+We can then supply these cRAP protein IDs to `parse_features` which will remove features which may originate from contaminants, as well as features which don't have a unique master protein. See `?parse_features` for further details, including the removal of 'associated cRAP'.
+```{r}
+OOPS_1_PSMs <- '../data/OOPS_1_PSMs.rda'
+
+psm_data <- list(psm_oops_1, psm_oops_2, psm_oops_3, psm_oops_4)
+names(psm_data) <- c('psm_1', 'psm_2', 'psm_3', 'psm_4')
+  
+psm_data_flt <- psm_data %>% lapply(function(x){
+  parse_features(
+    x, 
+    crap_proteins = crap.accessions,
+    silac =  TRUE,
+    level = 'PSM'
+  )
+})
+```
+
+See `?camprotR::silac_psm_seq_int` for more details
+```{r}
+
+
+psm_sequenced_data <- psm_data %>% 
+  lapply(function(x){
+    # If you export from PD including the 'Sequence' column, you don't need this step.
+    # Below, we convert the Annotated.Sequence column into a Sequence column
+    x$Sequence <- sapply(strsplit(x$Annotated.Sequence, split='\\.'), '[[', 1) %>%
+      toupper()
+    
+    #
+    camprotR::silac_psm_seq_int(x, sequence_col='Sequence')
+    })
+
+names(psm_sequenced_data) <- names(psm_data)
+
+```
+
+
+
