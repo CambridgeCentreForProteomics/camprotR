@@ -19,14 +19,18 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(dplyr)
+library(tidyr)
 library(camprotR)
+library(MSnbase)
+library(DEqMS)
+library(limma)
 ```
 
-Stable Isotope Labeling by/with Amino acids in Cell culture (SILAC) is a form of quantitative proteomics where different conditions are quantified in the same run by differential labelling with isotopes (ref). Intially designed to provide pairwise comparisons between cell cultures, it has now been extended to more than two labels (ref) and whole organisms (ref). This elegant experimental design enables quantification of ratios between conditions with very little technical variation, since the samples from separate conditions are pooled as early as possible in the sample handling. Furthermore, the use of different isotopes has been extended to study the turnover of protein (e.g switch from one label to another) in pulsed SILAC, and relative turnover between conditions (e.g two condition on the same label and switch each condition to a different label; requires triple SILAC).
+Stable Isotope Labeling by/with Amino acids in Cell culture (SILAC) is a form of quantitative proteomics where different conditions are quantified in the same run by differential labelling with isotopes [@http://zotero.org/users/5634351/items/ST368TPT]. Intially designed to provide pairwise comparisons between cell cultures, it has now been extended to more than two labels and whole organisms [@http://zotero.org/users/5634351/items/6HPNEJ3F]. This elegant experimental design enables quantification of ratios between conditions with very little technical variation, since the samples from separate conditions are pooled as early as possible in the sample handling. Furthermore, the use of different isotopes has been extended to study the turnover of protein (e.g switch from one label to another) in pulsed SILAC, and relative turnover between conditions (e.g two condition on the same label and switch each condition to a different label; requires triple SILAC).
 
 The analysis of SILAC data is relatively straightforward, since technical noise is low and normalisation is not normally required. Before performing a SILAC experiment, it is neccessary to confirm complete (e.g > 95%) incorporation of the isotope from the media the cells are being grown in. 
 
-As an example, we show how to do this with `camprotR::estimate_incorporation()` below. Calculating the incorporation is simple, but this function has the advantage of supporting the use of mixes of heavy and light labelled material. Here, we mized heavy and light labelled material 50:50. The observed incorporation is 50.94 at the peptide-level and 50.17 at the protein level. Correcting for the mixing proportions this gives us incorporation rate estimates just over 100%, which suggests the true incorporation rate is likely to be very close to 100%.
+As an example, we show how to do this with `camprotR::estimate_incorporation()` below. Calculating the incorporation is simple, but this function has the advantage of supporting the use of mixes of heavy and light labelled material, which makes the estimation of incorporation rate more simple since both isotopes should exist for all peptides. Here, we mixed heavy and light labelled cells 50:50. The observed incorporation for the mixed sample is 50.94 at the peptide-level and 50.17 at the protein level. Correcting for the mixing proportions this gives us incorporation rate estimates just over 100%, which suggests the true incorporation rate is likely to be very close to 100%.
 
 ```{r}
 crap_fasta_inf <- system.file(
@@ -47,11 +51,9 @@ print(incorporation_results)
 ```
 
 
+Now, onto some experimental data. Here, we process data from an OOPS [@http://zotero.org/users/5634351/items/EJHWF46N] experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). RNA-binding proteins (RBPs) should be much more abundant in CL samples, since this covalently crosslinks the RBPs to RNA, and retains them in the OOPS interface, from which the sample is taken. In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. 2 plates (replicate 1 & 2) were Heavy for CL and 2 plates (replicates 3 & 4) were Light for CL. This is called a 'label' switch and helps to further ensure results are independent of the labelling.
 
-Now, onto some experimental data. Here, we process data from an OOPS (ref) experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. 2 plates were switched from
-
-
-The first step is to read in the data and remove contaminant proteins and features without quantification data . These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
+The first step is to read in the data and remove contaminant proteins and features without quantification data. These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
 ```{r}
 
 
@@ -231,3 +233,158 @@ ratios %>%
   xlab('Replicate') +
   scale_fill_manual(values=get_cat_palette(3), name='')
 ```
+```{r}
+p <- ratios %>% group_by(replicate, sequenced) %>% tally() %>%
+  ggplot(aes(replicate, n, fill=sequenced)) +
+  theme_camprot() +
+  scale_fill_manual(values=get_cat_palette(3)) +
+  xlab('Replicate')
+
+p1 <- p +
+  geom_bar(stat='identity') +
+  ylab('Peptides')
+
+p2 <- p +
+  geom_bar(stat='identity', position='fill') +
+  ylab('Fraction of peptides')
+
+print(p1)
+print(p2)
+```
+
+```{r}
+  
+ratios %>% ggplot(aes(ratio, colour=sequenced)) +
+  xlab('Ratio CL:NC (Log2)') +
+  geom_vline(xintercept=0, linetype=2, colour='grey50') +
+  geom_density() +
+  theme_camprot(base_size=15) +
+  facet_wrap(~replicate, scales='free_y') +
+  scale_colour_manual(values=c(get_cat_palette(2), 'black'))
+      
+
+```
+
+```{r}
+
+ratios %>%
+  ggplot(aes(CL, NC)) +
+  geom_point(size=0.5, aes(colour=replicate)) +
+  theme_camprot(base_size=15, border=FALSE) +
+  facet_wrap(~sequenced) +
+  geom_abline(slope=1, linetype=2, colour='grey') # line at CL==NC
+    
+```
+Below, we make an MSnSet from the peptide-level CL/NC ratios.
+```{r}
+# Remove peptides without both CL + NC quantified
+flt_ratios <- ratios %>%
+  filter( is.finite(ratio))
+
+# Create expression data.frame()
+exprs_data <- flt_ratios %>%
+  dplyr::select(Master.Protein.Accessions, Sequence, Modifications,
+                replicate, ratio) %>%
+  spread(key=replicate, value=ratio)
+
+sequenced_nc_data <- flt_ratios %>%
+  dplyr::select(Master.Protein.Accessions, Sequence, Modifications,
+                replicate, Sequenced_NC) %>%
+  spread(key=replicate, value=Sequenced_NC)
+
+# make sure the exprs and fData are in the same order
+sequenced_nc_data <- sequenced_nc_data[
+  match(interaction(exprs_data[c('Sequence', 'Modifications')]),
+        interaction(sequenced_nc_data[c('Sequence', 'Modifications')])),]
+
+# Drop columns no longer needed in expression data and convert to matrix
+exprs_data <- exprs_data %>%
+  dplyr::select(-c(Master.Protein.Accessions, Sequence, Modifications)) %>%
+  as.matrix()
+
+# Update rownames to integers index
+rownames(exprs_data) <- 1:nrow(exprs_data)
+rownames(sequenced_nc_data) <- 1:nrow(sequenced_nc_data)
+
+# Create MSnSet
+pep_res <- MSnSet(exprs=exprs_data, fData=sequenced_nc_data)
+
+# Add replicate number to phenotype data
+pData(pep_res)$Replicate <- rownames(pData(pep_res))
+
+pep_res
+```
+Summarise to protein-level ratios. Here, we'll use the median and demand at least two ratios per protein
+```{r}
+pep_res_flt <- pep_res %>% camprotR::restrict_features_per_protein(min_features=2, plot=TRUE)
+
+prot_res <- combineFeatures(
+    pep_res_flt, 
+    groupBy = fData(pep_res_flt)$Master.Protein.Accessions,
+    method = "median",
+    na.rm = TRUE)
+
+print(prot_res)
+```
+Note that the summarisation is occuring on the expression data, but will affect the feature data too (the values in the first  feature are taken). If we want to retain information about whether the peptide was 'sequenced' in both conditions, we will need to generate this ourselves and re-attach to the MSnSet
+```{r}
+prot_sequenced_nc <- fData(pep_res_flt) %>%
+  select(-Sequence, -Modifications) %>%
+  pivot_longer(cols=-Master.Protein.Accessions, values_to='sequenced_NC') %>%
+  group_by(Master.Protein.Accessions) %>%
+  filter(!is.na(sequenced_NC)) %>%
+  summarise(any_not_sequenced=any(!sequenced_NC)) %>%
+  tibble::column_to_rownames('Master.Protein.Accessions')
+
+
+fData(prot_res) <- fData(prot_res) %>% select(Master.Protein.Accessions, Sequence, Modifications) %>%
+  mutate('any_not_sequenced'=prot_sequenced_nc[rownames(prot_res), 'any_not_sequenced'])
+```
+We can inspect the completeness of our protein-level data using `MSnbase::plotNA()`. In this case 18/59 proteins have complete data (all 4 replicates) and the expression matrix is 63% complete overall.
+```{r}
+MSnbase::plotNA(prot_res, pNA = 0)
+```
+
+To identify proteins with significantly increased abundance in CL vs NC, we will use DEqMS (ref). 
+
+The next step is taken from [DEqMS](https://bioconductor.org/packages/release/bioc/vignettes/DEqMS/inst/doc/DEqMS-package-vignette.html#extract-quant-data-columns-for-deqms). The idea is that we want to add a `$count` column to the `MArrayLM` object and then use the `spectraCounteBayes` function to perform the bayesian shrinkage using the count column rather than the `$Amean` column. In our case, `count` is the number of peptides per protein. In the DEqMS paper, they suggest that the best summarisation metric to use is the minimum value across the samples. Unfortunately, since we have so few proteins in this toy dataset, the relationship between PSM count and variance is not apparent
+```{r}
+dat <- exprs(prot_res)
+
+dat <- dat[rowSums(is.finite(dat))>=2,]
+
+design <- cbind(Intercept=rep(1, ncol(dat)))
+fit <- lmFit(dat, design)
+fit <- eBayes(fit)
+# Obtain the min peptide count across the samples
+min_pep_count <- camprotR::count_features_per_protein(pep_res) %>%
+  group_by(Master.Protein.Accessions) %>%
+  summarise(min_pep_count=min(n)) %>%
+  tibble::column_to_rownames('Master.Protein.Accessions')
+
+# add the min peptide count
+fit$count = min_pep_count[rownames(fit$coefficients),'min_pep_count']
+
+# run DEqMS
+fit_deqms = spectraCounteBayes(fit)
+
+# Diagnostic plots
+VarianceBoxplot(fit_deqms,n=30,xlab="PSM count")
+
+DEqMS.results = outputResult(fit_deqms, coef_col = 1)
+head(DEqMS.results)
+
+table(ifelse(DEqMS.results$sca.adj.pval<0.01, 'sig.', 'not sig.'),
+      ifelse(DEqMS.results$logFC>1, 'increased', 'not increased'))
+```
+
+```{r}
+DEqMS.results %>%
+  ggplot(aes(logFC, -log10(sca.P.Value), colour=sca.adj.pval<0.01)) +
+  geom_point() +
+  theme_camprot() +
+  scale_colour_manual(values=c('grey', get_cat_palette(2)[2]), name='CL vs NC Sig.') +
+  xlab('CL vs NC (log2)') +
+  ylab('-log10 ( p-value )')
+```
+
