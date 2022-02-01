@@ -42,6 +42,8 @@ library(tidyr)
 library(dplyr)
 ```
 
+
+# Input data
 We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 5,000 PSMs only.
 ```{r}
 psm_data <- psm_tmt_total
@@ -98,6 +100,8 @@ colnames(psm.e) <- gsub('Abundance.', '', colnames(psm.e))
 psm <- MSnbase::MSnSet(exprs = psm.e, fData = psm.f)
 ```
 
+# The notch
+**Note - The section below on the 'notch' only applies to data aquired with Tune < 3.0. Recently aquired data should have used Tune > 3.0 and this section can be skipped**
 The distribution of TMT intensities obtained by Orbitrap has been observed to have a 'notch' where few values are observed [@http://zotero.org/users/5634351/items/DLWEN74B]. This presence of the notch is dependent on the MS settings, most notably automatic gain control (AGC) target and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the `plot_TMT_notch` function, which annotates the notch region and the proportion of values below the upper notch boundary. 
 
 ```{r, fig.height=5, fig.width=5, fig.fullwidth=TRUE, fig.cap="TMT intensities, with notch region denoted by vertical lines"}
@@ -117,6 +121,8 @@ plot_below_notch_per_prot(notch_per_protein)
 plot_fraction_below_notch_per_prot(notch_per_protein)
 ```
 
+
+# Removing low quality PSMs
 We will still want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the `plot_missing_SN` function.
 
 Note that where the signal:noise > 10, there are far fewer missing values.
@@ -134,6 +140,8 @@ Based on the above, we will filter the PSMs to only retain those with S:N > 10 u
 psm_filt_sn_int <- filter_TMT_PSMs(psm, inter_thresh = 50, sn_thresh = 10)
 ```
 
+
+# Summarising to protein-level abundances
 Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances. 
 
 For PSM to protein summarisation, we will use `MSnbase::combineFeatures(method = 'robust')`. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.
@@ -160,7 +168,6 @@ Biobase::exprs(protein_robust) <- 2^Biobase::exprs(protein_robust)
 ```
 
 Alternatively, one can perform a more typical summarisation to protein-level abundances by simply summing the PSM-level abundances. In this case, we do not want to allow any missing values and will again demand at least 2 PSMs per proteins 
-
 ```{r}
 psm_filt_sn_int_missing <- psm_filt_sn_int %>% 
   MSnbase::filterNA() %>% # remove PSMs with any missing values
