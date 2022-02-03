@@ -395,5 +395,136 @@
 				]
 			]
 		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/RTM6NFVU",
+		"type": "article-journal",
+		"abstract": "Differential analysis of MS-data to identify biomarkers or to understand biology is a cornerstone in proteomics. DEqMS is a robust method for analysis of both labelled and label-free MS-data. The method takes into account the inherent dependence of protein variance on the number of PSMs or peptides used for quantification, thereby providing a more accurate variance estimation. Compared to current methods, DEqMS achieves better accuracy and statistical power in quantitative proteomics. The tool is available as user-friendly R package., \n          \n            \n          \n        , \n          Highlights\n        , \n          \n            \n              DEqMS is a method for statistical analysis of quantitative MS-data.\n            \n            \n              Variance estimates based on the actual MS-data structure.\n            \n            \n              Improved statistical power and accuracy in protein differential analysis.\n            \n            \n              DEqMS is available as a user-friendly R package in Bioconductor.\n            \n          \n        , Quantitative proteomics by mass spectrometry is widely used in biomarker research and basic biology research for investigation of phenotype level cellular events. Despite the wide application, the methodology for statistical analysis of differentially expressed proteins has not been unified. Various methods such as t test, linear model and mixed effect models are used to define changes in proteomics experiments. However, none of these methods consider the specific structure of MS-data. Choices between methods, often originally developed for other types of data, are based on compromises between features such as statistical power, general applicability and user friendliness. Furthermore, whether to include proteins identified with one peptide in statistical analysis of differential protein expression varies between studies. Here we present DEqMS, a robust statistical method developed specifically for differential protein expression analysis in mass spectrometry data. In all data sets investigated there is a clear dependence of variance on the number of PSMs or peptides used for protein quantification. DEqMS takes this feature into account when assessing differential protein expression. This allows for a more accurate data-dependent estimation of protein variance and inclusion of single peptide identifications without increasing false discoveries. The method was tested in several data sets including E. coli proteome spike-in data, using both label-free and TMT-labeled quantification. Compared with previous statistical methods used in quantitative proteomics, DEqMS showed consistently better accuracy in detecting altered protein levels compared with other statistical methods in both label-free and labeled quantitative proteomics data. DEqMS is available as an R package in Bioconductor.",
+		"container-title": "Molecular & Cellular Proteomics : MCP",
+		"DOI": "10.1074/mcp.TIR119.001646",
+		"ISSN": "1535-9476",
+		"issue": "6",
+		"journalAbbreviation": "Mol Cell Proteomics",
+		"note": "PMID: 32205417\nPMCID: PMC7261819",
+		"page": "1047-1057",
+		"source": "PubMed Central",
+		"title": "DEqMS: A Method for Accurate Variance Estimation in Differential Protein Expression Analysis",
+		"title-short": "DEqMS",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7261819/",
+		"volume": "19",
+		"author": [
+			{
+				"family": "Zhu",
+				"given": "Yafeng"
+			},
+			{
+				"family": "Orre",
+				"given": "Lukas M."
+			},
+			{
+				"family": "Zhou Tran",
+				"given": "Yan"
+			},
+			{
+				"family": "Mermelekas",
+				"given": "Georgios"
+			},
+			{
+				"family": "Johansson",
+				"given": "Henrik J."
+			},
+			{
+				"family": "Malyutina",
+				"given": "Alina"
+			},
+			{
+				"family": "Anders",
+				"given": "Simon"
+			},
+			{
+				"family": "Lehtiö",
+				"given": "Janne"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					3
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/6KTXTWME",
+		"type": "article-journal",
+		"abstract": "limma is an R/Bioconductor software package that provides an integrated solution for analysing data from gene expression experiments. It contains rich features for handling complex experimental designs and for information borrowing to overcome the problem of small sample sizes. Over the past decade, limma has been a popular choice for gene discovery through differential expression analyses of microarray and high-throughput PCR data. The package contains particularly strong facilities for reading, normalizing and exploring such data. Recently, the capabilities of limma have been significantly expanded in two important directions. First, the package can now perform both differential expression and differential splicing analyses of RNA sequencing (RNA-seq) data. All the downstream analysis tools previously restricted to microarray data are now available for RNA-seq as well. These capabilities allow users to analyse both RNA-seq and microarray data with very similar pipelines. Second, the package is now able to go past the traditional gene-wise expression analyses in a variety of ways, analysing expression profiles in terms of co-regulated sets of genes or in terms of higher-order expression signatures. This provides enhanced possibilities for biological interpretation of gene expression differences. This article reviews the philosophy and design of the limma package, summarizing both new and historical features, with an emphasis on recent enhancements and features that have not been previously described.",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/gkv007",
+		"ISSN": "0305-1048",
+		"issue": "7",
+		"journalAbbreviation": "Nucleic Acids Research",
+		"page": "e47",
+		"source": "Silverchair",
+		"title": "limma powers differential expression analyses for RNA-sequencing and microarray studies",
+		"URL": "https://doi.org/10.1093/nar/gkv007",
+		"volume": "43",
+		"author": [
+			{
+				"family": "Ritchie",
+				"given": "Matthew E."
+			},
+			{
+				"family": "Phipson",
+				"given": "Belinda"
+			},
+			{
+				"family": "Wu",
+				"given": "Di"
+			},
+			{
+				"family": "Hu",
+				"given": "Yifang"
+			},
+			{
+				"family": "Law",
+				"given": "Charity W."
+			},
+			{
+				"family": "Shi",
+				"given": "Wei"
+			},
+			{
+				"family": "Smyth",
+				"given": "Gordon K."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					3
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					4,
+					20
+				]
+			]
+		}
 	}
 ]

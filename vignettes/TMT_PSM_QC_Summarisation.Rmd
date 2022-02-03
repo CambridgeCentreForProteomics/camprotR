@@ -3,7 +3,7 @@ title: "TMT QC PSM-level quantification and summarisation to protein-level abund
 author: "Tom Smith"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: camprot_references.json
+bibliography: camprotR.json
 vignette: >
   %\VignetteIndexEntry{TMT QC PSM-level quantification and summarisation to protein-level abundance}
   %\VignetteEngine{knitr::rmarkdown}
