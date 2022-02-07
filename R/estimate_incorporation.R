@@ -114,6 +114,7 @@ estimate_incorporation <- function(
     psm_input,
     sequence_col = sequence_col,
     mod_col = modifications_col,
+    include_interference = TRUE,
     interference_col = "Isolation.Interference.in.Percent"
   )
 
@@ -187,7 +188,7 @@ estimate_incorporation <- function(
 
   # make columns indicating if peptide was identified by PSM or by mass shift
   merged_data$Found.Light <- ifelse(
-    merged_data$Sequenced_Light, "Light: Spectrum matched",
+    merged_data$matched_Light, "Light: Spectrum matched",
     ifelse(
       is.finite(merged_data$Light), "Light: Detected by mass shift",
       "Light: Not found"
@@ -195,7 +196,7 @@ estimate_incorporation <- function(
   )
 
   merged_data$Found.Heavy <- ifelse(
-    merged_data$Sequenced_Heavy, "Heavy: Spectrum matched",
+    merged_data$matched_Heavy, "Heavy: Spectrum matched",
     ifelse(
       is.finite(merged_data$Heavy), "Heavy: Detected by mass shift",
       "Heavy: Not found"

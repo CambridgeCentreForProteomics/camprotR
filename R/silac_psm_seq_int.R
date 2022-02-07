@@ -2,26 +2,34 @@
 #' PSM-level output
 #'
 #' @description Proteome Discoverer does not correctly propagate from PSM to
-#' peptide level output which intensities are from "sequenced" peptides, e.g MS2
+#' peptide level output which intensities are from "matched" peptides, e.g MS2
 #' fragmentation. This information is useful to assess the accuracy of
-#' quantification in peptides identified by mass shift relative to a sequenced
+#' quantification in peptides identified by mass shift relative to a matched
 #' peptide in SILAC experiments
 #'
 #' @param obj `data.frame` PSM-level output from Proteome Discoverer
 #' @param sequence_col `string` Column with peptide sequence
 #' @param mod_col `string` Column with modifications
+#' @param include_interference `logical` Should PSM interference be included too?
 #' @param interference_col `string` Column with interference/co-isolation
-#' @return `data.frame` indicating which SILAC peptides were MS2 sequenced and
-#' the maximum interference across all PSMs for the peptide
+#' @return `data.frame` indicating which SILAC peptides were MS2 matched,
+#' how many PSMs per isotope, and
+#' (optionally) the maximum interference across all PSMs for the peptide
 #' @export
 silac_psm_seq_int <- function(
   obj,
   sequence_col='Sequence',
   mod_col='Modifications',
+  include_interference=FALSE,
   interference_col='Isolation.Interference.in.Percent'){
 
+  message('camprotR::silac_psm_seq_int output has changed.
+  Columns indicating whether quantification is from PSM are now prefixed with
+  "matched", not "Sequenced", and tallys of PSMs per isotope are included.
+  Interference is not included by default (set include_interference=TRUE)')
+
   # check that input files have the necessary columns
-  required_cols <- c(sequence_col, mod_col, interference_col,
+  required_cols <- c(sequence_col, mod_col,
                      "Quan.Channel", "Precursor.Abundance")
 
   if (!all(required_cols %in% colnames(obj))) {
@@ -42,18 +50,30 @@ silac_psm_seq_int <- function(
   obj[[sequence_col]] <- toupper(obj[[sequence_col]])
 
   obj_seq <- obj %>%
-    group_by(!!sym(sequence_col), .data$Quan.Channel, !!sym(mod_col)) %>%
-    summarise(sequenced=any(is.finite(.data$Precursor.Abundance))) %>%
-    ungroup() %>%
-    mutate(Quan.Channel=paste0('Sequenced_', .data$Quan.Channel)) %>%
-    spread(key=.data$Quan.Channel, value=.data$sequenced, fill=FALSE)
+    group_by(!!sym(sequence_col), .data$Quan.Channel,
+             !!sym(mod_col)) %>%
+    tally() %>%
+    mutate('matched'=TRUE) %>%
+    pivot_wider(names_from=Quan.Channel, values_from=c(n, matched)) %>%
+    mutate(n_Light=replace_na(n_Light, 0),
+           n_Heavy=replace_na(n_Heavy, 0),
+           matched_Light=replace_na(matched_Light, FALSE),
+           matched_Heavy=replace_na(matched_Heavy, FALSE))
+
+  if(include_interference){
+
+    if (!interference_col %in% colnames(obj)) {
+      stop(paste("The PSM input is missing the interference column:", interference_col))
+    }
 
   obj_int <- obj %>%
     group_by(!!sym(sequence_col), !!sym(mod_col)) %>%
     summarise(max_interference=max(!!sym(interference_col)))
 
-  obj_seq_int<- merge(obj_seq, obj_int, by=c(sequence_col, 'Modifications'))
+  obj_seq <- merge(obj_seq, obj_int, by=c(sequence_col, 'Modifications'))
+  }
 
-  return(obj_seq_int)
+
+  return(obj_seq)
 }
 
