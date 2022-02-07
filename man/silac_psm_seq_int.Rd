@@ -9,6 +9,7 @@ silac_psm_seq_int(
   obj,
   sequence_col = "Sequence",
   mod_col = "Modifications",
+  include_interference = FALSE,
   interference_col = "Isolation.Interference.in.Percent"
 )
 }
@@ -19,16 +20,19 @@ silac_psm_seq_int(
 
 \item{mod_col}{\code{string} Column with modifications}
 
+\item{include_interference}{\code{logical} Should PSM interference be included too?}
+
 \item{interference_col}{\code{string} Column with interference/co-isolation}
 }
 \value{
-\code{data.frame} indicating which SILAC peptides were MS2 sequenced and
-the maximum interference across all PSMs for the peptide
+\code{data.frame} indicating which SILAC peptides were MS2 matched,
+how many PSMs per isotope, and
+(optionally) the maximum interference across all PSMs for the peptide
 }
 \description{
 Proteome Discoverer does not correctly propagate from PSM to
-peptide level output which intensities are from "sequenced" peptides, e.g MS2
+peptide level output which intensities are from "matched" peptides, e.g MS2
 fragmentation. This information is useful to assess the accuracy of
-quantification in peptides identified by mass shift relative to a sequenced
+quantification in peptides identified by mass shift relative to a matched
 peptide in SILAC experiments
 }
