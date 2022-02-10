@@ -70,10 +70,10 @@ plot_incorporation <- function(
 
   total_count <- nrow(data)
 
-  median_incorporation <- median(data[, incorporation_col], na.rm = TRUE) * 100
+  median_incorporation <- stats::median(data[, incorporation_col], na.rm = TRUE) * 100
 
   if (mix > 0) {
-    median_corrected_incorporation <- median(data[, corrected_col], na.rm = TRUE) * 100
+    median_corrected_incorporation <- stats::median(data[, corrected_col], na.rm = TRUE) * 100
 
     incorporation_estimates <- list(
       'Median incorporation' = median_incorporation,

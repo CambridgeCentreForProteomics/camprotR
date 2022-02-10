@@ -12,16 +12,18 @@ estimate_incorporation(
   protein_col = "Protein.Accessions",
   sequence_col = "Sequence",
   modifications_col = "Modifications",
+  abundance_col_L = "^Abundances.Grouped.(F\\\\d*.)?Light$",
+  abundance_col_H = "^Abundances.Grouped.(F\\\\d*.)?Heavy$",
   mix = 0,
   outdir = NULL
 )
 }
 \arguments{
 \item{psm_input}{\code{string} or \code{data.frame}. File path to PSM-level PD output or
-the PSM-level PD output loaded into R using \link[utils]{read.delim}.}
+the PSM-level PD output data.frame created using \link[utils]{read.delim}.}
 
-\item{peptide_input}{\code{string}. File path to peptide-level PD output or
-the peptide-level PD output loaded into R using \link[utils]{read.delim}.}
+\item{peptide_input}{\code{string} or \code{data.frame}. File path to peptide-level PD output or
+the peptide-level PD output data.frame created using \link[utils]{read.delim}.}
 
 \item{crap_fasta}{\code{string}. File path to cRAP fasta used for PD search}
 
@@ -34,6 +36,12 @@ accessions.}
 \item{sequence_col}{\code{string}. Name of column containing peptide sequences.}
 
 \item{modifications_col}{\code{string}. Name of column containing peptide modifications.}
+
+\item{abundance_col_L}{\code{string}. Name of column containing light peptide
+intensity data, or a regex matching the names of multiple abundance columns.}
+
+\item{abundance_col_H}{\code{string}. Name of column containing heavy peptide
+intensity data, or a regex matching the names of multiple abundance columns.}
 
 \item{mix}{\code{numeric}. If Light material has been spiked in,
 what is the abundance relative to the Heavy material? Default is \code{mix = 0}

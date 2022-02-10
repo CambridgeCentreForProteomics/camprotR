@@ -24,9 +24,9 @@
 #' being analysed.
 #'
 #' @param psm_input `string` or `data.frame`. File path to PSM-level PD output or
-#' the PSM-level PD output loaded into R using \link[utils]{read.delim}.
-#' @param peptide_input `string`. File path to peptide-level PD output or
-#' the peptide-level PD output loaded into R using \link[utils]{read.delim}.
+#' the PSM-level PD output data.frame created using \link[utils]{read.delim}.
+#' @param peptide_input `string` or `data.frame`. File path to peptide-level PD output or
+#' the peptide-level PD output data.frame created using \link[utils]{read.delim}.
 #' @param crap_fasta `string`. File path to cRAP fasta used for PD search
 #' @param master_protein_col `string`. Name of column containing master
 #' protein accessions.
@@ -34,6 +34,10 @@
 #' accessions.
 #' @param sequence_col `string`. Name of column containing peptide sequences.
 #' @param modifications_col `string`. Name of column containing peptide modifications.
+#' @param abundance_col_L `string`. Name of column containing light peptide
+#' intensity data, or a regex matching the names of multiple abundance columns.
+#' @param abundance_col_H `string`. Name of column containing heavy peptide
+#' intensity data, or a regex matching the names of multiple abundance columns.
 #' @param mix `numeric`. If Light material has been spiked in,
 #' what is the abundance relative to the Heavy material? Default is `mix = 0`
 #' e.g. no Light spike in. If they are equal, `mix = 1`.
@@ -74,6 +78,8 @@ estimate_incorporation <- function(
   protein_col = "Protein.Accessions",
   sequence_col = "Sequence",
   modifications_col = "Modifications",
+  abundance_col_L = "^Abundances.Grouped.(F\\d*.)?Light$",
+  abundance_col_H = "^Abundances.Grouped.(F\\d*.)?Heavy$",
   mix = 0,
   outdir = NULL
 ) {
@@ -82,30 +88,27 @@ estimate_incorporation <- function(
 
   # type checking of inputs
   stopifnot(class(psm_input) %in% c("data.frame", "character"))
-  if (class(psm_input) %in% c("character")) psm_input <- read.delim(psm_input)
+  if (class(psm_input) %in% c("character")) psm_input <- utils::read.delim(psm_input)
 
   stopifnot(class(peptide_input) %in% c("data.frame", "character"))
-  if (class(peptide_input) %in% c("character")) peptide_input <- read.delim(peptide_input)
+  if (class(peptide_input) %in% c("character")) peptide_input <- utils::read.delim(peptide_input)
 
   # throw an error if peptide input does not contain the required columns
   pep_cols <- c(master_protein_col, protein_col, sequence_col, modifications_col,
                 "Quan.Info", "Number.of.Missed.Cleavages")
 
-  abundance_regex_L <- "^Abundances.Grouped.(F\\d*.)?Light$"
-  abundance_regex_H <- "^Abundances.Grouped.(F\\d*.)?Heavy$"
-
   if (!all(pep_cols %in% colnames(peptide_input))) {
     stop(
       paste("The peptideGroups input is missing the following required columns:",
-            pep_cols[!pep_cols %in% colnames(obj)])
+            pep_cols[!pep_cols %in% colnames(peptide_input)])
     )
   }
 
-  if (!any(grepl(abundance_regex_L, colnames(peptide_input)))) {
-    stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Light' column.")
+  if (!any(grepl(abundance_col_L, colnames(peptide_input)))) {
+    stop("The provided abundance_col_L column(s) are missing or misspelled.")
   }
-  if (!any(grepl(abundance_regex_H, colnames(peptide_input)))) {
-    stop("The peptideGroups input is missing the 'Abundance.Grouped.F#.Heavy' column.")
+  if (!any(grepl(abundance_col_H, colnames(peptide_input)))) {
+    stop("The provided abundance_col_H column(s) are missing or misspelled.")
   }
 
   # for each peptide, check whether it was MS2 sequenced and what the maximum
@@ -140,17 +143,15 @@ estimate_incorporation <- function(
     crap_proteins = crap_accessions,
     filter_associated_crap = TRUE
   ) %>%
-    subset(
-      Quan.Info != "Redundant" &
-        grepl("K|R", .[, sequence_col], ignore.case = TRUE)
-    )
+    filter(.data$Quan.Info != "Redundant",
+           grepl("K|R", .data[[sequence_col]], ignore.case = TRUE))
 
   # rename Heavy and Light abundance columns
   colnames(peptide_data)[
-    grepl('Abundances.Grouped.(F\\d*.)?Light', colnames(peptide_data))
+    grepl(abundance_col_L, colnames(peptide_data))
   ] <- "Light"
   colnames(peptide_data)[
-    grepl('Abundances.Grouped.(F\\d*.)?Heavy', colnames(peptide_data))
+    grepl(abundance_col_H, colnames(peptide_data))
   ] <- "Heavy"
 
   # define the columns we need from peptide data
@@ -204,12 +205,12 @@ estimate_incorporation <- function(
 
   # plot Light vs Heavy intensities for each peptide
   p1 <- merged_data %>%
-    subset(is.finite(Light) & is.finite(Heavy)) %>%
-    ggplot(aes(x = log10(Heavy), y = log10(Light))) +
+    filter(is.finite(.data$Light) & is.finite(.data$Heavy)) %>%
+    ggplot(aes(x = log10(.data$Heavy), y = log10(.data$Light))) +
     geom_point(size = 0.2) +
     theme_bw() +
     theme(aspect.ratio = 1) +
-    facet_wrap(Found.Heavy ~ Found.Light) +
+    facet_wrap(.data$Found.Heavy ~ .data$Found.Light) +
     labs(x = "Heavy intensity (log10)", y = "Light intensity (log10)") +
     coord_cartesian(xlim = c(3, NA), ylim = c(3, NA))
 
@@ -226,7 +227,7 @@ estimate_incorporation <- function(
   # plot peptide-level incorporation histogram
   if (mix > 0) {
     p2 <- merged_data %>%
-      subset(is.finite(Light) & is.finite(Heavy)) %>%
+      filter(is.finite(.data$Light) & is.finite(.data$Heavy)) %>%
       plot_incorporation(level = "peptide", mix = mix)
   } else {
     p2 <- plot_incorporation(merged_data, level = "peptide", mix = 0)
@@ -234,7 +235,7 @@ estimate_incorporation <- function(
 
   # count the number of unique peptides per master protein
   unique_peptides <- merged_data %>%
-    subset(select = c(master_protein_col, sequence_col)) %>%
+    select(tidyselect::all_of(c(master_protein_col, sequence_col))) %>%
     unique()
 
   # get proteins with min. 2 unique peptides
@@ -249,12 +250,12 @@ estimate_incorporation <- function(
   # group data by master protein
   if (mix > 0) {
     merged_data <- merged_data %>%
-      subset(is.finite(Light) & is.finite(Heavy))
+      filter(is.finite(.data$Light) & is.finite(.data$Heavy))
   }
 
   protein_data <- merged_data %>%
-    subset(select = c(master_protein_col, "Incorporation", "Incorporation.corrected")) %>%
-    aggregate(as.formula(paste0(". ~ ", master_protein_col)), ., median) %>%
+    group_by(.data[[master_protein_col]]) %>%
+    summarise(across(.cols = c("Incorporation", "Incorporation.corrected"), .fns = stats::median)) %>%
     merge(n_unique_peptides, by = master_protein_col)
 
   # plot protein-level incorporation histogram
