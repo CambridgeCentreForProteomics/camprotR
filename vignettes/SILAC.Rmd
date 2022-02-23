@@ -1,5 +1,5 @@
 ---
-title: "Processing SILAC data and QC isotopes"
+title: "Processing and QC of SILAC data"
 author: "Tom Smith"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
