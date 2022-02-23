@@ -83,6 +83,8 @@ print(incorporation_results$protein_incorporation)
 ```
 
 
+## Processing and QC of SILAC experimental data
+
 Now, onto some experimental data. Here, we process data from an OOPS [@http://zotero.org/users/5634351/items/EJHWF46N] experiment designed to identify proteins that are significantly enriched upon UV crosslinking (CL) vs non-crosslinked control cells (NC). RNA-binding proteins (RBPs) should be much more abundant in CL samples, since this covalently crosslinks the RBPs to RNA, and retains them in the OOPS interface, from which the sample is taken. In total, we have 4 SILAC runs, representing 4 separate plates of U-2 OS cells. Two plates (replicate 1 & 2) were Heavy for CL and two plates (replicates 3 & 4) were Light for CL. This is called a 'label' swap/switch and helps to ensure the results are independent of the labelling scheme.
 
 The first step is to read in the data and remove contaminant proteins and features without quantification data. These were defined using the cRAP database. Below, we parse the cRAP FASTA to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
