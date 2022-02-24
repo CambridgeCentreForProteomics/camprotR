@@ -50,6 +50,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/SILAC.html">Processing and QC of SILAC data</a>
+    </li>
+    <li>
       <a href="../articles/TMT_PSM_QC_Summarisation.html">TMT QC PSM-level quantification and summarisation to protein-level abundance</a>
     </li>
     <li>
@@ -77,7 +80,7 @@
       <h1 data-toc-skip>cRAP databases</h1>
                         <h4 data-toc-skip class="author">Charlotte Dawson</h4>
             
-            <h4 data-toc-skip class="date">2022-02-11</h4>
+            <h4 data-toc-skip class="date">2022-02-24</h4>
       
       
       <div class="hidden name"><code>crap.Rmd</code></div>
@@ -93,7 +96,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Peptide-spectrum matching requires 2 main inputs: a collection of MS2 spectra and a FASTA database of protein/peptide sequences. Search algorithms are then used to match the supplied MS2 spectra to theoretical spectra generated from an in-silico digest of the supplied FASTA database (typically we use the SwissProt protein database for the organism of interest). The selection of the FASTA database should be done carefully as having a very large database can reduce the number of PSMs obtained <span class="citation">(Jeong, Kim, and Bandeira 2012)</span>. Supposedly, using an unecessarily large database can also affect <a href="https://pwilmart.github.io/blog/2020/09/19/shotgun-quantification-part2" class="external-link">protein quantification</a>.</p>
+<p>Peptide-spectrum matching requires 2 main inputs: a collection of MS2 spectra and a FASTA database of protein/peptide sequences. Search algorithms are then used to match the supplied MS2 spectra to theoretical spectra generated from an in-silico digest of the supplied FASTA database (typically we use the SwissProt protein database for the organism of interest). The selection of the FASTA database should be done carefully as having a very large database can reduce the number of PSMs obtained <span class="citation">(<strong>Jeong2012?</strong>)</span>. Supposedly, using an unecessarily large database can also affect <a href="https://pwilmart.github.io/blog/2020/09/19/shotgun-quantification-part2" class="external-link">protein quantification</a>.</p>
 <p>There are certain proteinaceous contaminants that are commonly, accidentally introduced during sample preparation for proteomics. In order to avoid misidentification of MS2 spectra that have come from these contaminants we use an additional (much smaller) FASTA database containing the sequences of these common contaminants. This is generally called a contaminants database, or is colloquially known as a cRAP database in our lab.</p>
 <p><strong>It is very important that you know what proteins are in your contaminants database as PSMs/peptides from these proteins are deliberately filtered out in many of the functions in <code>camprotR</code></strong>. See this <a href="http://proteomicsnews.blogspot.com/2020/12/is-one-of-your-proteins-of-interest-in.html" class="external-link">blog post</a> some experimental situations where you may be interested in proteins that are usually deemed contaminants.</p>
 </div>
@@ -286,11 +289,6 @@
 <span class="co">#&gt; [126]   297 MTFKRFSPLSSTSRYARLLAVA...TGGTTFYQPVTEALSAYGATVL sp|cRAP128|P00776...</span>
 <span class="co">#&gt; [127]   299 MRIKRTSNRSNAARRVRTTAVL...SGGTTFFQPVTEALSAYGVSVY sp|cRAP129|P00777...</span>
 <span class="co">#&gt; [128]   445 MRPNRFSLRRSPTAVAAVALAA...KLRVQDIARQDTGYIDSWKLTF sp|cRAP130|P80561...</span></code></pre></div>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Jeong2012" class="csl-entry">
-Jeong, Kyowon, Sangtae Kim, and Nuno Bandeira. 2012. <span>“False Discovery Rates in Spectral Identification.”</span> <em>BMC Bioinformatics</em> 13 (16): S2. <a href="https://doi.org/10.1186/1471-2105-13-S16-S2" class="external-link">https://doi.org/10.1186/1471-2105-13-S16-S2</a>.
-</div>
-</div>
 </div>
   </div>
 

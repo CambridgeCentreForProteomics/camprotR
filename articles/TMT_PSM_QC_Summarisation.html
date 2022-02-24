@@ -50,6 +50,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/SILAC.html">Processing and QC of SILAC data</a>
+    </li>
+    <li>
       <a href="../articles/TMT_PSM_QC_Summarisation.html">TMT QC PSM-level quantification and summarisation to protein-level abundance</a>
     </li>
     <li>
@@ -77,7 +80,7 @@
       <h1 data-toc-skip>TMT QC PSM-level quantification and summarisation to protein-level abundance</h1>
                         <h4 data-toc-skip class="author">Tom Smith</h4>
             
-            <h4 data-toc-skip class="date">2022-02-11</h4>
+            <h4 data-toc-skip class="date">2022-02-24</h4>
       
       
       <div class="hidden name"><code>TMT_PSM_QC_Summarisation.Rmd</code></div>
@@ -104,10 +107,13 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
+</h2>
 <p>We start by reading in a file containing PSM-level output from Proteome Discoverer (PD). Here we are using a truncated file containing the first 5,000 PSMs only.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">psm_data</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span></code></pre></div>
-<p>The first step is to remove contaminant proteins. These were defined using the cRAP database (REF). Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both ‘cRAP’ format and Uniprot IDs for these proteins.</p>
+<p>The first step is to remove contaminant proteins. These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both ‘cRAP’ format and Uniprot IDs for these proteins.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">crap_fasta_inf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span>
   <span class="st">"extdata"</span>, <span class="st">"cRAP_20190401.fasta.gz"</span>, 
@@ -146,7 +152,7 @@
 <span class="co">#&gt; 4924 features found from 2340 master proteins =&gt; associated cRAP features removed</span>
 <span class="co">#&gt; 4922 features found from 2339 master proteins =&gt; features without a master protein removed</span>
 <span class="co">#&gt; 4748 features found from 2242 master proteins =&gt; features with non-unique master proteins removed</span></code></pre></div>
-<p>We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R.</p>
+<p>We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R. See the MSnSet vignette for more details.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Abundance columns for TMT PD-output start with Abundance </span>
 <span class="va">abundance_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">'Abundance.'</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">psm_data_flt</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
@@ -160,7 +166,11 @@
 <span class="co"># we don't have 'phenotype' data to add so we just define the </span>
 <span class="co"># 'expression' data and 'feature' data</span>
 <span class="va">psm</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet</a></span><span class="op">(</span>exprs <span class="op">=</span> <span class="va">psm.e</span>, fData <span class="op">=</span> <span class="va">psm.f</span><span class="op">)</span></code></pre></div>
-<p>The distribution of TMT intensities obtained by Orbitrap has been observed to have a ‘notch’ where few values are observed <span class="citation">(Hughes et al. 2017)</span>. This presence of the notch is dependent on the MS settings, most notably automatic gain control (AGC) target and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the <code>plot_TMT_notch</code> function, which annotates the notch region and the proportion of values below the upper notch boundary.</p>
+</div>
+<div class="section level2">
+<h2 id="the-notch">The notch<a class="anchor" aria-label="anchor" href="#the-notch"></a>
+</h2>
+<p><strong>Note - The section below on the ‘notch’ only applies to data aquired with Tune &lt; 3.0. Recently aquired data should have used Tune &gt; 3.0 and this section can be skipped</strong> The distribution of TMT intensities obtained by Orbitrap has been observed to have a ‘notch’ where few values are observed <span class="citation">(Hughes et al. 2017)</span>. This presence of the notch is dependent on the MS settings, most notably automatic gain control (AGC) target and maximum injection time, and the abundance of the peptides injected. We can inspect the notch using the <code>plot_TMT_notch</code> function, which annotates the notch region and the proportion of values below the upper notch boundary.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_TMT_notch.html">plot_TMT_notch</a></span><span class="op">(</span><span class="va">psm</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 587 rows containing non-finite values (stat_bin).</span></code></pre></div>
@@ -187,6 +197,10 @@ Count of TMT intensities below the notch per protein
 Fraction of TMT intensities below the notch per protein
 </p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="removing-low-quality-psms">Removing low quality PSMs<a class="anchor" aria-label="anchor" href="#removing-low-quality-psms"></a>
+</h2>
 <p>We will still want to remove low Signal:Noise (S:N) PSMs, since the quantification values will be less accurate and there will be more missing values and sub-notch values. We can inspect the relationship between S:N and missing values using the <code>plot_missing_SN</code> function.</p>
 <p>Note that where the signal:noise &gt; 10, there are far fewer missing values.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -211,47 +225,52 @@ Missing values per tag, in relation to the signal:noise ratio
 <span class="co">#&gt; 4747 features found from 2242 master proteins =&gt; No quant filtering</span>
 <span class="co">#&gt; 4628 features found from 2206 master proteins =&gt; Co-isolation filtering</span>
 <span class="co">#&gt; 4453 features found from 2174 master proteins =&gt; S:N ratio filtering</span></code></pre></div>
-<p>We can then re-plot to see how this affects the notch.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_TMT_notch.html">plot_TMT_notch</a></span><span class="op">(</span><span class="va">psm</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'Before filtering'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/theme_camprot.html">theme_camprot</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 587 rows containing non-finite values (stat_bin).</span>
-
-<span class="fu"><a href="../reference/plot_TMT_notch.html">plot_TMT_notch</a></span><span class="op">(</span><span class="va">psm_filt_sn_int</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">'After filtering'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/theme_camprot.html">theme_camprot</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 224 rows containing non-finite values (stat_bin).</span></code></pre></div>
-<div class="figure">
-<img src="TMT_PSM_QC_Summarisation_files/figure-html/unnamed-chunk-12-1.png" alt="Notch plots after filtering" width="326.4"><img src="TMT_PSM_QC_Summarisation_files/figure-html/unnamed-chunk-12-2.png" alt="Notch plots after filtering" width="326.4"><p class="caption">
-Notch plots after filtering
-</p>
 </div>
+<div class="section level2">
+<h2 id="summarising-to-protein-level-abundances">Summarising to protein-level abundances<a class="anchor" aria-label="anchor" href="#summarising-to-protein-level-abundances"></a>
+</h2>
 <p>Now that we have inspected the PSM-level quantification and filtered the PSMs, we can summarise the PSMs to protein-level abundances.</p>
 <p>For PSM to protein summarisation, we will use <code>MSnbase::combineFeatures(method = 'robust')</code>. This approach can handle missing values but it only makes sense to use PSMs quantified across enough proteins and to retain proteins with enough PSMs.</p>
-<p>Here, we will use PSMs with at most 5/10 <code>NA</code>s and proteins with at least three finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and <code>NA</code> values. For example, if a protein has 3 PSMs and the PSMs have missing values such that some samples are still quantified in all 3 PSMs, then the protein will be quantified in these samples, but <code>NA</code> where missing values are present. Thus, each protein-level quantification will be derived from at least 3 PSM intensities, where each PSM was quantified in at least 5 samples.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Here, we will use PSMs with at most 5/10 <code>NA</code>s and proteins with at least 2 finite quantification values in a given sample. Note that this means a given protein may still have a mixture of finite and <code>NA</code> values. For example, if a protein has &gt;= 2 PSMs and the PSMs have missing values such that some samples are still quantified in all 2 PSMs, then the protein will be quantified in these samples, but <code>NA</code> where &lt; 2 PSMs have quantification values. Thus, each protein-level quantification will be derived from at least 2 PSM intensities, and each PSM will have been quantified in at least 5 samples.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">psm_filt_sn_int_missing</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">filterNA</a></span><span class="op">(</span>pNA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove features observed in fewer than </span>
+  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">filterNA</a></span><span class="op">(</span>pNA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove PSMs observed in fewer than half of the samples</span>
   <span class="fu"><a href="../reference/restrict_features_per_protein.html">restrict_features_per_protein</a></span><span class="op">(</span>min_features <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre></div>
 <div class="figure">
-<img src="TMT_PSM_QC_Summarisation_files/figure-html/unnamed-chunk-13-1.png" alt="Tally of PSMs per protein" width="480"><p class="caption">
+<img src="TMT_PSM_QC_Summarisation_files/figure-html/unnamed-chunk-12-1.png" alt="Tally of PSMs per protein" width="480"><p class="caption">
 Tally of PSMs per protein
 </p>
 </div>
 <p>Below, we perform the summarisation. Note that robust summarisation requires log-transformed intensities. If desired, one can exponeniate the protein-level intensities post-summarisation, as shown below.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prot_group</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu">fData</span><span class="op">(</span><span class="va">psm_filt_sn_int_missing</span><span class="op">)</span><span class="op">$</span><span class="va">Master.Protein.Accessions</span>
 
-<span class="va">protein</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int_missing</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+<span class="va">protein_robust</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int_missing</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/combineFeatures.html" class="external-link">combineFeatures</a></span><span class="op">(</span>groupBy <span class="op">=</span> <span class="va">prot_group</span>, method <span class="op">=</span> <span class="st">'robust'</span>, maxit <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="co">#&gt; Your data contains missing values. Please read the relevant section in</span>
 <span class="co">#&gt; the combineFeatures manual page for details on the effects of missing</span>
 <span class="co">#&gt; values on data aggregation.</span>
 
-<span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">^</span><span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></code></pre></div>
+<span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">protein_robust</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">^</span><span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="va">protein_robust</span><span class="op">)</span></code></pre></div>
+<p>Alternatively, one can perform a more typical summarisation to protein-level abundances by simply summing the PSM-level abundances. In this case, we do not want to allow any missing values and will again demand at least 2 PSMs per proteins</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">psm_filt_sn_int_missing</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">filterNA</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove PSMs with any missing values</span>
+  <span class="fu"><a href="../reference/restrict_features_per_protein.html">restrict_features_per_protein</a></span><span class="op">(</span>min_features <span class="op">=</span> <span class="fl">2</span>, plot<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="va">prot_group</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu">fData</span><span class="op">(</span><span class="va">psm_filt_sn_int_missing</span><span class="op">)</span><span class="op">$</span><span class="va">Master.Protein.Accessions</span>
+
+<span class="va">protein_sum</span> <span class="op">&lt;-</span> <span class="va">psm_filt_sn_int_missing</span> <span class="op"><a href="https://tidyr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/combineFeatures.html" class="external-link">combineFeatures</a></span><span class="op">(</span>groupBy <span class="op">=</span> <span class="va">prot_group</span>, method <span class="op">=</span> <span class="st">'sum'</span><span class="op">)</span></code></pre></div>
+<p>Comparing the two summarisation approaches, we can see that the robust summarisation allows us to keep more proteins, since we don’t exlude all PSMs with missing values.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/pSet-class.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">protein_robust</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 921  10</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/pSet-class.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">protein_sum</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 891  10</span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

@@ -2,8 +2,9 @@ pandoc: 2.11.4
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
+  SILAC: SILAC.html
   TMT_PSM_QC_Summarisation: TMT_PSM_QC_Summarisation.html
   crap: crap.html
   msnset: msnset.html
-last_built: 2022-02-11T15:32Z
+last_built: 2022-02-24T17:33Z
 

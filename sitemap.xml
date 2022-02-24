@@ -7,6 +7,9 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/articles/SILAC.html</loc>
+  </url>
+  <url>
     <loc>/articles/TMT_PSM_QC_Summarisation.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>/reference/count_features_per_protein.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dep_results.html</loc>
   </url>
   <url>
     <loc>/reference/determine_ancestor_function.html</loc>
@@ -148,6 +154,18 @@
     <loc>/reference/parse_features.html</loc>
   </url>
   <url>
+    <loc>/reference/pep_oops_1.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pep_oops_2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pep_oops_3.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pep_oops_4.html</loc>
+  </url>
+  <url>
     <loc>/reference/pep_silac_p0.html</loc>
   </url>
   <url>
@@ -173,6 +191,18 @@
   </url>
   <url>
     <loc>/reference/plot_quant.html</loc>
+  </url>
+  <url>
+    <loc>/reference/psm_oops_1.html</loc>
+  </url>
+  <url>
+    <loc>/reference/psm_oops_2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/psm_oops_3.html</loc>
+  </url>
+  <url>
+    <loc>/reference/psm_oops_4.html</loc>
   </url>
   <url>
     <loc>/reference/psm_silac_p4.html</loc>
