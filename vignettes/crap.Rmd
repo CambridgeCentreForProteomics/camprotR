@@ -3,7 +3,7 @@ title: "cRAP databases"
 author: "Charlotte Dawson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: camprot_references.json
+bibliography: camprotR.json
 vignette: >
   %\VignetteIndexEntry{cRAP databases}
   %\VignetteEngine{knitr::rmarkdown}
