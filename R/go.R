@@ -325,12 +325,12 @@ get_enriched_go <- function(pwf, gene2cat = NULL, ...,
 estimate_go_overrep <- function(obj, pwf, gene2cat) {
 
   # if gene2cat is a list, convert to data.frame of correct format
-    if (is.list(gene2cat) & !is.data.frame(gene2cat)) {
-      gene2cat <- gene2cat %>%
-        tibble::enframe(name = "id", value = "go_terms") %>%
-        tidyr::unnest(cols = c("id", "go_terms")) %>%
-        as.data.frame()
-    }
+  if (is.list(gene2cat) & !is.data.frame(gene2cat)) {
+    gene2cat <- gene2cat %>%
+      tibble::enframe(name = "id", value = "go_terms") %>%
+      tidyr::unnest(cols = c("id", "go_terms")) %>%
+      as.data.frame()
+  }
 
   n_de_genes <- sum(pwf$DEgenes)
   n_genes <- length(pwf$DEgenes)
