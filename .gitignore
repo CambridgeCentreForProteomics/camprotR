@@ -46,3 +46,6 @@ vignettes/*.pdf
 data-raw/*.txt
 #docs
 inst/doc
+
+# Raw files for data generation
+data-raw/RBPMap_RNase_pilot_3/
