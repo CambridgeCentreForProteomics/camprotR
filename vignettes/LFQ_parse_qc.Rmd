@@ -1,0 +1,364 @@
+---
+title: "LFQ QC and summarisation to protein-level abundance"
+author: "Tom Smith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: camprotR.json
+vignette: >
+  %\VignetteIndexEntry{LFQ QC and summarisation to protein-level abundance}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(camprotR)
+library(MSnbase)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(naniar)
+library(gplots)
+
+```
+
+# Input data
+We start by reading in a file containing peptide-level output from Proteome Discoverer (PD).
+```{r}
+pep_data <- lfq_oops_rnase
+```
+The first step is to remove contaminant proteins. These were defined using the cRAP database. Below, we parse the cRAP fasta to extract the IDs for the cRAP proteins, in both 'cRAP' format and Uniprot IDs for these proteins.
+```{r}
+crap_fasta_inf <- system.file(
+  "extdata", "cRAP_20190401.fasta.gz", 
+  package = "camprotR"
+)
+
+# Load the cRAP FASTA used for the PD search
+crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
+
+# Define a base R version of stringr::str_extract_all()
+# base R str_extract
+str_extract_all <- function(pattern, string) {
+  gregexpr(pattern, string, perl = TRUE) %>% 
+    regmatches(string, .) %>% 
+    unlist()
+}
+
+# Extract the non cRAP UniProt accessions associated with each cRAP protein
+crap.accessions <- crap.fasta %>% 
+  pull(desc) %>% 
+  str_extract_all("(?<=\\|).*?(?=\\|)", .) %>% 
+  unlist()
+```
+
+
+We can then supply these cRAP protein IDs to `parse_features` which will remove features which may originate from contaminants, as well as features which don't have a unique master protein. 
+
+Here, our output does not contain a protein accessions column, which is required by `parse_features` to perform complete removal of contaminants. We get around this here by specifying the protein column as the `Master.Protein.Accessions` but data should be exported from PD with the protein accessions. See `?parse_features` for further details, including the removal of 'associated cRAP' for conservative contaminants removal.
+
+```{r}
+pep_data_flt <- parse_features(
+  pep_data, 
+  crap_proteins = crap.accessions, 
+  TMT = TRUE, 
+  level = 'peptide',
+  protein_col='Master.Protein.Accessions'
+)
+```
+From the above, we can see that we have started with 7808 'features' (peptides) from 1463 master proteins across all samples. After removal of contaminants, peptides without quantification and peptides that can't be assigned to a unique master protein, we have 6539 peptides from 1194 master proteins.
+
+We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R. See the MSnSet vignette for more details.
+```{r}
+# Abundance columns for TMT PD-output start with Abundance 
+abundance_cols <- colnames(pep_data_flt)[grepl('Abundance.', colnames(pep_data_flt))]
+
+pep.e <- as.matrix(pep_data_flt[, abundance_cols])
+pep.f <- pep_data_flt[, setdiff(colnames(pep_data_flt), abundance_cols)]
+
+# update the column names to remove the 'Abundance.` prefix and '.Sample' suffix
+colnames(pep.e) <- gsub('(Abundance.|.Sample)', '', colnames(pep.e))
+
+# Our first four samples (F17-F20) are RNase negative replicates 1-4 and F21-24 are
+# RNase positive reps 1-4.
+pep.p <- data.frame(row.names=colnames(pep.e),
+                    'replicate'=rep(1:4, 2),
+                    'condition'=rep(c('RNase_neg', 'RNase_pos'), each=4))
+
+pep <- MSnbase::MSnSet(exprs = pep.e,
+                       fData = pep.f,
+                       pData = pep.p)
+
+# Update the column names to a more human-understandable value
+colnames(pep) <- paste(pep$condition,
+                       pep$replicate,
+                       sep='.')
+```
+
+First of all, we want to inspect the peptide intensity distributions. We expect these to be approximately equal and any very low intensity sample would be a concern that would need to be further explored. Here, we can see that there is some clear variability, but no sample with very low intensity.
+```{r}
+pep %>%
+  log(base=2) %>%
+  camprotR::plot_quant(method='density')
+```
+Next, we consider the missing values. Note that `MSnbase::plotNA` assumes the object contains protein-level data and names the x-axis accordingly. Here, we update the plot aesthetics and rename the x-axis, though the original plot is shown first.
+
+So, from the 6539 peptides, just 2089 have quantification values in all 8 samples. This is not a suprise for LFQ, since each sample is run separately.
+```{r}
+MSnbase::plotNA(pep, pNA=0) +
+  camprotR::theme_camprot(border=FALSE, base_family='sans', base_size=15) +
+  xlab('Peptide index')
+```
+
+
+We can explore the structure of the missing values further using an 'upset' plot.  
+
+```{r}
+missing_data <- pep %>%
+  exprs %>%
+  data.frame()
+
+naniar::gg_miss_upset(missing_data,
+                      sets=paste0(colnames(pep), '_NA'),
+                      keep.order=TRUE,
+                      nsets = 10)
+```
+
+So in this case, we can see that the most common missing value patterns are missing in just RNase negative replicate 4, or missing in all the other samples, except this sample. This sample also had slightly lower overall peptide intensities and appears to be somewhat of an outlier. In this case, we will retain the sample.
+
+Finally, we can recode the abundances to binary (present/abscent) and plot as a heatmap (missing = black). Beyond the aforementioned observations regarding RNase negative replicate 4, there's no clear structure in the missing values. This is what we would expect for LFQ, where data is typically missing at random (MAR). There are methods to impute values MAR, but, providing what we are after is protein-level abundance, it is usually more appropriate to perform the protein inference using a method that can accomodate missing values.
+```{r}
+missing_data[!is.na(missing_data)] <- 1
+missing_data[is.na(missing_data)] <- 0
+
+gplots::heatmap.2(as.matrix(missing_data),
+                  col = c("lightgray", "black"),
+                  scale = "none", # Don't re-scale the input
+                  # Default is euclidean, which is less appropriate distance for binary vectors
+                  distfun = function(x) dist(x,method = 'binary'), 
+                  trace = "none", # Don't include a trace. Improves appearance
+                  key = FALSE, # Don't include a key as values are binary
+                  Colv = F, # Don't re-order the columns
+                  labRow=F, # Don't label the rows
+                  cexCol=0.7 # Reduce the column name size
+                  )
+```
+
+We have injected the same quantity of peptides for each sample, so it's reasonable to normalise the samples against one another. Here we will apply 'center-median' normalisation, which in `MSnbase::normalise` is called 'diff.median'. Since the peptide intensities are log-Gaussian distributed, we log(2)-transform them before performing the normalisation.
+```{r}
+
+pep_norm <- pep %>% log(base=2) %>% MSnbase::normalise('diff.median')  
+
+pep_norm %>% plot_quant()
+
+```
+Before we can perform the protein inference, we need to exclude peptides with too many missing values. Here, peptides with more than 5/8 missing values are discarded, using `MSnbase::filterNA`. We also need to remove proteins without at least two peptides. We will use `camprotR::restrict_features_per_protein` which will replace quantification values with NA if the sample does not have two quantified peptides for a given protein. Note that this means we have to repeat the filtering process since we are adding missing values.
+
+```{r}
+pep_restricted <- pep_norm %>%
+  MSnbase::filterNA(pNA=5/8) %>% # Maximum 4/8 missing values
+  camprotR::restrict_features_per_protein(min_features=2, plot=FALSE) %>% # At least two peptides per protein
+  # Repeat the filtering since restrict_features_per_protein will replace some values with NA
+  MSnbase::filterNA(pNA=5/8) %>% 
+  camprotR::restrict_features_per_protein(min_features=2, plot=FALSE) 
+
+```
+
+We can then re-inspect the missing values. Note that we have reduced the overall number of peptides to 5418.
+```{r}
+MSnbase::plotNA(pep_restricted, pNA=0) +
+  camprotR::theme_camprot(border=FALSE, base_family='sans', base_size=15) +
+  xlab('Peptide index')
+```
+
+We can now summarise to protein-level abundance. Below, we use 'robust' summarisation with `MSnbase::combineFeatures`
+
+```{r}
+prot_robust <- pep_restricted %>%
+  MSnbase::combineFeatures(
+    # group the peptides by their master protein id
+    groupBy=fData(pep_restricted)$Master.Protein.Accessions, 
+    # See MsCoreUtils::robustSummary() and https://pubmed.ncbi.nlm.nih.gov/32321741/ for further details
+    method='robust', 
+    maxit=1000  # Ensures convergence for MASS::rlm
+    ) 
+```
+
+We can then re-inspect the missing values at the protein level. So, we have quantification for 733 proteins, of which 415 are fully quantified across all 8 samples. The most common missing values pattern remains missing in just RNase negative replicate 4.
+```{r}
+MSnbase::plotNA(prot_robust, pNA=0) +
+  camprotR::theme_camprot(border=FALSE, base_family='sans', base_size=15) +
+  xlab('Peptide index')
+
+naniar::gg_miss_upset(data.frame(exprs(prot_robust)),
+                      sets=paste0(colnames(prot_robust), '_NA'),
+                      keep.order=TRUE,
+                      nsets = 10)
+
+
+```
+
+
+We have now obtained protein-level abundances from our LFQ data. This is our recommended proceedure for summarising from peptide to protein level abundances. 
+
+However, there are other algorithms that are currently applied. For example MaxLFQ, which is implemented within MaxQuant, but also available via the maxLFQ function in the iq package in R. Below, we compare the results from the robust and MaxLFQ summarisations for a single protein
+```{r}
+# At time of writing, iq was unavailable on CRAN (see https://github.com/tvpham/iq/issues/2)
+# but can be installed from github like so
+#devtools::install_github("tvpham/iq")
+
+# You may wish to retain more feature columns that this! 
+feature_coloumns_to_retain <- c("Master.Protein.Accessions")
+
+# To ensure we are only
+pep_data_for_summarisation <- pep_restricted %>%
+  exprs() %>%
+  data.frame() %>%
+  merge(fData(pep_restricted)[,feature_coloumns_to_retain ,drop=FALSE], 
+        by='row.names') %>%
+  select(-Row.names)
+
+get_maxlfq_estimate <- function(obj){
+  prot <- iq::maxLFQ(as.matrix(obj))$estimate
+  data.frame(t(prot)) %>% setNames(colnames(obj))
+}
+
+maxlfq_estimates <- pep_data_for_summarisation %>%
+  group_by_at(feature_coloumns_to_retain) %>%
+  dplyr::group_modify(~get_maxlfq_estimate(.)) %>%
+  ungroup()
+
+prot_maxlfq <- MSnSet(exprs=(as.matrix(select(maxlfq_estimates, -Master.Protein.Accessions))),
+                      fData=(data.frame(select(maxlfq_estimates, Master.Protein.Accessions))),
+                      pData=pData(pep_restricted))
+
+rownames(prot_maxlfq) <- maxlfq_estimates$Master.Protein.Accessions
+```
+
+Having obtained the protein abundance by MaxLFQ
+```{r}
+
+
+library(biobroom)
+
+get_long_form_prot_exp <- function(obj, method_name){
+  tidy(obj) %>%
+    mutate(method=method_name)
+}
+
+compare_protein_abundances <- rbind(
+  get_long_form_prot_exp(prot_maxlfq, 'MaxLFQ'),
+  get_long_form_prot_exp(prot_robust, 'Robust'))
+
+compare_protein_abundances %>%
+  pivot_wider(names_from=method, values_from=value) %>%
+  ggplot(aes(Robust, MaxLFQ)) +
+  geom_point(alpha=0.25, size=0.5) +
+  theme_camprot(border=FALSE, base_family='sans', base_size=15) +
+  geom_abline(slope=1, colour=get_cat_palette(2)[2], linetype=2, size=1)
+```
+MaxLFQ is estimating slightly higher abundances but there is a very good overall correlation. Let's inspect a few proteins with the largest differences between the two approaches to see what's going on
+
+```{r}
+# Identify proteins with largest difference between the protein inference methods
+proteins_of_interest <- compare_protein_abundances %>%
+  pivot_wider(names_from=method, values_from=value) %>%
+  mutate(diff=MaxLFQ-Robust) %>%
+  arrange(desc(abs(diff))) %>%
+  pull(protein) %>%
+  unique() %>%
+  head(5)
+
+```
+
+Below we define a function to plot the peptide abundances and protein inferences for the two methods for a single protein
+
+```{r}
+
+plot_pep_and_protein <- function(protein_of_interest){
+  
+  to_plot_compare <- compare_protein_abundances %>% filter(protein==protein_of_interest)
+  
+  pep_restricted[fData(pep_restricted)$Master.Protein.Accession==protein_of_interest] %>%
+    exprs() %>%
+    data.frame() %>%
+    tibble::rownames_to_column('id') %>%
+    pivot_longer(cols=-id) %>%
+    ggplot(aes(name, value)) +
+    geom_line(aes(group=id), colour='grey', alpha=0.5) +
+    geom_point(colour='grey', alpha=0.5) +
+    theme_camprot(base_size=15, border=FALSE, base_family='sans') +
+    geom_line(data=to_plot_compare,
+              aes(sample.id, value, colour=method, group=method)) +
+    geom_point(data=to_plot_compare,
+              aes(sample.id, value, colour=method)) +
+    scale_colour_manual(values=get_cat_palette(2), name='LFQ summarisation method') +
+    theme(axis.text.x=element_text(angle=45, vjust=1, hjust=1)) +
+    ggtitle(protein_of_interest) +
+    xlab('') +
+    ylab('Protein abundance (log2)')
+}
+
+```
+
+And then we apply the above function to each of our proteins of interest.
+```{r, warning=FALSE}
+proteins_of_interest %>% lapply(plot_pep_and_protein)
+```
+
+Looking at these examples, we can see that MaxLFQ is often simply estimating slightly higher abundances but with a very similar profile across the samples is very similar, so the summarisation approach is unlikely to affect the downstream analysis. In the second example (Q9NWB6), the biggest difference is RNase_neg.4, where the very low abundance peptide (argubly an outlier) appears to have a greater affect on the MaxLFQ protein inference. It's not clear which of the two approaches is more correct in this specific example, but the publication proposing the robust protein inference (ref https://pubmed.ncbi.nlm.nih.gov/32321741/) does indicate it gives more accurate fold-change estimates overall.
+
+
+We have now processed our peptide-level LFQ abundances and obtained protein-level abundances, from which we can perform our downstream analyses.
+
+For instance, we can perform a PCA to assess how the sources of variance align with the experimental conditions. Here, we see that the major source of variance does not align with the experimental condition (RNase +/-) but PC2 does. RNase negative replicate 4 does not appear to be a clear outlier, justifying the decision to retain this sample.
+```{r}
+pca_res <- prot_robust %>% filterNA() %>% exprs() %>% prcomp(center=TRUE)
+variance_per_pca <- pca_res$sdev^2/sum(pca_res$sdev^2)
+
+p <- pca_res$rotation %>%
+  data.frame() %>%
+  merge(pData(prot_robust), by='row.names') %>%
+  separate(condition, into=c(NA, 'RNase')) %>%
+  ggplot(aes(PC1, PC2, shape=factor(replicate), fill=RNase)) +
+  geom_point(size=4) +
+  scale_shape_manual(values=21:24, name='Replicate') +
+  scale_fill_manual(values=get_cat_palette(4)[3:4], name='RNase') +
+  guides(fill = guide_legend(override.aes = list(pch = 21))) +
+  xlab(sprintf('PC1 (%s %% of variance)', 100*round(variance_per_pca[[1]], 4))) +
+  ylab(sprintf('PC2 (%s %% of variance)', 100*round(variance_per_pca[[2]], 4))) +
+  theme_camprot(border=FALSE, base_size=15, base_family='sans')
+
+print(p)
+```
+
+# Figures
+
+Assign captions to figures in the code chunk option `fig.cap` to automatically number them, and to be able to reference them, see Figure \@ref(fig:plot). The figure label is generated from the code chunk label by prefixing it with `fig:`.
+
+```{r plot, fig.cap="Regular figure. The first sentence of the figure caption is automatically emphasized to serve as figure title.", echo=FALSE}
+plot(cars)
+```
+
+Small and wide figures can be specified by `fig.small` and `fig.wide` code chunk options.
+
+```{r small, fig.cap="Small figure. A plot produced by a code chunk with option `fig.small = TRUE`.", fig.small=TRUE, echo=FALSE}
+plot(cars)
+```
+
+```{r wide, fig.cap="Wide figure. A plot produced by a code chunk with option `fig.wide = TRUE`.", fig.wide=TRUE, echo=FALSE}
+plot(cars)
+```
+
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
