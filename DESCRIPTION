@@ -44,5 +44,9 @@ Suggests:
     testthat (>= 3.0.0),
     vdiffr (>= 1.0.0),
     withr,
-    DEqMS
+    DEqMS,
+    iq,
+    naniar,
+    biobroom,
+    UniProt.ws
 Config/testthat/edition: 3
