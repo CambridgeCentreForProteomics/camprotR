@@ -50,5 +50,6 @@ Suggests:
     naniar,
     biobroom,
     UniProt.ws,
-    iq
+    iq,
+    gplots
 Config/testthat/edition: 3
