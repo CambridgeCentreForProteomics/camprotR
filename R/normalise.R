@@ -25,15 +25,24 @@ get_medians <- function(obj){
 #'
 #' @param obj `MSnSet`. Contains PSMs.
 #' @param medians `vector, numeric`. Sample medians from reference dataset
-#'
+#' @param center_to_zero `logical`. Centre the data range on zero.
+#' If FALSE, normalisation retains original data range.
+#' @param on_log_scale `logical`. Input data is log-transformed
 #' @return Returns an `MSnSet` with the expression matrix column center-median
 #' normalised
 #'
 #' @export
-center_normalise_to_ref <- function(obj, medians){
+center_normalise_to_ref <- function(obj, medians,
+                                    center_to_zero=FALSE,
+                                    on_log_scale=FALSE){
 
-  medians <- medians/mean(medians)
-  exprs(obj) <- t(t(exprs(obj))/medians)
+  if(!center_to_zero) medians <- medians/mean(medians)
+
+  if(on_log_scale){
+    exprs(obj) <- t(t(exprs(obj)) - medians)
+  } else{
+    exprs(obj) <- t(t(exprs(obj)) / medians)
+  }
 
   return(obj)
 }

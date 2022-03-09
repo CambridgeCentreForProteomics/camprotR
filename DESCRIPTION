@@ -48,5 +48,6 @@ Suggests:
     iq,
     naniar,
     biobroom,
-    UniProt.ws
+    UniProt.ws,
+    ggbeeswarm
 Config/testthat/edition: 3
