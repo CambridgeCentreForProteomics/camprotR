@@ -24,7 +24,6 @@ library(MSnbase)
 library(naniar)
 library(gplots)
 library(biobroom)
-library(ggbeeswarm)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -464,8 +463,8 @@ plot_ratios <- function(obj){
    select(replicate, perc_negative) %>%
    print()
  
-  p <- to_plot %>% ggplot(aes(replicate, ratio, colour=factor(glyco_rbp))) +
-    geom_quasirandom(dodge.width=2/3, size=2/3) +
+  p <- to_plot %>% ggplot(aes(replicate, ratio, group=interaction(glyco_rbp, replicate), colour=factor(glyco_rbp))) +
+    geom_boxplot(position=position_dodge()) +
     theme_camprot(border=FALSE, base_family='sans') +
     scale_colour_manual(values=c(get_cat_palette(3), 'black'), name='') +
     geom_hline(yintercept=0, linetype=2, colour='grey') +
