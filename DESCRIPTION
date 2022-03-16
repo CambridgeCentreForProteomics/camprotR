@@ -14,7 +14,9 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
-Remotes: moodymudskipper/cutr
+Remotes: 
+    moodymudskipper/cutr,
+    tvpham/iq
 biocViews:
 Depends: 
     R (>= 3.5.0)
@@ -45,9 +47,9 @@ Suggests:
     vdiffr (>= 1.0.0),
     withr,
     DEqMS,
-    iq,
     naniar,
     biobroom,
     UniProt.ws,
-    ggbeeswarm
+    iq,
+    gplots
 Config/testthat/edition: 3
