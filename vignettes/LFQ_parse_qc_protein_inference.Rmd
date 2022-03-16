@@ -152,7 +152,7 @@ missing_data[!is.na(missing_data)] <- 1
 missing_data[is.na(missing_data)] <- 0
 
 gplots::heatmap.2(as.matrix(missing_data),
-                  col = c("lightgray", "black"),
+                  col = c("black", "lightgray"),
                   scale = "none", # Don't re-scale the input
                   # Default is euclidean, which is less appropriate distance for binary vectors
                   distfun = function(x) dist(x,method = 'binary'), 
