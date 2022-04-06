@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, message=FALSE, warning=FALSE}
-library(UniProt.ws)
 library(camprotR)
+library(Biostrings)
 library(MSnbase)
 library(naniar)
 library(gplots)
@@ -27,6 +27,7 @@ library(biobroom)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
+library(httr)
 ```
 
 # Input data
@@ -46,7 +47,7 @@ crap_fasta_inf <- system.file(
 )
 
 # Load the cRAP FASTA used for the PD search
-crap.fasta <- Biostrings::fasta.index(crap_fasta_inf, seqtype = "AA")
+crap_fasta <- fasta.index(crap_fasta_inf, seqtype = "AA")
 
 # Define a base R version of stringr::str_extract_all()
 # base R str_extract
@@ -57,7 +58,7 @@ str_extract_all <- function(pattern, string) {
 }
 
 # Extract the non cRAP UniProt accessions associated with each cRAP protein
-crap.accessions <- crap.fasta %>% 
+crap_accessions <- crap_fasta %>% 
   pull(desc) %>% 
   str_extract_all("(?<=\\|).*?(?=\\|)", .) %>% 
   unlist()
@@ -71,39 +72,42 @@ Here, our output does not contain a protein accessions column, which is required
 ```{r}
 pep_data_flt <- parse_features(
   pep_data, 
-  crap_proteins = crap.accessions, 
+  crap_proteins = crap_accessions, 
   TMT = TRUE, 
   level = 'peptide',
-  protein_col='Master.Protein.Accessions'
+  protein_col = 'Master.Protein.Accessions'
 )
 ```
 From the above, we can see that we have started with 7808 'features' (peptides) from 1463 master proteins across all samples. After removal of contaminants, peptides without quantification and peptides that can't be assigned to a unique master protein, we have 6539 peptides from 1194 master proteins.
 
 We now store the filtered PSM data in an MSnSet, the standard data object for proteomics in R. See the MSnSet vignette for more details.
 ```{r}
-# Abundance columns for TMT PD-output start with Abundance 
-abundance_cols <- colnames(pep_data_flt)[grepl('Abundance.', colnames(pep_data_flt))]
+# Create expression matrix with peptide abundances (exprs) and human 
+# readable column names
+exprs_data <- pep_data_flt %>% 
+  select(matches("Abundance")) %>% 
+  `colnames<-`(
+    paste(
+      rep(c("RNase_neg", "RNase_pos"), each = 4),
+      rep(1:4, 2),
+      sep = "."
+    )  
+  ) %>% 
+  as.matrix()
 
-pep.e <- as.matrix(pep_data_flt[, abundance_cols])
-pep.f <- pep_data_flt[, setdiff(colnames(pep_data_flt), abundance_cols)]
+# Create data.frame with sample metadata (pData)
+pheno_data <- data.frame(sample = colnames(exprs_data)) %>% 
+  separate(sample, into = c("Condition", "Replicate"), sep = "\\.") %>% 
+  `rownames<-`(colnames(exprs_data))
 
-# update the column names to remove the 'Abundance.` prefix and '.Sample' suffix
-colnames(pep.e) <- gsub('(Abundance.|.Sample)', '', colnames(pep.e))
+# Create data.frame with peptide metadata (fData)
+feat_data <- pep_data_flt %>% 
+  select(-matches("Abundance"))
 
-# Our first four samples (F17-F20) are RNase negative replicates 1-4 and F21-24 are
-# RNase positive reps 1-4.
-pep.p <- data.frame(row.names=colnames(pep.e),
-                    'replicate'=rep(1:4, 2),
-                    'condition'=rep(c('RNase_neg', 'RNase_pos'), each=4))
-
-pep <- MSnbase::MSnSet(exprs = pep.e,
-                       fData = pep.f,
-                       pData = pep.p)
-
-# Update the column names to a more human-understandable value
-colnames(pep) <- paste(pep$condition,
-                       pep$replicate,
-                       sep='.')
+# Create MSnSet
+pep <- MSnbase::MSnSet(exprs = exprs_data,
+                       fData = feat_data,
+                       pData = pheno_data)
 ```
 
 # QC peptides
@@ -119,7 +123,7 @@ Next, we consider the missing values. Note that `MSnbase::plotNA` assumes the ob
 
 
 ```{r, fig.show='hide'}
-p <- MSnbase::plotNA(pep, pNA=0) +
+p <- MSnbase::plotNA(pep, pNA = 0) +
   camprotR::theme_camprot(border=FALSE, base_family='sans', base_size=10) +
   xlab('Peptide index')
 ```
@@ -160,7 +164,7 @@ gplots::heatmap.2(as.matrix(missing_data),
                   Colv = F, # Don't re-order the columns
                   labRow=F, # Don't label the rows
                   cexCol=0.7 # Reduce the column name size
-                  )
+)
 ```
 # Normalise
 We have injected the same quantity of peptides for each sample, so it's reasonable to normalise the samples against one another. Here we will apply 'center-median' normalisation, which in `MSnbase::normalise` is called 'diff.median'. Since the peptide intensities are log-Gaussian distributed, we log(2)-transform them before performing the normalisation.
@@ -206,7 +210,7 @@ prot_robust <- pep_restricted %>%
     # See MsCoreUtils::robustSummary() and https://pubmed.ncbi.nlm.nih.gov/32321741/ for further details
     method='robust', 
     maxit=1000  # Ensures convergence for MASS::rlm
-    ) 
+  ) 
 ```
 
 We can then re-inspect the missing values at the protein level. So, we have quantification for 506 proteins, of which 289 are fully quantified across all 8 samples. The most common missing values pattern remains missing in just RNase negative replicate 4.
@@ -341,7 +345,7 @@ plot_pep_and_protein <- function(protein_of_interest){
     geom_line(data=to_plot_compare,
               aes(sample.id, value, colour=method, group=method)) +
     geom_point(data=to_plot_compare,
-              aes(sample.id, value, colour=method)) +
+               aes(sample.id, value, colour=method)) +
     scale_colour_manual(values=get_cat_palette(2), name='LFQ summarisation method') +
     theme(axis.text.x=element_text(angle=45, vjust=1, hjust=1)) +
     ggtitle(protein_of_interest) +
@@ -367,103 +371,111 @@ Finally, we consider an alternative normalisation approach where we have a stron
 
 First, we need to calculate the RNase +/- ratios, since this is the value we want to normalise. In other applications, you may wish to normalise the abundance estimates for each sample, rather than the ratio between samples.
 ```{r}
-ratios <- exprs(prot_robust[,pData(prot_robust)$condition=='RNase_neg']) - exprs(prot_robust[,pData(prot_robust)$condition=='RNase_pos'])
+ratios <- exprs(prot_robust[, grepl("RNase_neg", colnames(prot_robust))]) - 
+  exprs(prot_robust[, grepl("RNase_pos", colnames(prot_robust))])
 
 prot_ratios <- MSnSet(exprs=ratios,
                       fData=fData(prot_robust),
-                      pData=(pData(prot_robust) %>% filter(condition=='RNase_neg')))
+                      pData=(pData(prot_robust) %>% filter(Condition=='RNase_neg')))
 ```
 
 
 Next, we need annotations regarding which proteins are glycoproteins and GO-annotated RBPs. [Once a notebook has been added to cover GO annotations, reference to that here to avoid repeating explanations about why we want to expand the set of GO anntotations]
 
 Get all GO terms for our proteins.
-```{r, eval=FALSE}
-up <- UniProt.ws::UniProt.ws(taxId=9606)
-
-keys <- rownames(prot_robust)
-columns <- c("GO")
-kt <- "UNIPROTKB"
-res <- UniProt.ws::select(up, keys, columns, kt)
 
 
-go_long <- res %>% separate_rows('GO', sep='; ') %>%
-  separate(GO, into=c('GO', 'GO_ID'), sep=' \\[GO:') %>%
-  mutate(GO_ID=paste0('GO:', gsub(']', '', `GO_ID`)))
+```{r}
+up_url <- "https://www.uniprot.org/uploadlists/"
 
-go_all <- get_ancestor_go(
-  go_long,
-  feature_col = "UNIPROTKB",
-  go_col = "GO_ID",
-  verbose = TRUE
+request <- list(
+  query = paste(rownames(prot_robust), collapse = " "),
+  from = "ACC+ID",
+  to = "ACC",
+  format = "tab",
+  columns = paste("id", "features", "go-id", sep = ",")
 )
 
+response <- httr::GET(url = up_url, query = request)
+
+res <- httr::content(response, type = "text", encoding = "UTF8") %>% 
+  read.table(text = ., sep = "\t", header = TRUE) %>% 
+  select(Entry, Features, Gene.ontology.IDs)
+```
+
+```{r}
+go_long <- res %>% 
+  separate_rows(Gene.ontology.IDs, sep = "; ")
+
+go_all <- get_ancestor_go(
+  go_long, 
+  feature_col = "Entry",
+  go_col = "Gene.ontology.IDs",
+  verbose = TRUE
+)
+```
+
+```{r}
+# Get RBPs
 go_rbp <- "GO:0003723"
 
 rbps <- go_all %>% 
-  filter(GO_ID == go_rbp) %>% 
-  pull(UNIPROTKB)
-
-
+  filter(Gene.ontology.IDs == go_rbp) %>% 
+  pull(Entry)
 ```
 
-Identify the glycoproteins.
-```{r, eval=FALSE}
-up <- UniProt.ws::UniProt.ws(taxId=9606)
-
-
-keys <- rownames(prot_robust)
-columns <- c("FEATURES")
-kt <- "UNIPROTKB"
-res <- UniProt.ws::select(up, keys, columns, kt)
-
+```{r}
+# Get glycoproteins
 glycoproteins <- res %>% 
-  filter(grepl("Glycosylation", FEATURES)) %>%
-  mutate(Glyco.features = FEATURES) %>%
+  filter(grepl("Glycosylation", Features)) %>%
+  mutate(Glyco.features = Features) %>%
   separate_rows(Glyco.features, sep = "; ") %>%
   filter(grepl("Glycosylation", Glyco.features)) %>%
   mutate(Glyco.features = gsub("\\(|\\)", "", Glyco.features)) %>%
   separate(Glyco.features, into = c(NA, "Glycosylation.count"), sep = " ") %>%
-  dplyr::select(UNIPROTKB, Glycosylation.count)
-
+  select(Entry, Glycosylation.count)
 ```
- 
+
 Add feature columns describing the glycoprotein and GO-RBP status of the proteins.
 ```{r}
 fData(prot_ratios) <- fData(prot_ratios) %>%
-  mutate(glycoprotein=rownames(prot_ratios) %in% glycoproteins$UNIPROTKB) %>%
-  mutate(GO_RBP=rownames(prot_ratios) %in% rbps) %>%
-  mutate(glyco_rbp=interaction(glycoprotein, GO_RBP)) %>%
-  mutate(glyco_rbp=factor(recode(glyco_rbp,
-                                 'TRUE.TRUE'='GO:RBGP',
-                                 'FALSE.TRUE'='GO:RBP',
-                                 'TRUE.FALSE'='Glycoprotein',
-                                 'FALSE.FALSE'='Other'),
-                          levels=c('GO:RBP', 'GO:RBGP', 'Other', 'Glycoprotein')))
-  
+  mutate(Glycoprotein = rownames(prot_ratios) %in% glycoproteins$Entry) %>%
+  mutate(GO.RBP = rownames(prot_ratios) %in% rbps) %>%
+  mutate(Glyco.RBP = interaction(Glycoprotein, GO.RBP)) %>%
+  mutate(Glyco.RBP = factor(recode(
+    Glyco.RBP,
+    'TRUE.TRUE'='GO:RBGP',
+    'FALSE.TRUE'='GO:RBP',
+    'TRUE.FALSE'='Glycoprotein',
+    'FALSE.FALSE'='Other'),
+    levels = c('GO:RBP', 'GO:RBGP', 'Other', 'Glycoprotein'))
+  )
+
 ```
 
 Below, we define a function to plot the ratios for each functional sub-type of proteins and summarise the number of GO-annotated RBPs that have a log2 RNase -/+ ratio < -1.
 ```{r}
-plot_ratios <- function(obj){
- to_plot <- merge(exprs(obj),
-      fData(obj)[,'glyco_rbp',drop=FALSE],
-      by='row.names') %>%
-  pivot_longer(cols=-c(Row.names, glyco_rbp), names_to='sample', values_to='ratio') %>%
-  merge(pData(obj), by.x='sample', by.y='row.names') %>%
-   filter(is.finite(ratio))
- 
- to_plot %>%
-   filter(glyco_rbp=='GO:RBP') %>%
-   group_by(replicate, neg_ratio=ratio<(-1)) %>%
-   tally() %>%
-   pivot_wider(names_from=neg_ratio, values_from=n) %>%
-   mutate(`TRUE`=replace_na(`TRUE`, 0)) %>%
-   mutate(perc_negative=100*`TRUE`/(`TRUE`+`FALSE`)) %>%
-   select(replicate, perc_negative) %>%
-   print()
- 
-  p <- to_plot %>% ggplot(aes(replicate, ratio, group=interaction(glyco_rbp, replicate), colour=factor(glyco_rbp))) +
+plot_ratios <- function(obj) {
+  to_plot <- merge(
+    exprs(obj),
+    fData(obj)[,'Glyco.RBP',drop = FALSE],
+    by = 'row.names'
+  ) %>%
+    pivot_longer(cols = -c(Row.names, Glyco.RBP), names_to = 'sample', values_to = 'ratio') %>%
+    merge(pData(obj), by.x = 'sample', by.y = 'row.names') %>%
+    filter(is.finite(ratio))
+  
+  to_plot %>%
+    filter(Glyco.RBP=='GO:RBP') %>%
+    group_by(Replicate, neg_ratio=ratio<(-1)) %>%
+    tally() %>%
+    pivot_wider(names_from=neg_ratio, values_from=n) %>%
+    mutate(`TRUE`=replace_na(`TRUE`, 0)) %>%
+    mutate(perc_negative=100*`TRUE`/(`TRUE`+`FALSE`)) %>%
+    select(Replicate, perc_negative) %>%
+    print()
+  
+  p <- to_plot %>% ggplot(aes(Replicate, ratio, group=interaction(Glyco.RBP, Replicate), colour=factor(Glyco.RBP))) +
     geom_boxplot(position=position_dodge()) +
     theme_camprot(border=FALSE, base_family='sans') +
     scale_colour_manual(values=c(get_cat_palette(3), 'black'), name='') +
@@ -489,13 +501,13 @@ OK, so the glycoproteins are not centered at zero and many GO-annotated RBPs wit
 Below, we perform the center median normalisation to the set of reference proteins (here, the glycoproteins). 
 ```{r}
 
-glycoprotein_medians <- prot_ratios[fData(prot_ratios)$glyco_rbp=='Glycoprotein',] %>% camprotR::get_medians()
+glycoprotein_medians <- prot_ratios[fData(prot_ratios)$Glyco.RBP=='Glycoprotein',] %>% camprotR::get_medians()
 
 prot_ratios_norm <- camprotR::center_normalise_to_ref(prot_ratios,
                                                       glycoprotein_medians,
                                                       center_to_zero=TRUE, # We want to center the glycoproteins around zero
                                                       on_log_scale=TRUE # The quantifications are on a log scale (log2 ratios)
-                                                      )
+)
 
 
 ```
