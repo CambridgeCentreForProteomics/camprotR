@@ -52,11 +52,11 @@ bias <- sample(1:25, size = length(enriched), replace = TRUE)
 # generate pwf
 pwf <- goseq::nullp(enriched, bias.data = bias, plot.fit = FALSE)
 
-test_that("get_enriched_go() works when gene2cat is NULL", {
-  # test when gene2cat is not provided
+test_that("get_enriched_go() works", {
+  # use dep_gene2cat which is installed with camprotR
   out <- get_enriched_go(
     pwf = pwf,
-    gene2cat = NULL
+    gene2cat = dep_gene2cat
   )
 
   # check output against snap reference
@@ -65,42 +65,21 @@ test_that("get_enriched_go() works when gene2cat is NULL", {
     write.table(out, file = tf,
                 sep = "\t", row.names = FALSE, col.names = TRUE)
 
-    expect_snapshot_file(tf, "get-enriched-go-null-input.txt")
-  })
-})
-
-# obtain GO terms annotated to enriched proteins (just for test purposes)
-gene_2_cat <- goseq::getgo(dep_filt$ensembl, genome = "hg19", id = "ensGene",
-                           fetch.cats=c("GO:CC", "GO:BP", "GO:MF"))
-
-test_that("get_enriched_go() works if gene2cat is provided", {
-  # test when gene2cat is provided
-  out <- get_enriched_go(
-    pwf = pwf,
-    gene2cat = gene_2_cat
-  )
-
-  # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "get-enriched-go-std-input.txt")
+    expect_snapshot_file(tf, "get-enriched-go.txt")
   })
 })
 
 test_that("estimate_go_overrep() works", {
   go_res <- get_enriched_go(
     pwf = pwf,
-    gene2cat = gene_2_cat
+    gene2cat = dep_gene2cat
   )
 
   # does it work when gene2cat is named list?
   out <- estimate_go_overrep(
     obj = go_res,
     pwf = pwf,
-    gene2cat = gene_2_cat
+    gene2cat = dep_gene2cat
   )
 
   # check output against snap reference
@@ -112,7 +91,7 @@ test_that("estimate_go_overrep() works", {
     expect_snapshot_file(tf, "estimate-go-overrep-list-input.txt")
   })
 
-  gene_2_cat_df <- gene_2_cat %>%
+  gene_2_cat_df <- dep_gene2cat %>%
     tibble::enframe(name = "id", value = "go_term") %>%
     tidyr::unnest(cols = c("id", "go_term")) %>%
     as.data.frame()
@@ -137,14 +116,14 @@ test_that("estimate_go_overrep() works", {
 test_that("remove_redundant_go() works", {
   go_res <- get_enriched_go(
     pwf = pwf,
-    gene2cat = gene_2_cat
+    gene2cat = dep_gene2cat
   )
 
   # does it work when gene2cat is named list?
   go_res <- estimate_go_overrep(
     obj = go_res,
     pwf = pwf,
-    gene2cat = gene_2_cat
+    gene2cat = dep_gene2cat
   )
 
   out <- go_res %>%
