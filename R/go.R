@@ -271,7 +271,7 @@ get_enriched_go <- function(pwf, gene2cat = NULL, ...,
     out <- goseq::goseq(pwf = pwf, gene2cat = gene2cat, ...)
   } else {
     message(sprintf("Number of DE genes input: %i", sum(pwf$DEgenes)))
-    message('gene2cat not provided. Defaulting to genome = "hg" and id = "ensGene"')
+    message('gene2cat not provided. Defaulting to genome = "hg19" and id = "ensGene"')
     out <- goseq::goseq(pwf, genome = "hg19", id = "ensGene", ...)
   }
 
@@ -323,6 +323,15 @@ get_enriched_go <- function(pwf, gene2cat = NULL, ...,
 #'
 #' @export
 estimate_go_overrep <- function(obj, pwf, gene2cat) {
+
+  # if gene2cat is a list, convert to data.frame of correct format
+  if (is.list(gene2cat) & !is.data.frame(gene2cat)) {
+    gene2cat <- gene2cat %>%
+      tibble::enframe(name = "id", value = "go_terms") %>%
+      tidyr::unnest(cols = c("id", "go_terms")) %>%
+      as.data.frame()
+  }
+
   n_de_genes <- sum(pwf$DEgenes)
   n_genes <- length(pwf$DEgenes)
 
@@ -377,6 +386,22 @@ remove_redundant_go <- function(obj) {
     columns = c("ONTOLOGY")
   )
   ontologies <- setNames(ontologies$ONTOLOGY, ontologies$GOID)
+
+  if (any(is.na(ontologies))) {
+    # get names of GO terms that failed to be matched
+    bad.terms <- names(ontologies[is.na(ontologies) == TRUE])
+
+    warning(
+      "Warning: the following GO terms failed to match to a primary ontology ",
+      "in GO.db and were removed: ",
+      paste(bad.terms, collapse = ", ")
+    )
+    # remove NA ontologies
+    ontologies <- ontologies[!is.na(ontologies)]
+
+    # remove corresponding GO ids
+    all_observed_go <- all_observed_go[!all_observed_go %in% bad.terms]
+  }
 
   # get ancestor and offspring GO terms of parent GO terms
   offspring <- get_all_mappings(all_observed_go, ontologies, verbose = FALSE, direction = "offspring")

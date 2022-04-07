@@ -1,0 +1,530 @@
+[
+	{
+		"id": "http://zotero.org/users/5634351/items/EJHWF46N",
+		"type": "article-journal",
+		"abstract": "RNA-binding proteins can be identified and quantified in any organism using a simple method that combines UV cross-linking and phase separation.",
+		"container-title": "Nature Biotechnology",
+		"DOI": "10.1038/s41587-018-0001-2",
+		"ISSN": "1546-1696",
+		"issue": "2",
+		"language": "En",
+		"page": "169",
+		"source": "www.nature.com",
+		"title": "Comprehensive identification of RNA–protein interactions in any organism using orthogonal organic phase separation (OOPS)",
+		"URL": "https://www.nature.com/articles/s41587-018-0001-2",
+		"volume": "37",
+		"author": [
+			{
+				"family": "Queiroz",
+				"given": "Rayner M. L."
+			},
+			{
+				"family": "Smith",
+				"given": "Tom"
+			},
+			{
+				"family": "Villanueva",
+				"given": "Eneko"
+			},
+			{
+				"family": "Marti-Solano",
+				"given": "Maria"
+			},
+			{
+				"family": "Monti",
+				"given": "Mie"
+			},
+			{
+				"family": "Pizzinga",
+				"given": "Mariavittoria"
+			},
+			{
+				"family": "Mirea",
+				"given": "Dan-Mircea"
+			},
+			{
+				"family": "Ramakrishna",
+				"given": "Manasa"
+			},
+			{
+				"family": "Harvey",
+				"given": "Robert F."
+			},
+			{
+				"family": "Dezi",
+				"given": "Veronica"
+			},
+			{
+				"family": "Thomas",
+				"given": "Gavin H."
+			},
+			{
+				"family": "Willis",
+				"given": "Anne E."
+			},
+			{
+				"family": "Lilley",
+				"given": "Kathryn S."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2019",
+					3,
+					28
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2019",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/DLWEN74B",
+		"type": "article-journal",
+		"abstract": "Multiplexed quantification with isobaric chemical tags (e.g., TMT, iTRAQ) provides a robust and efficient means to comparatively examine proteome dynamics between several biological states using a mass spectrometer (MS). The quantitative nature of isobaric tags necessitates strict validation of the observed ion signals in the chosen MS detector before differential patterns are extracted between biological states. We present an in-depth analysis of isobaric tag data acquired on current generation Orbitrap MS hardware to illustrate pitfalls in acquisition settings that can negatively impact results. We establish, for the first time, the presence of a notch, a region of no observed values, in the reporter ion distributions from isobaric-labeled peptide mixtures acquired on these instruments. We determine that this notch is present in published data across a wide range of instruments of the same or different type and is isolated to the Orbitrap mass analyzer. We demonstrate that the impact of the notch can be minimized using manipulations of Orbitrap scan parameters and on-column injection amounts. Lastly, using a mixture of synthetic standard peptides we investigated the impact on identification rates and quantification precision. Together, these data highlight an important phenomenon that negatively impacts peptide identification and quantification in the Orbitrap analyzer as well as outlining guidelines to follow to ensure minimization of MS-induced artifacts in isobaric tag experiments resulting from the notch.",
+		"container-title": "Journal of Proteome Research",
+		"DOI": "10.1021/acs.jproteome.7b00092",
+		"ISSN": "1535-3907",
+		"issue": "5",
+		"journalAbbreviation": "J. Proteome Res.",
+		"language": "eng",
+		"note": "PMID: 28418254",
+		"page": "1831-1838",
+		"source": "PubMed",
+		"title": "Evaluating the Characteristics of Reporter Ion Signal Acquired in the Orbitrap Analyzer for Isobaric Mass Tag Proteome Quantification Experiments",
+		"volume": "16",
+		"author": [
+			{
+				"family": "Hughes",
+				"given": "Christopher S."
+			},
+			{
+				"family": "Zhu",
+				"given": "Chenchen"
+			},
+			{
+				"family": "Spicer",
+				"given": "Victor"
+			},
+			{
+				"family": "Krokhin",
+				"given": "Oleg V."
+			},
+			{
+				"family": "Morin",
+				"given": "Gregg B."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2017",
+					5,
+					5
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/ME322P2A",
+		"type": "article-journal",
+		"abstract": "Proteomics experiments commonly aim to estimate and detect differential abundance across all expressed proteins. Within this experimental design, some of the most challenging measurements are small fold changes for lower abundance proteins. While bottom-up proteomics methods are approaching comprehensive coverage of even complex eukaryotic proteomes, failing to reliably quantify lower abundance proteins can limit the precision and reach of experiments to much less than the identified—let alone total—proteome. Here we test the ability of two common methods, a tandem mass tagging (TMT) method and a label-free quantitation method (LFQ), to achieve comprehensive quantitative coverage by benchmarking their capacity to measure 3 different levels of change (3-, 2-, and 1.5-fold) across an entire data set. Both methods achieved comparably accurate estimates for all 3-fold-changes. However, the TMT method detected changes that reached statistical significance three times more often due to higher precision and fewer missing values. These findings highlight the importance of refining proteome quantitation methods to bring the number of usefully quantified proteins into closer agreement with the number of total quantified proteins.,",
+		"container-title": "Journal of proteome research",
+		"DOI": "10.1021/acs.jproteome.8b00016",
+		"ISSN": "1535-3893",
+		"issue": "5",
+		"journalAbbreviation": "J Proteome Res",
+		"note": "PMID: 29635916\nPMCID: PMC5984592",
+		"page": "1934-1942",
+		"source": "PubMed Central",
+		"title": "Proteome-Wide Evaluation of Two Common Protein Quantification Methods",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5984592/",
+		"volume": "17",
+		"author": [
+			{
+				"family": "O’Connell",
+				"given": "Jeremy D."
+			},
+			{
+				"family": "Paulo",
+				"given": "Joao A."
+			},
+			{
+				"family": "O’Brien",
+				"given": "Jonathon J."
+			},
+			{
+				"family": "Gygi",
+				"given": "Steven P."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2020",
+					9,
+					30
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					5,
+					4
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/ZK69WYZ2",
+		"type": "article-journal",
+		"abstract": "Multiplexed quantitation via isobaric chemical tags (e.g., tandem mass tags (TMT) and isobaric tags for relative and absolute quantitation (iTRAQ)) has the potential to revolutionize quantitative proteomics. However, until recently the utility of these tags was questionable due to reporter ion ratio distortion resulting from fragmentation of coisolated interfering species. These interfering signals can be negated through additional gas-phase manipulations (e.g., MS/MS/MS (MS3) and proton-transfer reactions (PTR)). These methods, however, have a significant sensitivity penalty. Using isolation waveforms with multiple frequency notches (i.e., synchronous precursor selection, SPS), we coisolated and cofragmented multiple MS2 fragment ions, thereby increasing the number of reporter ions in the MS3 spectrum 10-fold over the standard MS3 method (i.e., MultiNotch MS3). By increasing the reporter ion signals, this method improves the dynamic range of reporter ion quantitation, reduces reporter ion signal variance, and ultimately produces more high-quality quantitative measurements. To demonstrate utility, we analyzed biological triplicates of eight colon cancer cell lines using the MultiNotch MS3 method. Across all the replicates we quantified 8 378 proteins in union and 6 168 proteins in common. Taking into account that each of these quantified proteins contains eight distinct cell-line measurements, this data set encompasses 174 704 quantitative ratios each measured in triplicate across the biological replicates. Herein, we demonstrate that the MultiNotch MS3 method uniquely combines multiplexing capacity with quantitative sensitivity and accuracy, drastically increasing the informational value obtainable from proteomic experiments.",
+		"container-title": "Analytical Chemistry",
+		"DOI": "10.1021/ac502040v",
+		"ISSN": "0003-2700",
+		"issue": "14",
+		"journalAbbreviation": "Anal. Chem.",
+		"note": "publisher: American Chemical Society",
+		"page": "7150-7158",
+		"source": "ACS Publications",
+		"title": "MultiNotch MS3 Enables Accurate, Sensitive, and Multiplexed Detection of Differential Expression across Cancer Cell Line Proteomes",
+		"URL": "https://doi.org/10.1021/ac502040v",
+		"volume": "86",
+		"author": [
+			{
+				"family": "McAlister",
+				"given": "Graeme C."
+			},
+			{
+				"family": "Nusinow",
+				"given": "David P."
+			},
+			{
+				"family": "Jedrychowski",
+				"given": "Mark P."
+			},
+			{
+				"family": "Wühr",
+				"given": "Martin"
+			},
+			{
+				"family": "Huttlin",
+				"given": "Edward L."
+			},
+			{
+				"family": "Erickson",
+				"given": "Brian K."
+			},
+			{
+				"family": "Rad",
+				"given": "Ramin"
+			},
+			{
+				"family": "Haas",
+				"given": "Wilhelm"
+			},
+			{
+				"family": "Gygi",
+				"given": "Steven P."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2020",
+					9,
+					30
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2014",
+					7,
+					15
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/ST368TPT",
+		"type": "article-journal",
+		"abstract": "Quantitative proteomics has traditionally been performed by two-dimensional gel electrophoresis, but recently, mass spectrometric methods based on stable isotope quantitation have shown great promise for the simultaneous and automated identification and quantitation of complex protein mixtures. Here we describe a method, termed SILAC, for stable isotope labeling by amino acids in cell culture, for the in vivo incorporation of specific amino acids into all mammalian proteins. Mammalian cell lines are grown in media lacking a standard essential amino acid but supplemented with a non-radioactive, isotopically labeled form of that amino acid, in this case deuterated leucine (Leu-d3). We find that growth of cells maintained in these media is no different from growth in normal media as evidenced by cell morphology, doubling time, and ability to differentiate. Complete incorporation of Leu-d3 occurred after five doublings in the cell lines and proteins studied. Protein populations from experimental and control samples are mixed directly after harvesting, and mass spectrometric identification is straightforward as every leucine-containing peptide incorporates either all normal leucine or all Leu-d3. We have applied this technique to the relative quantitation of changes in protein expression during the process of muscle cell differentiation. Proteins that were found to be up-regulated during this process include glyceraldehyde-3-phosphate dehydrogenase, fibronectin, and pyruvate kinase M2. SILAC is a simple, inexpensive, and accurate procedure that can be used as a quantitative proteomic approach in any cell culture system.",
+		"container-title": "Molecular & Cellular Proteomics",
+		"DOI": "10.1074/mcp.M200025-MCP200",
+		"ISSN": "1535-9476",
+		"issue": "5",
+		"journalAbbreviation": "Molecular & Cellular Proteomics",
+		"language": "en",
+		"page": "376-386",
+		"source": "ScienceDirect",
+		"title": "Stable Isotope Labeling by Amino Acids in Cell Culture, SILAC, as a Simple and Accurate Approach to Expression Proteomics*",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S1535947620344406",
+		"volume": "1",
+		"author": [
+			{
+				"family": "Ong",
+				"given": "Shao-En"
+			},
+			{
+				"family": "Blagoev",
+				"given": "Blagoy"
+			},
+			{
+				"family": "Kratchmarova",
+				"given": "Irina"
+			},
+			{
+				"family": "Kristensen",
+				"given": "Dan Bach"
+			},
+			{
+				"family": "Steen",
+				"given": "Hanno"
+			},
+			{
+				"family": "Pandey",
+				"given": "Akhilesh"
+			},
+			{
+				"family": "Mann",
+				"given": "Matthias"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					1
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2002",
+					5,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/6HPNEJ3F",
+		"type": "article-journal",
+		"abstract": "Stable isotope labeling by amino acids in cell culture (SILAC) has become a versatile tool for quantitative, mass spectrometry (MS)-based proteomics. Here, we completely label mice with a diet containing either the natural or the 13C6-substituted version of lysine. Mice were labeled over four generations with the heavy diet, and development, growth, and behavior were not affected. MS analysis of incorporation levels allowed for the determination of incorporation rates of proteins from blood cells and organs. The F2 generation was completely labeled in all organs tested. SILAC analysis from various organs lacking expression of β1 integrin, β-Parvin, or the integrin tail-binding protein Kindlin-3 confirmed their absence and disclosed a structural defect of the red blood cell membrane skeleton in Kindlin-3-deficient erythrocytes. The SILAC-mouse approach is a versatile tool by which to quantitatively compare proteomes from knockout mice and thereby determine protein functions under complex in vivo conditions.",
+		"container-title": "Cell",
+		"DOI": "10.1016/j.cell.2008.05.033",
+		"ISSN": "0092-8674",
+		"issue": "2",
+		"journalAbbreviation": "Cell",
+		"language": "en",
+		"page": "353-364",
+		"source": "ScienceDirect",
+		"title": "SILAC Mouse for Quantitative Proteomics Uncovers Kindlin-3 as an Essential Factor for Red Blood Cell Function",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S0092867408006958",
+		"volume": "134",
+		"author": [
+			{
+				"family": "Krüger",
+				"given": "Marcus"
+			},
+			{
+				"family": "Moser",
+				"given": "Markus"
+			},
+			{
+				"family": "Ussar",
+				"given": "Siegfried"
+			},
+			{
+				"family": "Thievessen",
+				"given": "Ingo"
+			},
+			{
+				"family": "Luber",
+				"given": "Christian A."
+			},
+			{
+				"family": "Forner",
+				"given": "Francesca"
+			},
+			{
+				"family": "Schmidt",
+				"given": "Sarah"
+			},
+			{
+				"family": "Zanivan",
+				"given": "Sara"
+			},
+			{
+				"family": "Fässler",
+				"given": "Reinhard"
+			},
+			{
+				"family": "Mann",
+				"given": "Matthias"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					1
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2008",
+					7,
+					25
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/RTM6NFVU",
+		"type": "article-journal",
+		"abstract": "Differential analysis of MS-data to identify biomarkers or to understand biology is a cornerstone in proteomics. DEqMS is a robust method for analysis of both labelled and label-free MS-data. The method takes into account the inherent dependence of protein variance on the number of PSMs or peptides used for quantification, thereby providing a more accurate variance estimation. Compared to current methods, DEqMS achieves better accuracy and statistical power in quantitative proteomics. The tool is available as user-friendly R package., \n          \n            \n          \n        , \n          Highlights\n        , \n          \n            \n              DEqMS is a method for statistical analysis of quantitative MS-data.\n            \n            \n              Variance estimates based on the actual MS-data structure.\n            \n            \n              Improved statistical power and accuracy in protein differential analysis.\n            \n            \n              DEqMS is available as a user-friendly R package in Bioconductor.\n            \n          \n        , Quantitative proteomics by mass spectrometry is widely used in biomarker research and basic biology research for investigation of phenotype level cellular events. Despite the wide application, the methodology for statistical analysis of differentially expressed proteins has not been unified. Various methods such as t test, linear model and mixed effect models are used to define changes in proteomics experiments. However, none of these methods consider the specific structure of MS-data. Choices between methods, often originally developed for other types of data, are based on compromises between features such as statistical power, general applicability and user friendliness. Furthermore, whether to include proteins identified with one peptide in statistical analysis of differential protein expression varies between studies. Here we present DEqMS, a robust statistical method developed specifically for differential protein expression analysis in mass spectrometry data. In all data sets investigated there is a clear dependence of variance on the number of PSMs or peptides used for protein quantification. DEqMS takes this feature into account when assessing differential protein expression. This allows for a more accurate data-dependent estimation of protein variance and inclusion of single peptide identifications without increasing false discoveries. The method was tested in several data sets including E. coli proteome spike-in data, using both label-free and TMT-labeled quantification. Compared with previous statistical methods used in quantitative proteomics, DEqMS showed consistently better accuracy in detecting altered protein levels compared with other statistical methods in both label-free and labeled quantitative proteomics data. DEqMS is available as an R package in Bioconductor.",
+		"container-title": "Molecular & Cellular Proteomics : MCP",
+		"DOI": "10.1074/mcp.TIR119.001646",
+		"ISSN": "1535-9476",
+		"issue": "6",
+		"journalAbbreviation": "Mol Cell Proteomics",
+		"note": "PMID: 32205417\nPMCID: PMC7261819",
+		"page": "1047-1057",
+		"source": "PubMed Central",
+		"title": "DEqMS: A Method for Accurate Variance Estimation in Differential Protein Expression Analysis",
+		"title-short": "DEqMS",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7261819/",
+		"volume": "19",
+		"author": [
+			{
+				"family": "Zhu",
+				"given": "Yafeng"
+			},
+			{
+				"family": "Orre",
+				"given": "Lukas M."
+			},
+			{
+				"family": "Zhou Tran",
+				"given": "Yan"
+			},
+			{
+				"family": "Mermelekas",
+				"given": "Georgios"
+			},
+			{
+				"family": "Johansson",
+				"given": "Henrik J."
+			},
+			{
+				"family": "Malyutina",
+				"given": "Alina"
+			},
+			{
+				"family": "Anders",
+				"given": "Simon"
+			},
+			{
+				"family": "Lehtiö",
+				"given": "Janne"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					3
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/6KTXTWME",
+		"type": "article-journal",
+		"abstract": "limma is an R/Bioconductor software package that provides an integrated solution for analysing data from gene expression experiments. It contains rich features for handling complex experimental designs and for information borrowing to overcome the problem of small sample sizes. Over the past decade, limma has been a popular choice for gene discovery through differential expression analyses of microarray and high-throughput PCR data. The package contains particularly strong facilities for reading, normalizing and exploring such data. Recently, the capabilities of limma have been significantly expanded in two important directions. First, the package can now perform both differential expression and differential splicing analyses of RNA sequencing (RNA-seq) data. All the downstream analysis tools previously restricted to microarray data are now available for RNA-seq as well. These capabilities allow users to analyse both RNA-seq and microarray data with very similar pipelines. Second, the package is now able to go past the traditional gene-wise expression analyses in a variety of ways, analysing expression profiles in terms of co-regulated sets of genes or in terms of higher-order expression signatures. This provides enhanced possibilities for biological interpretation of gene expression differences. This article reviews the philosophy and design of the limma package, summarizing both new and historical features, with an emphasis on recent enhancements and features that have not been previously described.",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/gkv007",
+		"ISSN": "0305-1048",
+		"issue": "7",
+		"journalAbbreviation": "Nucleic Acids Research",
+		"page": "e47",
+		"source": "Silverchair",
+		"title": "limma powers differential expression analyses for RNA-sequencing and microarray studies",
+		"URL": "https://doi.org/10.1093/nar/gkv007",
+		"volume": "43",
+		"author": [
+			{
+				"family": "Ritchie",
+				"given": "Matthew E."
+			},
+			{
+				"family": "Phipson",
+				"given": "Belinda"
+			},
+			{
+				"family": "Wu",
+				"given": "Di"
+			},
+			{
+				"family": "Hu",
+				"given": "Yifang"
+			},
+			{
+				"family": "Law",
+				"given": "Charity W."
+			},
+			{
+				"family": "Shi",
+				"given": "Wei"
+			},
+			{
+				"family": "Smyth",
+				"given": "Gordon K."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					3
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					4,
+					20
+				]
+			]
+		}
+	}
+]
