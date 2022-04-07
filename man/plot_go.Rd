@@ -33,3 +33,17 @@ To avoid plotting too many terms, you may wish to use
 \code{\link{remove_redundant_go}} first too. A warning is shown if you try
 and plot more than 100 GO terms.
 }
+\examples{
+# Make a data.frame of the correct format
+df <- data.frame(
+  "term_short" = c("A GO term", "Another GO term", "One more GO term"),
+  "ontology" = c("BP", "MF", "CC"),
+  "over_represented_adj_pval" = c(0.0001, 1, 0.01),
+  "adj_overrep" = c(15, 3, 1),
+  "numDEInCat" = c(304, 22, 78)
+)
+
+# Plot the GO terms
+plot_go(df)
+
+}

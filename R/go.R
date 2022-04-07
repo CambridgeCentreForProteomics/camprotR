@@ -63,17 +63,18 @@ determine_offspring_function <- function(term, ontology) {
 
 #' Get all mappings for GO terms
 #'
-#' For a set of GO terms, obtain all of the ancestor or offspring terms.
+#' For a vector of GO terms, obtain all of the ancestor or offspring terms.
 #'
-#' @param go_ids `character vector`. The GO.IDs to use
-#' @param ontologies `named character vector`. Names = GO.IDs and values =
-#' Ontologies e.g. BP, CC, MF.
+#' @param go_ids `character vector`. GO terms to use in the format `GO:1234567`.
+#' @param ontologies `named character vector`. Names = `go_ids` and values =
+#' ontologies e.g. `BP`, `CC`, or `MF`.
 #' @param verbose `logical`.
-#' @param direction `string` Either `"ancestor"` or
-#' `"offspring"`.
+#' @param direction `string` Either `"ancestor"` or `"offspring"`.
 #'
-#' @return Returns a `named list` of `character vectors`. Names = GO.IDs and
-#' values = all ancestor GO.IDs.
+#' @return Returns a `named list` of `character vectors`. Names == GO terms and
+#' values == vectors containing all ancestor GO terms for the particular input
+#' GO term.
+#'
 #' @importFrom purrr map2
 #' @keywords internal
 #' @export
@@ -122,15 +123,17 @@ get_all_mappings <- function(go_ids, ontologies, verbose = TRUE, direction = "an
 #' a single column. Output is a new data.frame with all of the GO terms for
 #' that protein (annotated and ancestor).
 #'
-#' @param go_df `data.frame` for a single protein with a column ==
-#' `"GO.ID"`.
+#' @param go_df `data.frame` for a single protein with a single column where
+#' each row is a single GO term.
 #' @param go_col `variable`. Name of column from the data.frame that
 #' contains the GO terms.
-#' @param go2Ancestor `named list`. Returned by get_all_mappings.
-#' Names == GO.IDs and values == all ancestor GO.IDs.
+#' @param go2Ancestor `named list`. Returned by \code{\link{get_all_mappings}}.
+#' Names == GO terms and values == vectors containing all ancestor GO terms
+#' for the particular input GO term.
 #'
 #' @return Returns a `data.frame` containing all ancestor GO terms for a
 #' single protein.
+#'
 #' @keywords internal
 #' @export
 expand_terms <- function(go_df, go_col, go2Ancestor) {
@@ -469,14 +472,24 @@ remove_redundant_go <- function(obj) {
 #'
 #' @return Returns a `ggplot` object.
 #'
+#' @examples
+#' # Make a data.frame of the correct format
+#' df <- data.frame(
+#'   "term_short" = c("A GO term", "Another GO term", "One more GO term"),
+#'   "ontology" = c("BP", "MF", "CC"),
+#'   "over_represented_adj_pval" = c(0.0001, 1, 0.01),
+#'   "adj_overrep" = c(15, 3, 1),
+#'   "numDEInCat" = c(304, 22, 78)
+#' )
+#'
+#' # Plot the GO terms
+#' plot_go(df)
+#'
 #' @export
 plot_go <- function(obj,
                     term_col = "term_short",
                     ontology_col = "ontology",
                     annotate_n = TRUE) {
-
-
-
   # throw an error if peptide input does not contain the required columns
   req_cols <- c(term_col, ontology_col, "over_represented_adj_pval",
                 "adj_overrep", "numDEInCat")

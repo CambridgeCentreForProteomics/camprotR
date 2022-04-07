@@ -7,21 +7,21 @@
 get_all_mappings(go_ids, ontologies, verbose = TRUE, direction = "ancestor")
 }
 \arguments{
-\item{go_ids}{\verb{character vector}. The GO.IDs to use}
+\item{go_ids}{\verb{character vector}. GO terms to use in the format \code{GO:1234567}.}
 
-\item{ontologies}{\verb{named character vector}. Names = GO.IDs and values =
-Ontologies e.g. BP, CC, MF.}
+\item{ontologies}{\verb{named character vector}. Names = \code{go_ids} and values =
+ontologies e.g. \code{BP}, \code{CC}, or \code{MF}.}
 
 \item{verbose}{\code{logical}.}
 
-\item{direction}{\code{string} Either \code{"ancestor"} or
-\code{"offspring"}.}
+\item{direction}{\code{string} Either \code{"ancestor"} or \code{"offspring"}.}
 }
 \value{
-Returns a \verb{named list} of \verb{character vectors}. Names = GO.IDs and
-values = all ancestor GO.IDs.
+Returns a \verb{named list} of \verb{character vectors}. Names == GO terms and
+values == vectors containing all ancestor GO terms for the particular input
+GO term.
 }
 \description{
-For a set of GO terms, obtain all of the ancestor or offspring terms.
+For a vector of GO terms, obtain all of the ancestor or offspring terms.
 }
 \keyword{internal}
