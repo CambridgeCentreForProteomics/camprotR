@@ -28,7 +28,7 @@ that protein (annotated and ancestor)."><!-- mathjax --><script src="https://cdn
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,14 +73,15 @@ that protein (annotated and ancestor).</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>go_df</dt>
-<dd><p><code>data.frame</code> for a single protein with a column ==
-<code>"GO.ID"</code>.</p></dd>
+<dd><p><code>data.frame</code> for a single protein with a single column where
+each row is a single GO term.</p></dd>
 <dt>go_col</dt>
 <dd><p><code>variable</code>. Name of column from the data.frame that
 contains the GO terms.</p></dd>
 <dt>go2Ancestor</dt>
-<dd><p><code>named list</code>. Returned by get_all_mappings.
-Names == GO.IDs and values == all ancestor GO.IDs.</p></dd>
+<dd><p><code>named list</code>. Returned by <code><a href="get_all_mappings.html">get_all_mappings</a></code>.
+Names == GO terms and values == vectors containing all ancestor GO terms
+for the particular input GO term.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
