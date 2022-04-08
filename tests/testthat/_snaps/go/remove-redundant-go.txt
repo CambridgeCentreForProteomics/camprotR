@@ -1,3 +1,0 @@
-"category"	"over_represented_pvalue"	"under_represented_pvalue"	"numDEInCat"	"numInCat"	"term"	"ontology"	"over_represented_adj_pval"	"under_represented_adj_pval"	"term_short"	"adj_overrep"
-"GO:0002220"	"0.00000"	"1.0000"	14	31	"innate immune response activating cell surface receptor signaling pathway"	"BP"	"0.0000"	"1.00"	"innate immune response activat"	12.3431974673407
-"GO:0002252"	"0.01403"	"0.9949"	11	147	"immune effector process"	"BP"	"0.4828"	"1.00"	"immune effector process"	2.08056563305448

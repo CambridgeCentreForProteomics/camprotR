@@ -19,20 +19,14 @@ test_that("expand_terms() works", {
   names(go_2_ancestor) <- go_df$GO.ONT
 
   # run `expand_terms()` to test and capture output
-  out <- expand_terms(
-    go_df = go_df,
-    go_col = "GO.ID",
-    go2Ancestor = go_2_ancestor
-  )
-
   # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "expand-terms.txt")
-  })
+  expect_snapshot(
+    expand_terms(
+      go_df = go_df,
+      go_col = "GO.ID",
+      go2Ancestor = go_2_ancestor
+    )
+  )
 })
 
 ## Generate some data to test other GO term functions
@@ -58,7 +52,7 @@ test_that("get_enriched_go() works", {
     pwf = pwf,
     gene2cat = dep_gene2cat
   ) %>%
-    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
+    select(category, term)
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -82,7 +76,8 @@ test_that("estimate_go_overrep() works", {
     pwf = pwf,
     gene2cat = dep_gene2cat
   ) %>%
-    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
+    select(category, term, adj_overrep) %>%
+    mutate(adj_overrep = round(adj_overrep, digits = 3))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -104,7 +99,8 @@ test_that("estimate_go_overrep() works", {
     pwf = pwf,
     gene2cat = gene_2_cat_df
   ) %>%
-    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
+    select(category, term, adj_overrep) %>%
+    mutate(adj_overrep = round(adj_overrep, digits = 3))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -112,7 +108,7 @@ test_that("estimate_go_overrep() works", {
     write.table(out2, file = tf,
                 sep = "\t", row.names = FALSE, col.names = TRUE)
 
-    expect_snapshot_file(tf, "estimate-go-overrep-list-input.txt")
+    expect_snapshot_file(tf, "estimate-go-overrep-df-input.txt")
   })
 })
 
@@ -129,19 +125,14 @@ test_that("remove_redundant_go() works", {
     gene2cat = dep_gene2cat
   )
 
-  out <- go_res %>%
-    filter(grepl("immune", term)) %>%
-    remove_redundant_go() %>%
-    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
-
   # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "remove-redundant-go.txt")
-  })
+  expect_snapshot(
+    go_res %>%
+      filter(grepl("immune", term)) %>%
+      remove_redundant_go() %>%
+      select(category, term, adj_overrep) %>%
+      mutate(adj_overrep = round(adj_overrep, digits = 3))
+  )
 })
 
 test_that("plot_go() works", {
