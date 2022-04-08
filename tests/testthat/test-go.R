@@ -51,17 +51,16 @@ test_that("get_enriched_go() works", {
   out <- get_enriched_go(
     pwf = pwf,
     gene2cat = dep_gene2cat
-  ) %>%
-    select(category, term)
+  )
 
+  # check output class is data.frame
+  expect_s3_class(out, "data.frame")
+
+  # check column names and classes are as expected
   # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "get-enriched-go.txt")
-  })
+  expect_snapshot(
+    lapply(out, class)
+  )
 })
 
 test_that("estimate_go_overrep() works", {
@@ -75,18 +74,16 @@ test_that("estimate_go_overrep() works", {
     obj = go_res,
     pwf = pwf,
     gene2cat = dep_gene2cat
-  ) %>%
-    select(category, term, adj_overrep) %>%
-    mutate(adj_overrep = round(adj_overrep, digits = 3))
+  )
 
+  # check output class is data.frame
+  expect_s3_class(out, "data.frame")
+
+  # check column names and classes are as expected
   # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "estimate-go-overrep-list-input.txt")
-  })
+  expect_snapshot(
+    lapply(out, class)
+  )
 
   gene_2_cat_df <- dep_gene2cat %>%
     tibble::enframe(name = "id", value = "go_term") %>%
@@ -98,18 +95,16 @@ test_that("estimate_go_overrep() works", {
     obj = go_res,
     pwf = pwf,
     gene2cat = gene_2_cat_df
-  ) %>%
-    select(category, term, adj_overrep) %>%
-    mutate(adj_overrep = round(adj_overrep, digits = 3))
+  )
 
+  # check output class is data.frame
+  expect_s3_class(out2, "data.frame")
+
+  # check column names and classes are as expected
   # check output against snap reference
-  withr::with_tempfile("tf", {
-    # save output to tempfile
-    write.table(out2, file = tf,
-                sep = "\t", row.names = FALSE, col.names = TRUE)
-
-    expect_snapshot_file(tf, "estimate-go-overrep-df-input.txt")
-  })
+  expect_snapshot(
+    lapply(out2, class)
+  )
 })
 
 test_that("remove_redundant_go() works", {
@@ -125,13 +120,17 @@ test_that("remove_redundant_go() works", {
     gene2cat = dep_gene2cat
   )
 
+  out <- go_res %>%
+    filter(grepl("immune", term)) %>%
+    remove_redundant_go()
+
+  # check output class is data.frame
+  expect_s3_class(out, "data.frame")
+
+  # check column names and classes are as expected
   # check output against snap reference
   expect_snapshot(
-    go_res %>%
-      filter(grepl("immune", term)) %>%
-      remove_redundant_go() %>%
-      select(category, term, adj_overrep) %>%
-      mutate(adj_overrep = round(adj_overrep, digits = 3))
+    lapply(out, class)
   )
 })
 

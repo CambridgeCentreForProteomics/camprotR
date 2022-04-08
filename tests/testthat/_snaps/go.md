@@ -10,22 +10,156 @@
       4 GO:0045087
       5       <NA>
 
+# get_enriched_go() works
+
+    Code
+      lapply(out, class)
+    Output
+      $category
+      [1] "character"
+      
+      $over_represented_pvalue
+      [1] "numeric"
+      
+      $under_represented_pvalue
+      [1] "numeric"
+      
+      $numDEInCat
+      [1] "integer"
+      
+      $numInCat
+      [1] "integer"
+      
+      $term
+      [1] "character"
+      
+      $ontology
+      [1] "character"
+      
+      $over_represented_adj_pval
+      [1] "numeric"
+      
+      $under_represented_adj_pval
+      [1] "numeric"
+      
+      $term_short
+      [1] "character"
+      
+
+# estimate_go_overrep() works
+
+    Code
+      lapply(out, class)
+    Output
+      $category
+      [1] "character"
+      
+      $over_represented_pvalue
+      [1] "numeric"
+      
+      $under_represented_pvalue
+      [1] "numeric"
+      
+      $numDEInCat
+      [1] "integer"
+      
+      $numInCat
+      [1] "integer"
+      
+      $term
+      [1] "character"
+      
+      $ontology
+      [1] "character"
+      
+      $over_represented_adj_pval
+      [1] "numeric"
+      
+      $under_represented_adj_pval
+      [1] "numeric"
+      
+      $term_short
+      [1] "character"
+      
+      $adj_overrep
+      [1] "numeric"
+      
+
+---
+
+    Code
+      lapply(out2, class)
+    Output
+      $category
+      [1] "character"
+      
+      $over_represented_pvalue
+      [1] "numeric"
+      
+      $under_represented_pvalue
+      [1] "numeric"
+      
+      $numDEInCat
+      [1] "integer"
+      
+      $numInCat
+      [1] "integer"
+      
+      $term
+      [1] "character"
+      
+      $ontology
+      [1] "character"
+      
+      $over_represented_adj_pval
+      [1] "numeric"
+      
+      $under_represented_adj_pval
+      [1] "numeric"
+      
+      $term_short
+      [1] "character"
+      
+      $adj_overrep
+      [1] "numeric"
+      
+
 # remove_redundant_go() works
 
     Code
-      go_res %>% filter(grepl("immune", term)) %>% remove_redundant_go() %>% select(
-        category, term, adj_overrep) %>% mutate(adj_overrep = round(adj_overrep,
-        digits = 3))
-    Message <simpleMessage>
-      'select()' returned 1:1 mapping between keys and columns
+      lapply(out, class)
     Output
-          category
-      1 GO:0002220
-      2 GO:0002252
-                                                                             term
-      1 innate immune response activating cell surface receptor signaling pathway
-      2                                                   immune effector process
-        adj_overrep
-      1      12.343
-      2       2.081
+      $category
+      [1] "character"
+      
+      $over_represented_pvalue
+      [1] "numeric"
+      
+      $under_represented_pvalue
+      [1] "numeric"
+      
+      $numDEInCat
+      [1] "integer"
+      
+      $numInCat
+      [1] "integer"
+      
+      $term
+      [1] "character"
+      
+      $ontology
+      [1] "character"
+      
+      $over_represented_adj_pval
+      [1] "numeric"
+      
+      $under_represented_adj_pval
+      [1] "numeric"
+      
+      $term_short
+      [1] "character"
+      
+      $adj_overrep
+      [1] "numeric"
+      
 
