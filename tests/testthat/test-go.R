@@ -57,7 +57,8 @@ test_that("get_enriched_go() works", {
   out <- get_enriched_go(
     pwf = pwf,
     gene2cat = dep_gene2cat
-  )
+  ) %>%
+    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -80,7 +81,8 @@ test_that("estimate_go_overrep() works", {
     obj = go_res,
     pwf = pwf,
     gene2cat = dep_gene2cat
-  )
+  ) %>%
+    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -101,7 +103,8 @@ test_that("estimate_go_overrep() works", {
     obj = go_res,
     pwf = pwf,
     gene2cat = gene_2_cat_df
-  )
+  ) %>%
+    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
@@ -128,7 +131,8 @@ test_that("remove_redundant_go() works", {
 
   out <- go_res %>%
     filter(grepl("immune", term)) %>%
-    remove_redundant_go()
+    remove_redundant_go() %>%
+    mutate(across(matches("pval"), format, digits = 4, nsmall = 2))
 
   # check output against snap reference
   withr::with_tempfile("tf", {
