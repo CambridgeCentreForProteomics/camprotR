@@ -48,7 +48,6 @@ Suggests:
     DEqMS,
     naniar,
     biobroom,
-    UniProt.ws,
     iq,
     gplots
 Config/testthat/edition: 3
