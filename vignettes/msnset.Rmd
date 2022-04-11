@@ -3,7 +3,7 @@ title: "Working with MSnSets"
 author: "Charlotte Dawson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: camprot_references.json
+bibliography: camprotR.json
 vignette: >
   %\VignetteIndexEntry{Working with MSnSets}
   %\VignetteEngine{knitr::rmarkdown}

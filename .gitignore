@@ -45,3 +45,4 @@ vignettes/*.pdf
 # txt files in data-raw
 data-raw/*.txt
 #docs
+inst/doc

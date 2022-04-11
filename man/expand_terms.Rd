@@ -7,14 +7,15 @@
 expand_terms(go_df, go_col, go2Ancestor)
 }
 \arguments{
-\item{go_df}{\code{data.frame} for a single protein with a column ==
-\code{"GO.ID"}.}
+\item{go_df}{\code{data.frame} for a single protein with a single column where
+each row is a single GO term.}
 
 \item{go_col}{\code{variable}. Name of column from the data.frame that
 contains the GO terms.}
 
-\item{go2Ancestor}{\verb{named list}. Returned by get_all_mappings.
-Names == GO.IDs and values == all ancestor GO.IDs.}
+\item{go2Ancestor}{\verb{named list}. Returned by \code{\link{get_all_mappings}}.
+Names == GO terms and values == vectors containing all ancestor GO terms
+for the particular input GO term.}
 }
 \value{
 Returns a \code{data.frame} containing all ancestor GO terms for a
