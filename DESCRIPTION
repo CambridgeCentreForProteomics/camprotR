@@ -15,8 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Remotes: 
-    moodymudskipper/cutr,
-    tvpham/iq
+    moodymudskipper/cutr
 biocViews:
 Depends: 
     R (>= 3.5.0)
