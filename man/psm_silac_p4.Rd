@@ -5,7 +5,7 @@
 \alias{psm_silac_p4}
 \title{PSMs PD output for SILAC labelled MOLM-13 cells}
 \format{
-An object of class \code{data.frame} with 953 rows and 69 columns.
+An object of class \code{data.frame} with 966 rows and 69 columns.
 }
 \usage{
 psm_silac_p4

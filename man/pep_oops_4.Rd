@@ -5,7 +5,7 @@
 \alias{pep_oops_4}
 \title{PeptideGroups PD output for SILAC labelled U-2 OS cells}
 \format{
-An object of class \code{data.frame} with 239 rows and 31 columns.
+An object of class \code{data.frame} with 683 rows and 31 columns.
 }
 \usage{
 pep_oops_4

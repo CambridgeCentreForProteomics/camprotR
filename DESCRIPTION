@@ -40,14 +40,15 @@ Imports:
     tools,
     utils
 Suggests: 
+    biobroom,
+    DEqMS,
+    gplots,
     knitr,
+    iq,
+    limma,
+    naniar,
     rmarkdown,
     testthat (>= 3.0.0),
     vdiffr (>= 1.0.0),
-    withr,
-    DEqMS,
-    naniar,
-    biobroom,
-    iq,
-    gplots
+    withr
 Config/testthat/edition: 3

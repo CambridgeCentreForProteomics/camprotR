@@ -5,7 +5,7 @@
 \alias{psm_oops_4}
 \title{PSM PD output for SILAC labelled U-2 OS cells}
 \format{
-An object of class \code{data.frame} with 884 rows and 44 columns.
+An object of class \code{data.frame} with 2289 rows and 44 columns.
 }
 \usage{
 psm_oops_4
