@@ -384,8 +384,8 @@ Finally, we consider an alternative normalisation approach where we have a stron
 First, we need to calculate the RNase +/- ratios, since this is the value we want to normalise. In other applications, you may wish to normalise the abundance estimates for each sample, rather than the ratio between samples.
 
 ```{r}
-ratios <- exprs(prot_robust[, grepl("RNase_neg", colnames(prot_robust))]) - 
-  exprs(prot_robust[, grepl("RNase_pos", colnames(prot_robust))])
+ratios <- exprs(prot_robust[,pData(prot_robust)$Condition == 'RNase_neg']) - 
+  exprs(prot_robust[,pData(prot_robust)$Condition == 'RNase_pos'])
 
 prot_ratios <- MSnSet(exprs = ratios,
                       fData = fData(prot_robust),
