@@ -14,7 +14,8 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
-Remotes: moodymudskipper/cutr
+Remotes: 
+    moodymudskipper/cutr
 biocViews:
 Depends: 
     R (>= 3.5.0)
@@ -39,10 +40,15 @@ Imports:
     tools,
     utils
 Suggests: 
+    biobroom,
+    DEqMS,
+    gplots,
     knitr,
+    iq,
+    limma,
+    naniar,
     rmarkdown,
     testthat (>= 3.0.0),
     vdiffr (>= 1.0.0),
-    withr,
-    DEqMS
+    withr
 Config/testthat/edition: 3

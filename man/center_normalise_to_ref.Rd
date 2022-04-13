@@ -5,12 +5,22 @@
 \title{Center-median normalise the expression matrix in an MSnSet using medians
 from a reference dataset}
 \usage{
-center_normalise_to_ref(obj, medians)
+center_normalise_to_ref(
+  obj,
+  medians,
+  center_to_zero = FALSE,
+  on_log_scale = FALSE
+)
 }
 \arguments{
 \item{obj}{\code{MSnSet}. Contains PSMs.}
 
 \item{medians}{\verb{vector, numeric}. Sample medians from reference dataset}
+
+\item{center_to_zero}{\code{logical}. Centre the data range on zero.
+If FALSE, normalisation retains original data range.}
+
+\item{on_log_scale}{\code{logical}. Input data is log-transformed}
 }
 \value{
 Returns an \code{MSnSet} with the expression matrix column center-median

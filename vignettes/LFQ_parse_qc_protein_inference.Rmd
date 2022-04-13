@@ -1,0 +1,548 @@
+---
+title: "LFQ QC and summarisation to protein-level abundance"
+author: "Tom Smith"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: camprotR.json
+vignette: >
+  %\VignetteIndexEntry{LFQ QC and summarisation to protein-level abundance}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(camprotR)
+library(Biostrings)
+library(MSnbase)
+library(naniar)
+library(gplots)
+library(biobroom)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(tibble)
+library(httr)
+```
+
+## Input data
+
+We start by reading in a file containing peptide-level output from Proteome Discoverer (PD). This experiment was designed to identify RNA-binding proteins (RBPs) in the U-2 OS cell line using the OOPS method [@http://zotero.org/users/5634351/items/EJHWF46N] with a comparison of RNase +/- used to separate RBPs from background non-specific proteins. 4 replicate experiments were performed, where the RNase +/- experiments were performed from the same OOPS interface resulting in 8 samples in total. For each LFQ run, approximately the same quantity of protein was injected, based on quantification of peptide concentration post trypsin digestion. This data is not published but aim of the experiment is equivalent to figure 2e in the original OOPS paper [@http://zotero.org/users/5634351/items/EJHWF46N].  
+
+```{r}
+pep_data <- camprotR::lfq_oops_rnase
+```
+
+The samples analysed are as follows:
+
+```{r}
+sample_data <- data.frame(
+  File = paste0("F", 17:24),
+  Sample = paste0(rep(c("RNase_neg", "RNase_pos"), each = 4), ".", 1:4),
+  Condition = rep(c("RNase_neg", "RNase_pos"), each = 4),
+  Replicate = rep(1:4, 2)
+)
+
+knitr::kable(sample_data)
+```
+
+
+## Parse input data and remove contaminants 
+
+The first step is to remove contaminant proteins. These were defined using the [cRAP database](https://www.thegpm.org/crap/). Below, we parse the cRAP FASTA to extract the IDs for the cRAP proteins, in both 'cRAP' format and UniProt accessions for these proteins.
+
+```{r}
+crap_fasta_inf <- system.file(
+  "extdata", "cRAP_20190401.fasta.gz", 
+  package = "camprotR"
+)
+
+# Load the cRAP FASTA used for the PD search
+crap_fasta <- fasta.index(crap_fasta_inf, seqtype = "AA")
+
+# Define a base R version of stringr::str_extract_all()
+str_extract_all <- function(pattern, string) {
+  gregexpr(pattern, string, perl = TRUE) %>% 
+    regmatches(string, .) %>% 
+    unlist()
+}
+
+# Extract the UniProt accessions associated with each cRAP protein
+crap_accessions <- crap_fasta %>% 
+  pull(desc) %>% 
+  str_extract_all("(?<=\\|).*?(?=\\|)", .) %>% 
+  unlist()
+```
+
+We can then supply these cRAP protein IDs to `parse_features()` which will remove features (i.e. peptides in this case) which may originate from contaminants, as well as features which don't have a unique master protein. 
+
+Here, our output does not contain a protein accessions column, which is required by `parse_features` to perform complete removal of contaminants. We get around this here by specifying the protein column as the `Master.Protein.Accessions` but data should be exported from PD with the protein accessions. See `?parse_features` for further details, including the removal of 'associated cRAP' for conservative contaminants removal.
+
+```{r}
+pep_data_flt <- camprotR::parse_features(
+  pep_data, 
+  protein_col = 'Master.Protein.Accessions',
+  TMT = TRUE, 
+  level = 'peptide',
+  crap_proteins = crap_accessions, 
+)
+```
+
+From the above, we can see that we have started with `r nrow(pep_data)` 'features' (peptides) from `r length(unique(pep_data$Master.Protein.Accessions))` master proteins across all samples. After removal of contaminants, peptides without quantification, and peptides that can't be assigned to a unique master protein, we have `r nrow(pep_data_flt)` peptides remaining from `r length(unique(pep_data_flt$Master.Protein.Accessions))` master proteins.
+
+We now store the filtered peptide data in an MSnSet, the standard data object for proteomics in R. See the `vignette("msnset")` for more details.
+
+```{r}
+# Create expression matrix with peptide abundances (exprs) and human 
+# readable column names
+exprs_data <- pep_data_flt %>% 
+  select(matches("Abundance")) %>% 
+  `colnames<-`(sample_data$Sample) %>% 
+  as.matrix()
+
+# Create data.frame with sample metadata (pData)
+pheno_data <- sample_data %>% 
+  select(-File) %>% 
+  column_to_rownames(var = "Sample")
+
+# Create data.frame with peptide metadata (fData)
+feat_data <- pep_data_flt %>% 
+  select(-matches("Abundance"))
+
+# Create MSnSet
+pep <- MSnbase::MSnSet(exprs = exprs_data,
+                       fData = feat_data,
+                       pData = pheno_data)
+```
+
+## QC peptides
+
+First of all, we want to inspect the peptide intensity distributions. We expect these to be approximately equal and any very low intensity sample would be a concern that would need to be further explored. Here, we can see that there is some clear variability, but no sample with very low intensity.
+
+```{r, fig.height=3, fig.width=4, fig.fullwidth=TRUE, fig.cap="Peptide intensities"}
+pep %>%
+  log(base = 2) %>%
+  camprotR::plot_quant(method = 'density')
+```
+
+Next, we consider the missing values. Note that `MSnbase::plotNA` assumes the object contains protein-level data and names the x-axis accordingly. Here, we update the plot aesthetics and rename the x-axis
+
+
+```{r, fig.show='hide'}
+p <- MSnbase::plotNA(pep, pNA = 0) +
+  camprotR::theme_camprot(border = FALSE, base_family = 'sans', base_size = 10) +
+  labs(x = 'Peptide index')
+```
+So, from the `r nrow(pep)` peptides, just `r nrow(filterNA(pep, pNA = 0))` have quantification values in all 8 samples. This is not a suprise for LFQ, since each sample is prepared and run separately.
+
+```{r, fig.height=4, fig.width=5, fig.fullwidth=TRUE, fig.cap="Data completeness, all peptides"}
+print(p)
+```
+
+We can explore the structure of the missing values further using an 'upset' plot.  
+
+```{r, fig.height=5, fig.width=8, fig.fullwidth=TRUE, fig.cap="Missing values upset plot"}
+missing_data <- pep %>%
+  exprs() %>%
+  data.frame()
+
+naniar::gg_miss_upset(missing_data,
+                      sets = paste0(colnames(pep), '_NA'),
+                      keep.order = TRUE,
+                      nsets = 10)
+```
+
+So in this case, we can see that the most common missing value patterns are missing in just RNase negative replicate 4, or missing in all the other samples, except this sample. This sample also had slightly lower overall peptide intensities and appears to be somewhat of an outlier. In this case, we will retain the sample.
+
+Finally, we can recode the abundances to binary (present/absent) and plot as a heatmap (missing = black). Beyond the aforementioned observations regarding RNase negative replicate 4, there's no clear structure in the missing values. This is what we would expect for LFQ, where data is largely missing at random (MAR). There are methods to impute values MAR, but, providing what we are after is protein-level abundance, it is usually more appropriate to perform the protein inference using a method that can accommodate missing values.
+
+```{r, fig.height=4, fig.width=6, fig.fullwidth=TRUE, fig.cap="Presence/Absence heatmap"}
+missing_data[!is.na(missing_data)] <- 1
+missing_data[is.na(missing_data)] <- 0
+
+gplots::heatmap.2(
+  as.matrix(missing_data),
+  col = c("black", "lightgray"),
+  scale = "none", # Don't re-scale the input
+  # Default is euclidean, which is less appropriate distance for binary vectors
+  distfun = function(x) dist(x, method = 'binary'), 
+  trace = "none", # Don't include a trace. Improves appearance
+  key = FALSE, # Don't include a key as values are binary
+  Colv = FALSE, # Don't re-order the columns
+  labRow = FALSE, # Don't label the rows
+  cexCol = 0.7 # Reduce the column name size
+)
+```
+## Normalise peptide intensities
+
+We have injected the same quantity of peptides for each sample, so it's reasonable to normalise the samples against one another. Here we will apply 'center-median' normalisation, which in `MSnbase::normalise` is called 'diff.median'. Since the peptide intensities are log-Gaussian distributed, we log~2~-transform them before performing the normalisation.
+
+```{r, fig.height=3, fig.width=5, fig.fullwidth=TRUE, fig.cap="Protein intensities post-normalisation"}
+pep_norm <- pep %>% 
+  log(base = 2) %>% 
+  MSnbase::normalise('diff.median')  
+
+pep_norm %>% 
+  camprotR::plot_quant(method = 'density')
+```
+
+## Summarising to protein-level abundance
+
+Before we can summarise to protein-level abundances, we need to exclude peptides with too many missing values. Here, peptides with more than 5/8 missing values are discarded, using `MSnbase::filterNA()`. We also need to remove proteins without at least two peptides. We will use `camprotR::restrict_features_per_protein()` which will replace quantification values with `NA` if the sample does not have two quantified peptides for a given protein. Note that this means we have to repeat the filtering process since we are adding missing values.
+
+```{r}
+pep_restricted <- pep_norm %>%
+  MSnbase::filterNA(pNA = 4/8) %>% # Maximum 4/8 missing values
+  camprotR::restrict_features_per_protein(min_features = 2, plot = FALSE) %>% # At least two peptides per protein
+  # Repeat the filtering since restrict_features_per_protein will replace some values with NA
+  MSnbase::filterNA(pNA = 4/8) %>% 
+  camprotR::restrict_features_per_protein(min_features = 2, plot = FALSE) 
+```
+
+We can then re-inspect the missing values. Note that we have reduced the overall number of peptides to `r nrow(pep_restricted)`.
+
+```{r, fig.show='hide'}
+p <- MSnbase::plotNA(pep_restricted, pNA = 0) +
+  camprotR::theme_camprot(border = FALSE, base_family = 'sans', base_size = 15) +
+  labs(x = 'Peptide index')
+```
+```{r, fig.width=6, fig.height=4, fig.fullwidth=TRUE, fig.cap="Data completeness, retained peptides"}
+print(p)
+```
+
+We can now summarise to protein-level abundance. Below, we use 'robust' summarisation [@http://zotero.org/users/5634351/items/FZN3QTTZ] with `MSnbase::combineFeatures()`. This returns a warning about missing values that we can ignore here since the robust method is inherently designed to handle missing values. See `MsCoreUtils::robustSummary()` and [this publication](https://pubmed.ncbi.nlm.nih.gov/32321741/) for further details about the robust method.
+
+```{r}
+prot_robust <- pep_restricted %>%
+  MSnbase::combineFeatures(
+    # group the peptides by their master protein id
+    groupBy = fData(pep_restricted)$Master.Protein.Accessions, 
+    method = 'robust', 
+    maxit = 1000  # Ensures convergence for MASS::rlm
+  ) 
+```
+
+We can then re-inspect the missing values at the protein level. So, we have quantification for `r nrow(prot_robust)` proteins, of which `r nrow(filterNA(prot_robust, pNA = 0))` are fully quantified across all 8 samples. The most common missing values pattern remains missing in just RNase negative replicate 4.
+
+```{r, fig.show='hide'}
+p <- MSnbase::plotNA(prot_robust, pNA = 0) +
+  camprotR::theme_camprot(border = FALSE, base_family = 'sans', base_size = 15)
+```
+
+
+```{r, fig.width=6, fig.height=4, fig.fullwidth=TRUE}
+print(p)
+```
+
+```{r, fig.width=8, fig.height=4, fig.fullwidth=TRUE}
+naniar::gg_miss_upset(data.frame(exprs(prot_robust)),
+                      sets = paste0(colnames(prot_robust), '_NA'),
+                      keep.order = TRUE,
+                      nsets = 10)
+```
+
+We have now obtained protein-level abundances from our LFQ data. This is our recommended procedure for summarising from peptide to protein level abundances. 
+
+## Alternatives for summarising to protein-level abundance - MaxLFQ
+
+Although we recommend using the 'robust' summarisation, there are other algorithms that are commonly applied. For example MaxLFQ [@http://zotero.org/users/5634351/items/87YIDK69], which is implemented within MaxQuant, but also available via the `iq::maxLFQ()` function in the iq package in R (now available on [CRAN](https://cran.r-project.org/web/packages/iq/index.html)). 
+
+```{r}
+# You may wish to retain more feature columns that this! 
+feature_coloumns_to_retain <- c("Master.Protein.Accessions")
+
+# To ensure we are only comparing the protein inference method and not normalisation etc,
+# we will use the same set of peptides for both inference methods
+pep_data_for_summarisation <- pep_restricted %>%
+  exprs() %>%
+  data.frame() %>%
+  merge(fData(pep_restricted)[, feature_coloumns_to_retain, drop = FALSE], 
+        by = 'row.names') %>%
+  select(-Row.names)
+```
+
+Below, we use `iq::maxLFQ()` manually, though it should be possible to use this function within `MSnbase::combineFeatures()` too in theory since it accommodates user-defined functions.
+
+```{r}
+# Define a function to perform MaxLFQ on a single protein and return a data.frame
+# as required. 
+get_maxlfq_estimate <- function(obj) {
+  prot <- iq::maxLFQ(as.matrix(obj))$estimate
+  
+  data.frame(t(prot)) %>% 
+    setNames(colnames(obj))
+}
+
+# Group by the features we want to retain and use MaxLFQ on each protein
+maxlfq_estimates <- pep_data_for_summarisation %>%
+  group_by(across(all_of(feature_coloumns_to_retain))) %>%
+  dplyr::group_modify(~ get_maxlfq_estimate(.)) %>%
+  ungroup()
+
+# Create the protein-level MSnSet
+maxlfq.e <- as.matrix(select(maxlfq_estimates, -Master.Protein.Accessions))
+maxlfq.f <- data.frame(select(maxlfq_estimates, Master.Protein.Accessions))
+maxlfq.p <- pData(pep_restricted)
+
+prot_maxlfq <- MSnSet(exprs = maxlfq.e,
+                      fData = maxlfq.f,
+                      pData = maxlfq.p)
+
+# Update the rownames to be the protein IDs
+rownames(prot_maxlfq) <- maxlfq_estimates$Master.Protein.Accessions
+```
+
+We can now compare the protein-level abundance estimates.
+
+```{r, warning=FALSE, fig.height=3, fig.width=5, fig.fullwidth=TRUE, fig.cap="Comparison of protein inference methods"}
+# Define a function to extract the protein abundances in long form and
+# add a column annotating the method
+get_long_form_prot_exp <- function(obj, method_name) {
+  tidy(obj) %>%
+    mutate(method = method_name)
+}
+
+# Single object with protein inference from both methods 
+compare_protein_abundances <- rbind(
+  get_long_form_prot_exp(prot_maxlfq, 'MaxLFQ'),
+  get_long_form_prot_exp(prot_robust, 'Robust')
+)
+
+# Plot direct comparison
+compare_protein_abundances %>%
+  pivot_wider(names_from = method, values_from = value) %>% # pivot to wider form for plotting
+  ggplot(aes(x = Robust, y = MaxLFQ)) +
+  geom_point(alpha = 0.25, size = 0.5) +
+  theme_camprot(border = FALSE, base_family = 'sans', base_size = 15) +
+  geom_abline(slope = 1, colour = get_cat_palette(2)[2], linetype = 2, size = 1)
+```
+
+There is a very good overall correlation. Let's inspect a few proteins with the largest differences between the two approaches to see what's going on for the edge cases.
+
+```{r}
+# Identify proteins with largest difference between the protein summarisation methods
+proteins_of_interest <- compare_protein_abundances %>%
+  pivot_wider(names_from = method, values_from = value) %>%
+  mutate(diff = MaxLFQ-Robust) %>%
+  arrange(desc(abs(diff))) %>%
+  pull(protein) %>%
+  unique() %>%
+  head(5)
+```
+
+Below we define a function to plot the peptide and protein abundances for the two methods for a single protein. We can ignore the details since it's the plots themselves we are interested in.
+
+```{r}
+plot_pep_and_protein <- function(protein_of_interest) {
+  
+  to_plot_compare <- compare_protein_abundances %>% 
+    filter(protein == protein_of_interest)
+  
+  pep_restricted[fData(pep_restricted)$Master.Protein.Accession == protein_of_interest] %>%
+    exprs() %>%
+    data.frame() %>%
+    rownames_to_column('id') %>%
+    pivot_longer(cols = -id) %>%
+    ggplot(aes(x = name, y = value)) +
+    geom_line(aes(group = id), colour = 'grey', alpha = 0.5) +
+    geom_point(colour = 'grey', alpha = 0.5) +
+    geom_line(data = to_plot_compare,
+              aes(x = sample.id, y = value, colour = method, group = method)) +
+    geom_point(data = to_plot_compare,
+               aes(x = sample.id, y = value, colour = method)) +
+    scale_colour_manual(values = get_cat_palette(2), name = 'LFQ summarisation method') +
+    theme_camprot(base_size = 15, border = FALSE, base_family = 'sans') +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    labs(
+      title = protein_of_interest,
+      x = '',
+      y = 'Protein abundance (log2)'
+    )
+}
+```
+
+Below we apply the above function to each of our proteins of interest.
+
+```{r, warning=FALSE, fig.fullwidth=TRUE, fig.height=4, fig.width=7}
+proteins_of_interest %>% lapply(plot_pep_and_protein)
+```
+
+Looking at these examples, we can see that MaxLFQ is often estimating slightly higher abundances but with a very similar profile across the samples is very similar, so the summarisation approach is unlikely to affect the downstream analysis. It's not clear which of the two approaches is more correct in the examples above, but the publication proposing the robust protein inference (see [here](https://pubmed.ncbi.nlm.nih.gov/32321741/)) does indicate it gives more accurate fold-change estimates overall.
+
+We have now processed our peptide-level LFQ abundances and obtained protein-level abundances, from which we can perform our downstream analyses.
+
+## Alternative normalisation - Using reference proteins
+
+Finally, we consider an alternative normalisation approach where we have a strong prior expectation about the abundance of a subset of proteins. Our data is from an RNase +/- OOPS experiment. Since OOPS is known to enrich glycoproteins at the interface, we can use these proteins as an internal set of 'housekeeping' proteins which we expect to have no difference in abundance between RNase +/-.
+
+First, we need to calculate the RNase +/- ratios, since this is the value we want to normalise. In other applications, you may wish to normalise the abundance estimates for each sample, rather than the ratio between samples.
+
+```{r}
+ratios <- exprs(prot_robust[,pData(prot_robust)$Condition == 'RNase_neg']) - 
+  exprs(prot_robust[,pData(prot_robust)$Condition == 'RNase_pos'])
+
+prot_ratios <- MSnSet(exprs = ratios,
+                      fData = fData(prot_robust),
+                      pData = (pData(prot_robust) %>% filter(Condition == 'RNase_neg')))
+```
+
+Next, we need annotations regarding which proteins are glycoproteins and GO-annotated RBPs. [Once a notebook has been added to cover GO annotations, reference to that here to avoid repeating explanations about why we want to expand the set of GO anntotations]
+
+Get all GO terms for our proteins by querying UniProt programmatically.
+
+```{r}
+up_url <- "https://www.uniprot.org/uploadlists/"
+
+request <- list(
+  query = paste(rownames(prot_robust), collapse = " "),
+  from = "ACC+ID",
+  to = "ACC",
+  format = "tab",
+  columns = paste("id", "features", "go-id", sep = ",")
+)
+
+response <- httr::GET(url = up_url, query = request)
+
+res <- httr::content(response, type = "text", encoding = "UTF8") %>% 
+  read.table(text = ., sep = "\t", header = TRUE) %>% 
+  select(Entry, Features, Gene.ontology.IDs)
+```
+
+```{r}
+go_long <- res %>% 
+  separate_rows(Gene.ontology.IDs, sep = "; ")
+
+# This step may take a minute or two
+go_all <- get_ancestor_go(
+  go_long, 
+  feature_col = "Entry",
+  go_col = "Gene.ontology.IDs",
+  verbose = TRUE
+)
+```
+
+```{r}
+# Get RBPs
+go_rbp <- "GO:0003723"
+
+rbps <- go_all %>% 
+  filter(Gene.ontology.IDs == go_rbp) %>% 
+  pull(Entry)
+```
+
+```{r}
+# Get glycoproteins
+glycoproteins <- res %>% 
+  filter(grepl("Glycosylation", Features)) %>%
+  mutate(Glyco.features = Features) %>%
+  separate_rows(Glyco.features, sep = "; ") %>%
+  filter(grepl("Glycosylation", Glyco.features)) %>%
+  mutate(Glyco.features = gsub("\\(|\\)", "", Glyco.features)) %>%
+  separate(Glyco.features, into = c(NA, "Glycosylation.count"), sep = " ") %>%
+  select(Entry, Glycosylation.count)
+```
+
+Add feature columns describing the glycoprotein and GO-RBP status of the proteins.
+
+```{r}
+fData(prot_ratios) <- fData(prot_ratios) %>%
+  mutate(Glycoprotein = rownames(prot_ratios) %in% glycoproteins$Entry) %>%
+  mutate(GO.RBP = rownames(prot_ratios) %in% rbps) %>%
+  mutate(Glyco.RBP = interaction(Glycoprotein, GO.RBP)) %>%
+  mutate(Glyco.RBP = factor(recode(
+    Glyco.RBP,
+    'TRUE.TRUE'='GO:RBGP',
+    'FALSE.TRUE'='GO:RBP',
+    'TRUE.FALSE'='Glycoprotein',
+    'FALSE.FALSE'='Other'),
+    levels = c('GO:RBP', 'GO:RBGP', 'Other', 'Glycoprotein'))
+  )
+
+```
+
+Below, we define a function to plot the ratios for each functional sub-type of proteins and summarise the number of GO-annotated RBPs that have a log2 RNase -/+ ratio < -1.
+
+```{r}
+plot_ratios <- function(obj) {
+  to_plot <- merge(
+    exprs(obj),
+    fData(obj)[,'Glyco.RBP',drop = FALSE],
+    by = 'row.names'
+  ) %>%
+    pivot_longer(cols = -c(Row.names, Glyco.RBP), names_to = 'sample', values_to = 'ratio') %>%
+    merge(pData(obj), by.x = 'sample', by.y = 'row.names') %>%
+    filter(is.finite(ratio))
+  
+  to_plot %>%
+    filter(Glyco.RBP == 'GO:RBP') %>%
+    group_by(Replicate, neg_ratio = ratio <(-1)) %>%
+    tally() %>%
+    pivot_wider(names_from = neg_ratio, values_from = n) %>%
+    mutate(`TRUE` = replace_na(`TRUE`, 0)) %>%
+    mutate(perc_negative = 100*`TRUE`/(`TRUE`+`FALSE`)) %>%
+    select(Replicate, perc_negative) %>%
+    print()
+  
+  p <- to_plot %>% 
+    ggplot(aes(x = Replicate, y = ratio, 
+               group = interaction(Glyco.RBP, Replicate), 
+               colour = factor(Glyco.RBP))) +
+    geom_boxplot(position = position_dodge()) +
+    theme_camprot(border = FALSE, base_family = 'sans', base_size = 15) +
+    scale_colour_manual(values = c(get_cat_palette(3), 'black'), name = '') +
+    geom_hline(yintercept = 0, linetype = 2, colour = 'grey') +
+    labs(
+      x = "Replicate",
+      y = "RNase -/+ ratio"
+    )
+  
+  print(p)
+  
+  invisible(to_plot)
+}
+
+```
+
+How do the protein ratios look pre-normalisation...
+
+```{r, fig.width=8}
+plot_ratios(prot_ratios)
+```
+
+OK, so the glycoproteins are not centered at zero and there are many GO-annotated RBPs with negative log RNase -/+ ratios (2-13%).
+
+Below, we perform the center median normalisation to the set of reference proteins (here, the glycoproteins). 
+
+```{r}
+glycoprotein_medians <- prot_ratios[fData(prot_ratios)$Glyco.RBP == 'Glycoprotein',] %>% 
+  camprotR::get_medians()
+
+prot_ratios_norm <- camprotR::center_normalise_to_ref(
+  prot_ratios,
+  glycoprotein_medians,
+  center_to_zero = TRUE, # We want to center the glycoproteins around zero
+  on_log_scale = TRUE # The quantifications are on a log scale (log2 ratios)
+)
+```
+
+And plot the protein ratios post-normalisation.
+
+```{r, fig.width=8}
+plot_ratios(prot_ratios_norm)
+```
+
+Now, the median log2 RNase -/+ ratio for glycoproteins is zero for all replicates and we have far fewer GO-annotated RBPs with negative log RNase -/+ ratios (0-1%).
+
+## Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+
+## References {.unnumbered}
