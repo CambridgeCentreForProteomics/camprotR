@@ -36,7 +36,7 @@ library(httr)
 We start by reading in a file containing peptide-level output from Proteome Discoverer (PD). This experiment was designed to identify RNA-binding proteins (RBPs) in the U-2 OS cell line using the OOPS method [@http://zotero.org/users/5634351/items/EJHWF46N] with a comparison of RNase +/- used to separate RBPs from background non-specific proteins. 4 replicate experiments were performed, where the RNase +/- experiments were performed from the same OOPS interface resulting in 8 samples in total. For each LFQ run, approximately the same quantity of protein was injected, based on quantification of peptide concentration post trypsin digestion. This data is not published but aim of the experiment is equivalent to figure 2e in the original OOPS paper [@http://zotero.org/users/5634351/items/EJHWF46N].  
 
 ```{r}
-pep_data <- camprotR::lfq_oops_rnase
+pep_data <- camprotR::lfq_oops_rnase_pep
 ```
 
 The samples analysed are as follows:
@@ -82,12 +82,11 @@ crap_accessions <- crap_fasta %>%
 
 We can then supply these cRAP protein IDs to `parse_features()` which will remove features (i.e. peptides in this case) which may originate from contaminants, as well as features which don't have a unique master protein. 
 
-Here, our output does not contain a protein accessions column, which is required by `parse_features` to perform complete removal of contaminants. We get around this here by specifying the protein column as the `Master.Protein.Accessions` but data should be exported from PD with the protein accessions. See `?parse_features` for further details, including the removal of 'associated cRAP' for conservative contaminants removal.
+See `?parse_features` for further details, including the removal of 'associated cRAP' for conservative contaminants removal.
 
 ```{r}
 pep_data_flt <- camprotR::parse_features(
-  pep_data, 
-  protein_col = 'Master.Protein.Accessions',
+  pep_data,
   TMT = TRUE, 
   level = 'peptide',
   crap_proteins = crap_accessions, 
