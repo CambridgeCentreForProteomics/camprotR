@@ -5,7 +5,7 @@
 \alias{lfq_oops_rnase_pep}
 \title{PeptideGroups PD output for LFQ of RNase +/- OOPS experiment}
 \format{
-An object of class \code{data.frame} with 7808 rows and 41 columns.
+An object of class \code{data.frame} with 496 rows and 41 columns.
 }
 \usage{
 lfq_oops_rnase_pep

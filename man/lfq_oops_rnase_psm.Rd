@@ -5,7 +5,7 @@
 \alias{lfq_oops_rnase_psm}
 \title{PSM PD output for LFQ of RNase +/- OOPS experiment}
 \format{
-An object of class \code{data.frame} with 56246 rows and 42 columns.
+An object of class \code{data.frame} with 3673 rows and 42 columns.
 }
 \usage{
 lfq_oops_rnase_psm
