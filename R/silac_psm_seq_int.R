@@ -54,11 +54,12 @@ silac_psm_seq_int <- function(
              !!sym(mod_col)) %>%
     tally() %>%
     mutate('matched'=TRUE) %>%
-    pivot_wider(names_from=Quan.Channel, values_from=c(n, matched)) %>%
-    mutate(n_Light=replace_na(n_Light, 0),
-           n_Heavy=replace_na(n_Heavy, 0),
-           matched_Light=replace_na(matched_Light, FALSE),
-           matched_Heavy=replace_na(matched_Heavy, FALSE))
+    pivot_wider(names_from=.data$Quan.Channel,
+                values_from=c(.data$n, .data$matched)) %>%
+    mutate(n_Light=replace_na(.data$n_Light, 0),
+           n_Heavy=replace_na(.data$n_Heavy, 0),
+           matched_Light=replace_na(.data$matched_Light, FALSE),
+           matched_Heavy=replace_na(.data$matched_Heavy, FALSE))
 
   if(include_interference){
 
