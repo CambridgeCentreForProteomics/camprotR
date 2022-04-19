@@ -472,7 +472,7 @@ fData(prot_ratios) <- fData(prot_ratios) %>%
 
 ```
 
-Below, we define a function to plot the ratios for each functional sub-type of proteins and summarise the number of GO-annotated RBPs that have a log2 RNase -/+ ratio < -1.
+Below, we define a function to plot the ratios for each functional sub-type of proteins.
 
 ```{r}
 plot_ratios <- function(obj) {
@@ -484,16 +484,6 @@ plot_ratios <- function(obj) {
     pivot_longer(cols = -c(Row.names, Glyco.RBP), names_to = 'sample', values_to = 'ratio') %>%
     merge(pData(obj), by.x = 'sample', by.y = 'row.names') %>%
     filter(is.finite(ratio))
-  
-  to_plot %>%
-    filter(Glyco.RBP == 'GO:RBP') %>%
-    group_by(Replicate, neg_ratio = ratio <(-1)) %>%
-    tally() %>%
-    pivot_wider(names_from = neg_ratio, values_from = n) %>%
-    mutate(`TRUE` = replace_na(`TRUE`, 0)) %>%
-    mutate(perc_negative = 100*`TRUE`/(`TRUE`+`FALSE`)) %>%
-    select(Replicate, perc_negative) %>%
-    print()
   
   p <- to_plot %>% 
     ggplot(aes(x = Replicate, y = ratio, 
@@ -521,7 +511,7 @@ How do the protein ratios look pre-normalisation...
 plot_ratios(prot_ratios)
 ```
 
-OK, so the glycoproteins are not centered at zero and there are many GO-annotated RBPs with negative log RNase -/+ ratios (2-13%).
+OK, so the glycoproteins are not centered at zero and there are GO-annotated RBPs with negative log RNase -/+ ratios (as much as ~25% in replicate 2)
 
 Below, we perform the center median normalisation to the set of reference proteins (here, the glycoproteins). 
 
@@ -541,9 +531,10 @@ And plot the protein ratios post-normalisation.
 
 ```{r, fig.width=8}
 plot_ratios(prot_ratios_norm)
+
 ```
 
-Now, the median log2 RNase -/+ ratio for glycoproteins is zero for all replicates and we have far fewer GO-annotated RBPs with negative log RNase -/+ ratios (0-1%).
+Now, the median log2 RNase -/+ ratio for glycoproteins is zero for all replicates and we have far fewer GO-annotated RBPs with negative log RNase -/+ ratios.
 
 ## Session info {.unnumbered}
 
