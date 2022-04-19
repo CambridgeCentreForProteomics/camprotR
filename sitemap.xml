@@ -7,6 +7,9 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/articles/LFQ_parse_qc_protein_inference.html</loc>
+  </url>
+  <url>
     <loc>/articles/SILAC.html</loc>
   </url>
   <url>
@@ -137,6 +140,12 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lfq_oops_rnase_pep.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lfq_oops_rnase_psm.html</loc>
   </url>
   <url>
     <loc>/reference/make_fasta.html</loc>

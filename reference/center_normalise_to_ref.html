@@ -42,6 +42,9 @@ from the total samaples."><!-- mathjax --><script src="https://cdnjs.cloudflare.
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/LFQ_parse_qc_protein_inference.html">LFQ QC and summarisation to protein-level abundance</a>
+    </li>
+    <li>
       <a href="../articles/SILAC.html">Processing and QC of SILAC data</a>
     </li>
     <li>
@@ -82,7 +85,12 @@ from the total samaples.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">center_normalise_to_ref</span><span class="op">(</span><span class="va">obj</span>, <span class="va">medians</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">center_normalise_to_ref</span><span class="op">(</span>
+  <span class="va">obj</span>,
+  <span class="va">medians</span>,
+  center_to_zero <span class="op">=</span> <span class="cn">FALSE</span>,
+  on_log_scale <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,6 +99,11 @@ from the total samaples.</p>
 <dd><p><code>MSnSet</code>. Contains PSMs.</p></dd>
 <dt>medians</dt>
 <dd><p><code>vector, numeric</code>. Sample medians from reference dataset</p></dd>
+<dt>center_to_zero</dt>
+<dd><p><code>logical</code>. Centre the data range on zero.
+If FALSE, normalisation retains original data range.</p></dd>
+<dt>on_log_scale</dt>
+<dd><p><code>logical</code>. Input data is log-transformed</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
