@@ -80,7 +80,7 @@
       <h1 data-toc-skip>Processing and QC of SILAC data</h1>
                         <h4 data-toc-skip class="author">Tom Smith</h4>
             
-            <h4 data-toc-skip class="date">2022-04-11</h4>
+            <h4 data-toc-skip class="date">2022-04-19</h4>
       
       
       <div class="hidden name"><code>SILAC.Rmd</code></div>
@@ -132,10 +132,6 @@
   crap_fasta <span class="op">=</span> <span class="va">crap_fasta_inf</span>,
   mix <span class="op">=</span> <span class="fl">1</span> <span class="co"># This incorporation test was performed with a 1:1 H/L mix</span>
 <span class="op">)</span>
-<span class="co">#&gt; camprotR::silac_psm_seq_int output has changed.</span>
-<span class="co">#&gt;   Columns indicating whether quantification is from PSM are now prefixed with</span>
-<span class="co">#&gt;   "matched", not "Sequenced", and tallys of PSMs per isotope are included.</span>
-<span class="co">#&gt;   Interference is not included by default (set include_interference=TRUE)</span>
 <span class="co">#&gt; Parsing features...</span>
 <span class="co">#&gt; 470 features found from 100 master proteins =&gt; Input</span>
 <span class="co">#&gt; 242 cRAP proteins supplied</span>
@@ -325,23 +321,7 @@
     
     <span class="fu">camprotR</span><span class="fu">::</span><span class="fu"><a href="../reference/silac_psm_seq_int.html">silac_psm_seq_int</a></span><span class="op">(</span><span class="va">x</span>, sequence_col <span class="op">=</span> <span class="st">'Sequence'</span><span class="op">)</span>
   <span class="op">}</span>
-<span class="op">)</span>
-<span class="co">#&gt; camprotR::silac_psm_seq_int output has changed.</span>
-<span class="co">#&gt;   Columns indicating whether quantification is from PSM are now prefixed with</span>
-<span class="co">#&gt;   "matched", not "Sequenced", and tallys of PSMs per isotope are included.</span>
-<span class="co">#&gt;   Interference is not included by default (set include_interference=TRUE)</span>
-<span class="co">#&gt; camprotR::silac_psm_seq_int output has changed.</span>
-<span class="co">#&gt;   Columns indicating whether quantification is from PSM are now prefixed with</span>
-<span class="co">#&gt;   "matched", not "Sequenced", and tallys of PSMs per isotope are included.</span>
-<span class="co">#&gt;   Interference is not included by default (set include_interference=TRUE)</span>
-<span class="co">#&gt; camprotR::silac_psm_seq_int output has changed.</span>
-<span class="co">#&gt;   Columns indicating whether quantification is from PSM are now prefixed with</span>
-<span class="co">#&gt;   "matched", not "Sequenced", and tallys of PSMs per isotope are included.</span>
-<span class="co">#&gt;   Interference is not included by default (set include_interference=TRUE)</span>
-<span class="co">#&gt; camprotR::silac_psm_seq_int output has changed.</span>
-<span class="co">#&gt;   Columns indicating whether quantification is from PSM are now prefixed with</span>
-<span class="co">#&gt;   "matched", not "Sequenced", and tallys of PSMs per isotope are included.</span>
-<span class="co">#&gt;   Interference is not included by default (set include_interference=TRUE)</span></code></pre></div>
+<span class="op">)</span></code></pre></div>
 <p>Then we bind together the spectrum matched data into one data frame, ready to merge with the peptide quantification.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">all_psm_matched_data</span> <span class="op">&lt;-</span> <span class="va">psm_matched_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -371,10 +351,10 @@
   <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">all_psm_matched_data</span>, 
         by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Sequence'</span>, <span class="st">'Modifications'</span>, <span class="st">'replicate'</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="co"># Add new columns with CL/NC and CL/NC sequenced information</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="st">'Matched_CL'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">replicate</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,
-                                 <span class="va">matched_Heavy</span>, <span class="va">matched_Light</span><span class="op">)</span>,
-         <span class="st">'Matched_NC'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">replicate</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,
-                                 <span class="va">matched_Light</span>, <span class="va">matched_Heavy</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="st">'Sequenced_CL'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">replicate</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, 
+                                 <span class="va">Sequenced_Heavy</span>, <span class="va">Sequenced_Light</span><span class="op">)</span>,
+         <span class="st">'Sequenced_NC'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">replicate</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, 
+                                 <span class="va">Sequenced_Light</span>, <span class="va">Sequenced_Heavy</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="co"># And subset to these columns</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Master.Protein.Accessions</span>,
          <span class="va">Sequence</span>, 
@@ -383,14 +363,14 @@
          <span class="va">ratio</span>,
          <span class="va">CL</span>, 
          <span class="va">NC</span>,
-         <span class="va">Matched_CL</span>,
-         <span class="va">Matched_NC</span>,
+         <span class="va">Sequenced_CL</span>,
+         <span class="va">Sequenced_NC</span>,
          <span class="va">missing</span><span class="op">)</span>
 
 <span class="co"># Add a single column to describe the sequenced information</span>
 <span class="va">ratios_matched</span> <span class="op">&lt;-</span> <span class="va">ratios_matched</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
-    matched <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction</a></span><span class="op">(</span><span class="va">Matched_CL</span>, <span class="va">Matched_NC</span><span class="op">)</span>,
+    matched <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction</a></span><span class="op">(</span><span class="va">Sequenced_CL</span>, <span class="va">Sequenced_NC</span><span class="op">)</span>,
     matched <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">matched</span>,
                             <span class="st">'TRUE.TRUE'</span><span class="op">=</span><span class="st">'Both spectrum matched'</span>,
                             <span class="st">'TRUE.FALSE'</span><span class="op">=</span><span class="st">'CL spectrum matched'</span>,
@@ -459,8 +439,8 @@
 <span class="co"># Create a wide table with unique ids as row names</span>
 <span class="va">flt_ratios_wide</span> <span class="op">&lt;-</span> <span class="va">flt_ratios</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Master.Protein.Accessions</span>, <span class="va">Sequence</span>, <span class="va">Modifications</span>,
-         <span class="va">replicate</span>, <span class="va">Matched_NC</span>, <span class="va">ratio</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">"replicate"</span>, values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matched_NC"</span>, <span class="st">"ratio"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+         <span class="va">replicate</span>, <span class="va">Sequenced_NC</span>, <span class="va">ratio</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">"replicate"</span>, values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sequenced_NC"</span>, <span class="st">"ratio"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unite.html" class="external-link">unite</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">Sequence</span>, <span class="va">Modifications</span>, remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span>
 
@@ -491,7 +471,7 @@
 <span class="co">#&gt; featureData</span>
 <span class="co">#&gt;   featureNames: AAAAAAAAAAAAAAAGAGAGAK_ AAAAAAALQAK_ ... YVSSLTEEISK_</span>
 <span class="co">#&gt;     (454 total)</span>
-<span class="co">#&gt;   fvarLabels: Master.Protein.Accessions Sequence ... Matched_NC_3 (7</span>
+<span class="co">#&gt;   fvarLabels: Master.Protein.Accessions Sequence ... Sequenced_NC_3 (7</span>
 <span class="co">#&gt;     total)</span>
 <span class="co">#&gt;   fvarMetadata: labelDescription</span>
 <span class="co">#&gt; experimentData: use 'experimentData(object)'</span>
@@ -532,10 +512,10 @@
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prot_matched_nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">pep_res_flt</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Sequence</span>, <span class="op">-</span><span class="va">Modifications</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="va">Master.Protein.Accessions</span>, values_to <span class="op">=</span> <span class="st">'matched_NC'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="va">Master.Protein.Accessions</span>, values_to <span class="op">=</span> <span class="st">'sequenced_NC'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Master.Protein.Accessions</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">matched_NC</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>any_not_matched <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="op">!</span><span class="va">matched_NC</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">sequenced_NC</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>any_not_sequenced <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="op">!</span><span class="va">sequenced_NC</span><span class="op">)</span><span class="op">)</span>
 
 
 <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">prot_res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureData.html" class="external-link">fData</a></span><span class="op">(</span><span class="va">prot_res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
