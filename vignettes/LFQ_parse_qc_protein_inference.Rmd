@@ -83,17 +83,17 @@ crap_accessions <- crap_fasta %>%
 We can then supply these cRAP protein IDs to `parse_features()` which will remove features (i.e. peptides in this case) which may originate from contaminants, as well as features which don't have a unique master protein. 
 
 See `?parse_features` for further details, including the removal of 'associated cRAP' for conservative contaminants removal.
-
 ```{r}
 pep_data_flt <- camprotR::parse_features(
   pep_data,
-  TMT = TRUE, 
+  TMT = FALSE, 
   level = 'peptide',
   crap_proteins = crap_accessions, 
 )
 ```
 
-From the above, we can see that we have started with `r nrow(pep_data)` 'features' (peptides) from `r length(unique(pep_data$Master.Protein.Accessions))` master proteins across all samples. After removal of contaminants, peptides without quantification, and peptides that can't be assigned to a unique master protein, we have `r nrow(pep_data_flt)` peptides remaining from `r length(unique(pep_data_flt$Master.Protein.Accessions))` master proteins.
+
+From the above, we can see that we have started with `r nrow(pep_data)` 'features' (peptides) from `r length(unique(pep_data$Master.Protein.Accessions))` master proteins across all samples. After removal of contaminants and peptides that can't be assigned to a unique master protein, we have `r nrow(pep_data_flt)` peptides remaining from `r length(unique(pep_data_flt$Master.Protein.Accessions))` master proteins.
 
 We now store the filtered peptide data in an MSnSet, the standard data object for proteomics in R. See the `vignette("msnset")` for more details.
 
@@ -157,9 +157,16 @@ naniar::gg_miss_upset(missing_data,
                       nsets = 10)
 ```
 
-So in this case, we can see that the most common missing value patterns are missing in just RNase negative replicate 4, or missing in all the other samples, except this sample. This sample also had slightly lower overall peptide intensities and appears to be somewhat of an outlier. In this case, we will retain the sample.
+So in this case, we can see that the most common missing value patterns are:
 
-Finally, we can recode the abundances to binary (present/absent) and plot as a heatmap (missing = black). Beyond the aforementioned observations regarding RNase negative replicate 4, there's no clear structure in the missing values. This is what we would expect for LFQ, where data is largely missing at random (MAR). There are methods to impute values MAR, but, providing what we are after is protein-level abundance, it is usually more appropriate to perform the protein inference using a method that can accommodate missing values.
+1. Missing in just RNase negative replicate 4
+2. Missing in all samples.
+3. Missing in all the other samples, except RNase negative replicate 4
+
+
+RNase negative replicate 4 had slightly lower overall petide intensities and appears to be somewhat of an outlier. In this case, we will retain the sample but in other cases, this may warrant further exploration and potentially removal of a sample.
+
+Finally, we recode the abundances to binary (present/absent) and plot the missing data structure as a heatmap (missing = black). Beyond the aforementioned observations regarding RNase negative replicate 4, there's no clear structure in the missing values. This is what we would expect for LFQ, where data is largely missing at random (MAR). There are methods to impute values MAR, but, providing what we are after is protein-level abundance, it is usually more appropriate to perform the protein inference using a method that can accommodate missing values.
 
 ```{r, fig.height=4, fig.width=6, fig.fullwidth=TRUE, fig.cap="Presence/Absence heatmap"}
 missing_data[!is.na(missing_data)] <- 1
