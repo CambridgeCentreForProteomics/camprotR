@@ -526,5 +526,107 @@
 				]
 			]
 		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/FZN3QTTZ",
+		"type": "article-journal",
+		"abstract": "Label-Free Quantitative mass spectrometry based workflows for differential expression (DE) analysis of proteins impose important challenges on the data analysis because of peptide-specific effects and context dependent missingness of peptide intensities. Peptide-based workflows, like MSqRob, test for DE directly from peptide intensities and outperform summarization methods which first aggregate MS1 peptide intensities to protein intensities before DE analysis. However, these methods are computationally expensive, often hard to understand for the non-specialized end-user, and do not provide protein summaries, which are important for visualization or downstream processing. In this work, we therefore evaluate state-of-the-art summarization strategies using a benchmark spike-in dataset and discuss why and when these fail compared with the state-of-the-art peptide based model, MSqRob. Based on this evaluation, we propose a novel summarization strategy, MSqRobSum, which estimates MSqRob's model parameters in a two-stage procedure circumventing the drawbacks of peptide-based workflows. MSqRobSum maintains MSqRob's superior performance, while providing useful protein expression summaries for plotting and downstream analysis. Summarizing peptide to protein intensities considerably reduces the computational complexity, the memory footprint and the model complexity, and makes it easier to disseminate DE inferred on protein summaries. Moreover, MSqRobSum provides a highly modular analysis framework, which provides researchers with full flexibility to develop data analysis workflows tailored toward their specific applications.",
+		"container-title": "Molecular & cellular proteomics: MCP",
+		"DOI": "10.1074/mcp.RA119.001624",
+		"ISSN": "1535-9484",
+		"issue": "7",
+		"journalAbbreviation": "Mol Cell Proteomics",
+		"language": "eng",
+		"note": "PMID: 32321741\nPMCID: PMC7338080",
+		"page": "1209-1219",
+		"source": "PubMed",
+		"title": "Robust Summarization and Inference in Proteome-wide Label-free Quantification",
+		"volume": "19",
+		"author": [
+			{
+				"family": "Sticker",
+				"given": "Adriaan"
+			},
+			{
+				"family": "Goeminne",
+				"given": "Ludger"
+			},
+			{
+				"family": "Martens",
+				"given": "Lennart"
+			},
+			{
+				"family": "Clement",
+				"given": "Lieven"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/5634351/items/87YIDK69",
+		"type": "article-journal",
+		"abstract": "Protein quantification without isotopic labels has been a long-standing interest in the proteomics field. However, accurate and robust proteome-wide quantification with label-free approaches remains a challenge. We developed a new intensity determination and normalization procedure called MaxLFQ that is fully compatible with any peptide or protein separation prior to LC-MS analysis. Protein abundance profiles are assembled using the maximum possible information from MS signals, given that the presence of quantifiable peptides varies from sample to sample. For a benchmark dataset with two proteomes mixed at known ratios, we accurately detected the mixing ratio over the entire protein expression range, with greater precision for abundant proteins. The significance of individual label-free quantifications was obtained via a t test approach. For a second benchmark dataset, we accurately quantify fold changes over several orders of magnitude, a task that is challenging with label-based methods. MaxLFQ is a generic label-free quantification technology that is readily applicable to many biological questions; it is compatible with standard statistical analysis workflows, and it has been validated in many and diverse biological projects. Our algorithms can handle very large experiments of 500+ samples in a manageable computing time. It is implemented in the freely available MaxQuant computational proteomics platform and works completely seamlessly at the click of a button.",
+		"container-title": "Molecular & Cellular Proteomics",
+		"DOI": "10.1074/mcp.M113.031591",
+		"ISSN": "1535-9476",
+		"issue": "9",
+		"journalAbbreviation": "Molecular & Cellular Proteomics",
+		"language": "en",
+		"page": "2513-2526",
+		"source": "ScienceDirect",
+		"title": "Accurate Proteome-wide Label-free Quantification by Delayed Normalization and Maximal Peptide Ratio Extraction, Termed MaxLFQ*",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S1535947620333107",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Cox",
+				"given": "Jürgen"
+			},
+			{
+				"family": "Hein",
+				"given": "Marco Y."
+			},
+			{
+				"family": "Luber",
+				"given": "Christian A."
+			},
+			{
+				"family": "Paron",
+				"given": "Igor"
+			},
+			{
+				"family": "Nagaraj",
+				"given": "Nagarjuna"
+			},
+			{
+				"family": "Mann",
+				"given": "Matthias"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					3,
+					8
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2014",
+					9,
+					1
+				]
+			]
+		}
 	}
 ]

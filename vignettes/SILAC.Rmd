@@ -286,10 +286,10 @@ ratios_matched <- ratios %>%
   merge(all_psm_matched_data, 
         by = c('Sequence', 'Modifications', 'replicate'))  %>%
   # Add new columns with CL/NC and CL/NC sequenced information
-  mutate('Sequenced_CL' = ifelse(replicate %in% 1:2, 
-                                 Sequenced_Heavy, Sequenced_Light),
-         'Sequenced_NC' = ifelse(replicate %in% 1:2, 
-                                 Sequenced_Light, Sequenced_Heavy)) %>%
+  mutate('Matched_CL' = ifelse(replicate %in% 1:2,
+                                 matched_Heavy, matched_Light),
+         'Matched_NC' = ifelse(replicate %in% 1:2,
+                                 matched_Light, matched_Heavy)) %>%
   # And subset to these columns
   select(Master.Protein.Accessions,
          Sequence, 
@@ -298,14 +298,14 @@ ratios_matched <- ratios %>%
          ratio,
          CL, 
          NC,
-         Sequenced_CL,
-         Sequenced_NC,
+         Matched_CL,
+         Matched_NC,
          missing)
 
 # Add a single column to describe the sequenced information
 ratios_matched <- ratios_matched %>%
   mutate(
-    matched = interaction(Sequenced_CL, Sequenced_NC),
+    matched = interaction(Matched_CL, Matched_NC),
     matched = factor(recode(matched,
                             'TRUE.TRUE'='Both spectrum matched',
                             'TRUE.FALSE'='CL spectrum matched',
@@ -377,8 +377,8 @@ flt_ratios <- ratios_matched %>%
 # Create a wide table with unique ids as row names
 flt_ratios_wide <- flt_ratios %>% 
   select(Master.Protein.Accessions, Sequence, Modifications,
-         replicate, Sequenced_NC, ratio) %>% 
-  pivot_wider(names_from = "replicate", values_from = c("Sequenced_NC", "ratio")) %>% 
+         replicate, Matched_NC, ratio) %>%
+  pivot_wider(names_from = "replicate", values_from = c("Matched_NC", "ratio")) %>%
   unite(id, Sequence, Modifications, remove = FALSE) %>% 
   column_to_rownames(var = "id")
 
@@ -431,10 +431,10 @@ Note that the summarisation is occurring on the expression data, but will affect
 ```{r}
 prot_matched_nc <- fData(pep_res_flt) %>%
   select(-Sequence, -Modifications) %>% 
-  pivot_longer(cols = -Master.Protein.Accessions, values_to = 'sequenced_NC') %>%
+  pivot_longer(cols = -Master.Protein.Accessions, values_to = 'matched_NC') %>%
   group_by(Master.Protein.Accessions) %>%
-  filter(!is.na(sequenced_NC)) %>% 
-  summarise(any_not_sequenced = any(!sequenced_NC))
+  filter(!is.na(matched_NC)) %>%
+  summarise(any_not_matched = any(!matched_NC))
 
 
 fData(prot_res) <- fData(prot_res) %>%
