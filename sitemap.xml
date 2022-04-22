@@ -91,15 +91,6 @@
     <loc>/reference/filter_TMT_PSMs.html</loc>
   </url>
   <url>
-    <loc>/reference/filter_na.html</loc>
-  </url>
-  <url>
-    <loc>/reference/filter_val.html</loc>
-  </url>
-  <url>
-    <loc>/reference/filter_zero.html</loc>
-  </url>
-  <url>
     <loc>/reference/get_all_mappings.html</loc>
   </url>
   <url>
@@ -149,12 +140,6 @@
   </url>
   <url>
     <loc>/reference/make_fasta.html</loc>
-  </url>
-  <url>
-    <loc>/reference/match_id.html</loc>
-  </url>
-  <url>
-    <loc>/reference/match_id_.html</loc>
   </url>
   <url>
     <loc>/reference/match_proteins.html</loc>
