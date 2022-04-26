@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_runs.R
 \name{get_parsimony_pep2prot}
 \alias{get_parsimony_pep2prot}
-\title{Identify the consensus peptide to master protein mapping across multiple runs}
+\title{Get consensus peptide to master protein mapping across multiple files}
 \usage{
 get_parsimony_pep2prot(
   infiles,
@@ -13,25 +13,31 @@ get_parsimony_pep2prot(
 )
 }
 \arguments{
-\item{infiles}{\code{list}. Outfiles from PD}
+\item{infiles}{\code{list}, paths for PD peptideGroups.txt files to be read
+by \code{\link[utils]{read.delim}}.}
 
-\item{seq_col}{\code{string} Column name for peptide sequence}
+\item{seq_col}{\code{string}, column name for peptide sequence e.g. \code{"Sequence"}.}
 
-\item{prot_col}{\code{string} Column name for protein(s)}
+\item{prot_col}{\code{string}, column name for protein accessions e.g.
+\code{"Protein.Accessions"}.}
 
-\item{master_prot_col}{\code{string} Column name for master protein(s)}
+\item{master_prot_col}{\code{string}, column name for master protein accessions
+e.g. \code{"Master.Protein.Accessions"}.}
 
-\item{compare_old_new}{\code{logical} Compare the consensus master protein
-assignments with the original assignments}
+\item{compare_old_new}{\code{logical}, compare the consensus master protein
+assignments with the original assignments. Default is \code{TRUE}.}
 }
 \value{
-Returns an \code{data.frame} object which maps peptide sequences to
-consensus master protein ID(s)
+Returns a \code{data.frame} which maps peptide sequences to
+consensus master protein accession(s). Each row is a peptide.
 }
 \description{
-Wrapper function to read in infiles,
-identify the parsimonious proteins to account for the peptides and
-then (optionally) compare the new and old master protein assignments
+Given multiple peptideGroups.txt files, identify the
+parsimonious master proteins to account for the all the peptides identified
+and (optionally) compare the new and old master protein assignments.
+
+The output of this function can then be used when merging multiple
+peptideGroups.txt files (i.e. the outputs of separate PD studies).
 }
 \examples{
 \dontrun{

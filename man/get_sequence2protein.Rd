@@ -2,31 +2,30 @@
 % Please edit documentation in R/combine_runs.R
 \name{get_sequence2protein}
 \alias{get_sequence2protein}
-\title{Approximate parsimony approach to map sequence to protein
-across multiple samples}
+\title{Map peptide sequence to protein across multiple files using
+approximate parsimony}
 \usage{
 get_sequence2protein(seq2prot, seq_col, prot_col)
 }
 \arguments{
-\item{seq2prot}{\code{data}. Output from \code{\link{read_infiles}}}
+\item{seq2prot}{\code{data.frame}, output from \code{\link{read_infiles}}.}
 
-\item{seq_col}{\code{string} Column name for peptide sequence}
+\item{seq_col}{\code{string}, column name for peptide sequence e.g. \code{"Sequence"}.}
 
-\item{prot_col}{\code{string} Column name for protein(s)}
+\item{prot_col}{\code{string}, column name for protein accessions e.g.
+\code{"Protein.Accessions"}.}
 
-\item{master_prot_col}{\code{string} Column name for master protein(s)}
+\item{master_prot_col}{\code{string}, column name for master protein accessions
+e.g. \code{"Master.Protein.Accessions"}.}
 }
 \value{
-Returns an \code{data.frame} object which uniquely maps peptide sequence
-to master protein
+Returns a \code{data.frame} object which uniquely maps peptide sequence
+to master protein(s).
 }
 \description{
-Approximate parsimony approach to map sequence to protein
-across multiple samples
+Generate a single map of peptide sequences to proteins for
+multiple files (e.g. multiple separate peptideGroups.txt PD files) using
+an approximate parsimony approach, specifically the least number
+of proteins required to account for all observed peptide sequences.
 }
-\section{Uses an approximate parsimony approach (e.g least number of}{
-proteins required to account for all observed sequences) to generate a
-single map from sequence to protein for all samples
-}
-
 \keyword{internal}

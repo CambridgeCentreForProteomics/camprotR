@@ -7,17 +7,20 @@
 compare_single_master(seq2new_master_prot, master_prot_col)
 }
 \arguments{
-\item{seq2new_master_prot}{\code{data}. Output from merging
-\code{\link{read_infiles}} & \code{\link{get_sequence2protein}}}
+\item{seq2new_master_prot}{\code{data.frame}, output of merging
+\code{\link{read_infiles}} & \code{\link{get_sequence2protein}}.}
 
-\item{master_prot_col}{\code{string} Column name for master protein(s)}
+\item{master_prot_col}{\code{string}, column name for master protein accessions
+e.g. \code{"Master.Protein.Accessions"}.}
 }
 \value{
-Returns an \code{ggplot} for the number of sequences per master protein
-in the original infiles and after the consensus master protein assignment
+Returns a \code{ggplot} showing the number of peptide sequences per
+master protein  in the original infiles, and after the consensus master
+protein assignment.
 }
 \description{
-With object containing original and updated master protein
-assignments, identify the proportion with a single assigned master protein
+Identify the proportion of peptides with a single assigned
+master protein in a data.frame containing original and updated master protein
+assignments.
 }
 \keyword{internal}

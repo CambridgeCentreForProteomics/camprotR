@@ -2,25 +2,29 @@
 % Please edit documentation in R/combine_runs.R
 \name{read_infiles}
 \alias{read_infiles}
-\title{Extract sequence:protein ID mappings}
+\title{Extract peptide sequence:protein ID mappings}
 \usage{
 read_infiles(infiles, seq_col, prot_col, master_prot_col)
 }
 \arguments{
-\item{infiles}{\code{list}. Outfiles from PD}
+\item{infiles}{\code{list}, paths for PD peptideGroups.txt files to be read
+by \code{\link[utils]{read.delim}}.}
 
-\item{seq_col}{\code{string} Column name for peptide sequence}
+\item{seq_col}{\code{string}, column name for peptide sequence e.g. \code{"Sequence"}.}
 
-\item{prot_col}{\code{string} Column name for protein(s)}
+\item{prot_col}{\code{string}, column name for protein accessions e.g.
+\code{"Protein.Accessions"}.}
 
-\item{master_prot_col}{\code{string} Column name for master protein(s)}
+\item{master_prot_col}{\code{string}, column name for master protein accessions
+e.g. \code{"Master.Protein.Accessions"}.}
 }
 \value{
-Returns an \code{data.frame} object which maps peptide sequences to
-protein and master protein ID(s) for each infile
+Returns a \code{data.frame} object which maps peptide sequences to
+protein and master protein ID(s) for each infile. Each row is a peptide.
 }
 \description{
-Given a list of infiles, read the files,
-retain the sequence and protein ID columns and bind the rows
+Given a list of \code{infiles}, read the files into a list of
+data.frames, retain the peptide sequence and protein ID columns, then
+combine the data.frames into one by binding the rows.
 }
 \keyword{internal}

@@ -2,25 +2,22 @@
 % Please edit documentation in R/combine_runs.R
 \name{compare_sequences_per_protein}
 \alias{compare_sequences_per_protein}
-\title{Compare the number of peptides per protein pre/post-consensus master protein
-assignment}
+\title{Identify the proportion of exact matches in protein accessions}
 \usage{
-compare_sequences_per_protein(seq2new_master_prot, seq_col, master_prot_col)
+compare_sequences_per_protein(seq2new_master_prot, master_prot_col)
 }
 \arguments{
-\item{seq2new_master_prot}{\code{data}. Output from merging
-\code{\link{read_infiles}} & \code{\link{get_sequence2protein}}}
+\item{seq2new_master_prot}{\code{data.frame}, output of merging
+\code{\link{read_infiles}} & \code{\link{get_sequence2protein}}.}
 
-\item{seq_col}{\code{string} Column name for peptide sequence}
-
-\item{master_prot_col}{\code{string} Column name for master protein(s)}
+\item{master_prot_col}{\code{string}, column name for master protein accessions
+e.g. \code{"Master.Protein.Accessions"}.}
 }
 \value{
-Returns an \code{ggplot} for the number of sequences per master protein
-in the original infiles and after the consensus master protein assignment
+Prints the proportion of exact matches in the console.
 }
 \description{
-Compare the number of peptides per protein pre/post-consensus master protein
-assignment
+Identify the proportion of exactly matching protein accessions
+in a data.frame containing original and updated master protein assignments.
 }
 \keyword{internal}
