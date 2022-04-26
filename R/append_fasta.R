@@ -1,4 +1,4 @@
-#' Append sequences to end of a FASTA
+#' Add sequences to end of a FASTA file
 #'
 #' @description This function is used to add sequences from a FASTA file (file1)
 #' onto the end of another FASTA file (file2).
@@ -6,12 +6,12 @@
 #' If file2 is a cRAP database, then you can optionally add cRAP numbers to the
 #' headers of file1, starting at the desired number e.g. cRAP127.
 #'
-#' @param file1 `character`, file path of FASTA to append
-#' @param file2 `character`, file path of FASTA to append to
+#' @param file1 `character`, file path of FASTA to append.
+#' @param file2 `character`, file path of FASTA to append to.
 #' @param is_crap `logical`, should cRAP numbers e.g. cRAP001, cRAP002, etc.
-#' be added to sequence headers of file1? Default is `FALSE`
-#' @param crap_start `numeric`, what number should the cRAP00x start at?
-#' Default is 1.
+#' be added to sequence headers of file1? Default is `FALSE`.
+#' @param crap_start `numeric`, what number should the cRAPxxx start at?
+#' Default is 1 which will produce: cRAP001.
 #'
 #' @return Overwrites FASTA file2 with some more sequences added
 #' to the end.

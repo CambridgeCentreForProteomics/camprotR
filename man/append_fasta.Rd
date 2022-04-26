@@ -2,20 +2,20 @@
 % Please edit documentation in R/append_fasta.R
 \name{append_fasta}
 \alias{append_fasta}
-\title{Append sequences to end of a FASTA}
+\title{Add sequences to end of a FASTA file}
 \usage{
 append_fasta(file1, file2, is_crap = FALSE, crap_start = 1)
 }
 \arguments{
-\item{file1}{\code{character}, file path of FASTA to append}
+\item{file1}{\code{character}, file path of FASTA to append.}
 
-\item{file2}{\code{character}, file path of FASTA to append to}
+\item{file2}{\code{character}, file path of FASTA to append to.}
 
 \item{is_crap}{\code{logical}, should cRAP numbers e.g. cRAP001, cRAP002, etc.
-be added to sequence headers of file1? Default is \code{FALSE}}
+be added to sequence headers of file1? Default is \code{FALSE}.}
 
-\item{crap_start}{\code{numeric}, what number should the cRAP00x start at?
-Default is 1.}
+\item{crap_start}{\code{numeric}, what number should the cRAPxxx start at?
+Default is 1 which will produce: cRAP001.}
 }
 \value{
 Overwrites FASTA file2 with some more sequences added
