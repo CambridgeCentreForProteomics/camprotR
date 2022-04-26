@@ -7,18 +7,26 @@
 count_features_per_protein(obj, master_prot_col = "Master.Protein.Accessions")
 }
 \arguments{
-\item{obj}{\code{MSnSet}. Contains PSMs or peptides.}
+\item{obj}{\code{MSnSet}, rows are PSMs or peptides.}
 
-\item{master_prot_col}{\code{character} Column name for master protein ID}
+\item{master_prot_col}{\code{string}, column name for master protein accessions.
+Default is \code{"Master.Protein.Accessions"}.}
 }
 \value{
-\code{tibble} with feature counts per sample per protein.
+Returns a \code{tibble} where each row is a master protein, with three columns:
+\enumerate{
+\item \code{sample} = sample name (i.e. column name)
+\item \code{master_protein_col} = master protein accession
+\item \code{n} = number of features assigned to the master protein
+}
 }
 \description{
-For differential testing with
+Given an MSnSet, determine the number of features (rows) per
+protein for each sample (column).
+
+Useful for bias of variance correction when performing differential testing with
 \url{https://www.bioconductor.org/packages/release/bioc/html/DEqMS.html}{DEqMS},
-one needs to identify the number of features, e.g PSMs or peptides per protein.
-This function returns the number of features per protein per sample.
+as proteins quantified by more PSMs/peptides tend to lower variance.
 }
 \examples{
 # Use a small example TMT dataset included with the camprotR package
