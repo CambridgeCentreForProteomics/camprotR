@@ -10,7 +10,8 @@ silac_psm_seq_int(
   sequence_col = "Sequence",
   mod_col = "Modifications",
   include_interference = FALSE,
-  interference_col = "Isolation.Interference.in.Percent"
+  interference_col = "Isolation.Interference.in.Percent",
+  group_cols = NULL
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ silac_psm_seq_int(
 \item{include_interference}{\code{logical} Should PSM interference be included too?}
 
 \item{interference_col}{\code{string} Column with interference/co-isolation}
+
+\item{group_cols}{\code{string} Additional feature columns to retain, beyond
+Sequence and Modification}
 }
 \value{
 \code{data.frame} indicating which SILAC peptides were MS2 matched,
