@@ -82,7 +82,8 @@ peptide in SILAC experiments</p>
   sequence_col <span class="op">=</span> <span class="st">"Sequence"</span>,
   mod_col <span class="op">=</span> <span class="st">"Modifications"</span>,
   include_interference <span class="op">=</span> <span class="cn">FALSE</span>,
-  interference_col <span class="op">=</span> <span class="st">"Isolation.Interference.in.Percent"</span>
+  interference_col <span class="op">=</span> <span class="st">"Isolation.Interference.in.Percent"</span>,
+  group_cols <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -98,6 +99,9 @@ peptide in SILAC experiments</p>
 <dd><p><code>logical</code> Should PSM interference be included too?</p></dd>
 <dt>interference_col</dt>
 <dd><p><code>string</code> Column with interference/co-isolation</p></dd>
+<dt>group_cols</dt>
+<dd><p><code>string</code> Additional feature columns to retain, beyond
+Sequence and Modification</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
