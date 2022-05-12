@@ -12,6 +12,8 @@
 #' @param mod_col `string` Column with modifications
 #' @param include_interference `logical` Should PSM interference be included too?
 #' @param interference_col `string` Column with interference/co-isolation
+#' @param group_cols `string` Additional feature columns to retain, beyond
+#' Sequence and Modification
 #' @return `data.frame` indicating which SILAC peptides were MS2 matched,
 #' how many PSMs per isotope, and
 #' (optionally) the maximum interference across all PSMs for the peptide
@@ -21,7 +23,8 @@ silac_psm_seq_int <- function(
   sequence_col='Sequence',
   mod_col='Modifications',
   include_interference=FALSE,
-  interference_col='Isolation.Interference.in.Percent'){
+  interference_col='Isolation.Interference.in.Percent',
+  group_cols=NULL){
 
   message('camprotR::silac_psm_seq_int output has changed.
   Columns indicating whether quantification is from PSM are now prefixed with
@@ -49,9 +52,14 @@ silac_psm_seq_int <- function(
 
   obj[[sequence_col]] <- toupper(obj[[sequence_col]])
 
+  if(!missing(group_cols)){
+    group_cols <- c(group_cols, 'Quan.Channel')
+  } else{
+    group_cols <- 'Quan.Channel'
+  }
+
   obj_seq <- obj %>%
-    group_by(!!sym(sequence_col), .data$Quan.Channel,
-             !!sym(mod_col)) %>%
+    group_by(across(all_of(c(sequence_col, group_cols, mod_col)))) %>%
     tally() %>%
     mutate('matched'=TRUE) %>%
     pivot_wider(names_from=.data$Quan.Channel,
