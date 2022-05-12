@@ -420,26 +420,21 @@ res <- httr::content(response, type = "text", encoding = "UTF8") %>%
   select(Entry, Features, Gene.ontology.IDs)
 ```
 
-```{r}
-go_long <- res %>% 
-  separate_rows(Gene.ontology.IDs, sep = "; ")
 
-# This step may take a minute or two
-go_all <- get_ancestor_go(
-  go_long, 
-  feature_col = "Entry",
-  go_col = "Gene.ontology.IDs",
-  verbose = TRUE
-)
-```
-
+Get RBPs
 ```{r}
-# Get RBPs
+# GO term for RNA-binding
 go_rbp <- "GO:0003723"
 
-rbps <- go_all %>% 
-  filter(Gene.ontology.IDs == go_rbp) %>% 
-  pull(Entry)
+# All offspring (since some proteins will only be annotated with an offspring term)
+go_rbp_offspring <- AnnotationDbi::get("GO:0003723", GO.db::GOMFOFFSPRING)
+
+# Identify all GO-RBPs
+rbps<- res %>%
+  separate_rows(Gene.ontology.IDs, sep='; ') %>%
+  filter(Gene.ontology.IDs %in% c(go_rbp, go_rbp_offspring)) %>% 
+  pull(Entry) %>%
+  unique()
 ```
 
 ```{r}
