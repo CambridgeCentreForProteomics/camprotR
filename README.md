@@ -17,7 +17,7 @@ functions assume the data has been processed by Proteome Discoverer.
 ## Install
 
 ``` r
-remotes::install_github("CambridgeCentreForProteomics/camprotR", build_vignettes = TRUE)
+remotes::install_github("CambridgeCentreForProteomics/camprotR", build_vignettes = TRUE, dependencies='Suggests')
 ```
 
 ## How to use
