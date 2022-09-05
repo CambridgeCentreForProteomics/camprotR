@@ -17,6 +17,7 @@ RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Remotes: 
     moodymudskipper/cutr
+    csdaw/uniprotREST
 biocViews:
 Depends: 
     R (>= 3.5.0)
@@ -50,6 +51,7 @@ Suggests:
     naniar,
     rmarkdown,
     testthat (>= 3.0.0),
+    uniprotREST,
     vdiffr (>= 1.0.0),
     withr
 Config/testthat/edition: 3

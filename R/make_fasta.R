@@ -29,42 +29,75 @@
 make_fasta <- function(accessions, file, is_crap = FALSE, overwrite = FALSE, verbose = TRUE) {
   # define payload used to query uniprot
   payload <- list(
-    query = paste(accessions, collapse = " "),
-    from = "ACC+ID",
-    to = "ACC",
-    format = "fasta"
+    ids = paste(accessions, collapse = " "),
+    from = "UniProtKB_AC-ID",
+    to = "UniProtKB"
   )
 
-  # query uniprot and save FASTA to disk
-  # security level fix for Ubuntu 20.04
-  # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
-  httr_config <- switch(
-    Sys.info()["sysname"],
-    "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
-    httr::config()
-  )
+  # submit job
+  post_payload <- httr::POST(url = "https://rest.uniprot.org/idmapping/run",
+                             body = payload, encode = "multipart", httr::accept_json())
 
-  response <- httr::with_config(
-    config = httr_config,
-    httr::GET(
-      url = "https://www.uniprot.org/uploadlists/",
-      query = payload,
-      config = httr::write_disk(path = file, overwrite = overwrite)
-    )
-  )
-
-  # basic http error handling
-  httr::stop_for_status(response, "query UniProt")
+  post_resp <- httr::content(post_payload, as = "parsed")
 
   # print UniProtKB release
   if (verbose) message(paste("Downloading from UniProtKB release:",
-                             response$headers$`x-uniprot-release`))
+                             post_payload$headers$`x-uniprot-release`))
+
+  # check status of job
+  if (isTRUE(check_uniprot_job(post_resp[["jobId"]]))) {
+    result_url <- paste("https://rest.uniprot.org/idmapping/uniprotkb/results/stream/", post_resp[["jobId"]], sep = "")
+
+    # query uniprot and save FASTA to disk
+    # security level fix for Ubuntu 20.04
+    # see https://msmith.de/2020/10/02/httr-curl-ubuntu-20-04.html
+    httr_config <- switch(
+      Sys.info()["sysname"],
+      "Linux" = httr::config(ssl_cipher_list = "DEFAULT@SECLEVEL=1"),
+      httr::config()
+    )
+
+    response <- httr::with_config(
+      config = httr_config,
+      httr::GET(
+        url = paste0(result_url, "?format=fasta"),
+        config = httr::write_disk(path = file, overwrite = overwrite)
+      )
+    )
+
+    # basic http error handling
+    httr::stop_for_status(response, "query UniProt")
+  }
 
   if (is_crap) {
     crap <- Biostrings::readAAStringSet(filepath = file)
     names(crap) <- sub_crap(names(crap))
     Biostrings::writeXStringSet(crap, filepath = file)
   }
+}
+
+check_uniprot_job <- function(jobid) {
+  polling_interval <- 5 # seconds
+  n_tries <- 20
+
+  for (i in n_tries) {
+    status_url <- paste("https://rest.uniprot.org/idmapping/status/", jobid, sep = "")
+    status <- httr::content(
+      httr::GET(url = status_url, httr::accept_json()),
+      as = "parsed"
+    )
+
+    if (!is.null(status[["results"]]) || !is.null(status[["failedIds"]])) {
+      return(TRUE)
+    }
+    if (!is.null(status[["messages"]])) {
+      print(status[["messages"]])
+      return (FALSE)
+    }
+    Sys.sleep(polling_interval)
+  }
+
+  return(FALSE)
 }
 
 #' Insert cRAP numbers into a character vector
@@ -140,8 +173,8 @@ check_uniprot_release <- function() {
 
   response <- httr::with_config(
     config = httr_config,
-    httr::GET(
-      url = "https://www.uniprot.org/uniprot/P60709"
+    httr::HEAD(
+      url = "https://rest.uniprot.org/uniprot/P60709.fasta"
     )
   )
 

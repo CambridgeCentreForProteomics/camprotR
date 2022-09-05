@@ -403,21 +403,15 @@ Next, we need annotations regarding which proteins are glycoproteins and GO-anno
 Get all GO terms for our proteins by querying UniProt programmatically.
 
 ```{r}
-up_url <- "https://www.uniprot.org/uploadlists/"
-
-request <- list(
-  query = paste(rownames(prot_robust), collapse = " "),
-  from = "ACC+ID",
-  to = "ACC",
-  format = "tab",
-  columns = paste("id", "features", "go-id", sep = ",")
+# remotes::install_github("csdaw/uniprotREST")
+res <- uniprotREST::uniprot_map(
+  ids = rownames(prot_robust),
+  fields = c("accession", "feature_count", "go_id"),
+  format = "tsv",
+  verbosity = 0
 )
 
-response <- httr::GET(url = up_url, query = request)
-
-res <- httr::content(response, type = "text", encoding = "UTF8") %>% 
-  read.table(text = ., sep = "\t", header = TRUE) %>% 
-  select(Entry, Features, Gene.ontology.IDs)
+res <- res %>% select(Entry, Features, Gene.Ontology.IDs)
 ```
 
 
@@ -431,8 +425,8 @@ go_rbp_offspring <- AnnotationDbi::get("GO:0003723", GO.db::GOMFOFFSPRING)
 
 # Identify all GO-RBPs
 rbps<- res %>%
-  separate_rows(Gene.ontology.IDs, sep='; ') %>%
-  filter(Gene.ontology.IDs %in% c(go_rbp, go_rbp_offspring)) %>% 
+  separate_rows(Gene.Ontology.IDs, sep='; ') %>%
+  filter(Gene.Ontology.IDs %in% c(go_rbp, go_rbp_offspring)) %>% 
   pull(Entry) %>%
   unique()
 ```
