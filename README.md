@@ -17,15 +17,12 @@ functions assume the data has been processed by Proteome Discoverer.
 ## Install
 
 ``` r
-remotes::install_github("CambridgeCentreForProteomics/camprotR", build_vignettes = TRUE, dependencies='Suggests')
+remotes::install_github("CambridgeCentreForProteomics/camprotR", dependencies = TRUE)
 ```
 
 ## How to use
 
-Several HTML vignettes are installed with this package which go through
-how to use different aspects of the package. You can see a list of
-available vignettes with:
-
-``` r
-browseVignettes("camprotR")
-```
+Vignettes which go through how to use different aspects of the package
+are available on the `camprotR` website
+[here](https://cambridgecentreforproteomics.github.io/camprotR/) (see
+Articles tab).
