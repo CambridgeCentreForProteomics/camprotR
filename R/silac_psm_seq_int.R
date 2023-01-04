@@ -76,19 +76,19 @@ silac_psm_seq_int <- function(
 
   # Depending on which SILAC modifications in Quan.Channel column,
   # the output columns need to be updated
-  if(n_Light %in% colnames(obj_seq)){
+  if('n_Light' %in% colnames(obj_seq)){
     obj_seq <- obj_seq  %>%
       mutate(n_Light = replace_na(.data$n_Light, 0),
              matched_Light = replace_na(.data$matched_Light, FALSE))
   }
 
-  if(n_Medium %in% colnames(obj_seq)){
+  if('n_Medium' %in% colnames(obj_seq)){
     obj_seq <- obj_seq  %>%
       mutate(n_Medium = replace_na(.data$n_Medium, 0),
              matched_Medium = replace_na(.data$matched_Medium, FALSE))
   }
 
-  if(n_Heavy %in% colnames(obj_seq)){
+  if('n_Heavy' %in% colnames(obj_seq)){
     obj_seq <- obj_seq  %>%
       mutate(n_Heavy = replace_na(.data$n_Heavy, 0),
              matched_Heavy = replace_na(.data$matched_Heavy, FALSE))
