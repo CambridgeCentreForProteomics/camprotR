@@ -111,7 +111,7 @@ get_psm_silac_mod_regex <- function(silac_mod){
 
   if(missing(silac_mod)){
 
-    table <- do.call('rbind', regexes) %>%
+    table <- do.call('rbind.data.frame', regexes) %>%
       data.frame() %>%
       tibble::rownames_to_column('name')
 
