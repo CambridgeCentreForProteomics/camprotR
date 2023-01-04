@@ -16,7 +16,8 @@ remove_silac_modifications(
 
 \item{level}{\code{character} Either 'psm' or 'peptide'}
 
-\item{psm_modfication_regexes}{\verb{character vector} One or more regexes to match the expected SILAC modifications}
+\item{psm_modfication_regexes}{\verb{character vector} One or more regexes to match the expected SILAC modifications.
+See \link[camprotR]{get_psm_silac_mod_regex}}
 }
 \value{
 \verb{character vector} updated Modifications column

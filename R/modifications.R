@@ -48,7 +48,8 @@ psm_to_peptide_style_modifications <- function(psm_style_modifications) {
 #'
 #' @param mod_col `character vector` Modification column from Proteome Discoverer
 #' @param level `character` Either 'psm' or 'peptide'
-#' @param psm_modfication_regexes `character vector` One or more regexes to match the expected SILAC modifications
+#' @param psm_modfication_regexes `character vector` One or more regexes to match the expected SILAC modifications.
+#' See \link[camprotR]{get_psm_silac_mod_regex}
 #' @return `character vector` updated Modifications column
 #' @export
 remove_silac_modifications <- function(mod_col, level = 'psm',
