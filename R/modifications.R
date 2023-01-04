@@ -48,16 +48,25 @@ psm_to_peptide_style_modifications <- function(psm_style_modifications) {
 #'
 #' @param mod_col `character vector` Modification column from Proteome Discoverer
 #' @param level `character` Either 'psm' or 'peptide'
+#' @param psm_modfication_regexes `character vector` One or more regexes to match the expected SILAC modifications
 #' @return `character vector` updated Modifications column
 #' @export
-remove_silac_modifications <- function(mod_col, level = 'psm') {
+remove_silac_modifications <- function(mod_col, level = 'psm',
+                                       psm_modfication_regexes=c(get_psm_silac_mod_regex('R_13C6_15N4'),
+                                                                 get_psm_silac_mod_regex('K_13C6_15N2'))){
   if (!level %in% c('psm', 'peptide')) stop('level must be psm or peptide')
 
   if (level == 'psm') {
+
+    psm_modfication_regex <- sprintf(
+      '(; )?(%s)',
+      paste(psm_modfication_regexes, collapse='|')
+      )
+
     mod_col <- gsub(
       '^(; )', '',
       gsub(
-        '(; )?(K|R)\\d{1,2}\\(Label:13C\\(6\\)15N\\((2|4)\\)\\)',
+        psm_modfication_regex,
         '', mod_col
       )
     )
@@ -73,3 +82,44 @@ remove_silac_modifications <- function(mod_col, level = 'psm') {
 
   return(mod_col)
 }
+
+#' Get a pre-defined regex for a SILAC modification in PSM format
+#'
+#' @description This function returns a regex which can be used to remove SILAC
+#' modifications from the modification column in the PSM-level PD output using
+#' \link[camprotR]{remove_silac_modifications}. Call without any arguments to see
+#' a description of the available modifications.
+#'
+#' @param `silac_mod` SILAC modification name (call without arguments to see available values)
+#' @return `character vector` regex for SILAC modification
+#' @export
+get_psm_silac_mod_regex <- function(silac_mod){
+
+  regexes <- list('R_13C6_15N4' =
+                    list('desc'='Heavy R (10)',
+                         'regex'='R\\d{1,2}\\(Label:13C\\(6\\)15N\\(4\\)\\)'),
+                  'K_13C6_15N2' =
+                     list('desc'='Heavy K (8)',
+                          'regex'='K\\d{1,2}\\(Label:13C\\(6\\)15N\\(2\\)\\)'),
+                  'R_13C6' =
+                    list('desc'='Median R (6)',
+                         'regex'='R\\d{1,2}\\(Label:13C\\(6\\)\\)'),
+                  'K_2H4' =
+                    list('desc'='Median K (4)',
+                         'regex'='K\\d{1,2}\\(Label:2H\\(4\\)\\)'))
+
+  if(missing(silac_mod)){
+
+    table <- do.call('rbind', regexes) %>%
+      data.frame() %>%
+      tibble::rownames_to_column('name')
+
+    return(table)
+  }
+  else{
+    silac_mod = match.arg(silac_mod, choices=names(regexes))
+    return(regexes[[silac_mod]][['regex']])
+  }
+}
+
+

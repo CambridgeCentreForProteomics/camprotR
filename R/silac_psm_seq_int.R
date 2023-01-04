@@ -13,7 +13,8 @@
 #' @param include_interference `logical` Should PSM interference be included too?
 #' @param interference_col `string` Column with interference/co-isolation
 #' @param group_cols `string` Additional feature columns to retain, beyond
-#' Sequence and Modification
+#' @param psm_modfication_regexes `character vector` One or more regexes to match the expected SILAC modifications
+#' Sequence and Modification. See `?remove_silac_modifications`
 #' @return `data.frame` indicating which SILAC peptides were MS2 matched,
 #' how many PSMs per isotope, and
 #' (optionally) the maximum interference across all PSMs for the peptide
@@ -24,7 +25,9 @@ silac_psm_seq_int <- function(
   mod_col='Modifications',
   include_interference=FALSE,
   interference_col='Isolation.Interference.in.Percent',
-  group_cols=NULL){
+  group_cols=NULL,
+  psm_modfication_regexes=c('R\\d{1,2}\\(Label:13C\\(6\\)15N\\(4\\)\\)',
+                            'K\\d{1,2}\\(Label:13C\\(6\\)15N\\(2\\)\\)')){
 
   message('camprotR::silac_psm_seq_int output has changed.
   Columns indicating whether quantification is from PSM are now prefixed with
@@ -47,7 +50,9 @@ silac_psm_seq_int <- function(
     rowwise() %>%
     filter(is.finite(.data$Precursor.Abundance))
 
-  obj[[mod_col]] <- remove_silac_modifications(obj[[mod_col]])
+  obj[[mod_col]] <- remove_silac_modifications(
+    obj[[mod_col]], psm_modfication_regexes=psm_modfication_regexes)
+
   obj[[mod_col]] <- psm_to_peptide_style_modifications(obj[[mod_col]])
 
   obj[[sequence_col]] <- toupper(obj[[sequence_col]])

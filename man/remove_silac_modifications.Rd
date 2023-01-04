@@ -4,12 +4,19 @@
 \alias{remove_silac_modifications}
 \title{Remove SILAC labels from modifications}
 \usage{
-remove_silac_modifications(mod_col, level = "psm")
+remove_silac_modifications(
+  mod_col,
+  level = "psm",
+  psm_modfication_regexes = c(get_psm_silac_mod_regex("R_13C6_15N4"),
+    get_psm_silac_mod_regex("K_13C6_15N2"))
+)
 }
 \arguments{
 \item{mod_col}{\verb{character vector} Modification column from Proteome Discoverer}
 
 \item{level}{\code{character} Either 'psm' or 'peptide'}
+
+\item{psm_modfication_regexes}{\verb{character vector} One or more regexes to match the expected SILAC modifications}
 }
 \value{
 \verb{character vector} updated Modifications column

@@ -11,7 +11,10 @@ silac_psm_seq_int(
   mod_col = "Modifications",
   include_interference = FALSE,
   interference_col = "Isolation.Interference.in.Percent",
-  group_cols = NULL
+  group_cols = NULL,
+ 
+    psm_modfication_regexes = c("R\\\\d{1,2}\\\\(Label:13C\\\\(6\\\\)15N\\\\(4\\\\)\\\\)",
+    "K\\\\d{1,2}\\\\(Label:13C\\\\(6\\\\)15N\\\\(2\\\\)\\\\)")
 )
 }
 \arguments{
@@ -25,8 +28,10 @@ silac_psm_seq_int(
 
 \item{interference_col}{\code{string} Column with interference/co-isolation}
 
-\item{group_cols}{\code{string} Additional feature columns to retain, beyond
-Sequence and Modification}
+\item{group_cols}{\code{string} Additional feature columns to retain, beyond}
+
+\item{psm_modfication_regexes}{\verb{character vector} One or more regexes to match the expected SILAC modifications
+Sequence and Modification. See \code{?remove_silac_modifications}}
 }
 \value{
 \code{data.frame} indicating which SILAC peptides were MS2 matched,
