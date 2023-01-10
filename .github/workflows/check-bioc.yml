@@ -89,7 +89,7 @@ jobs:
           gha_repos <- if(
               .Platform$OS.type == "unix" && Sys.info()["sysname"] != "Darwin"
           ) c(
-              "AnVIL" = "https://bioconductordocker.blob.core.windows.net/packages/3.15/bioc",
+              "AnVIL" = "https://bioconductordocker.blob.core.windows.net/packages/3.16/bioc",
               BiocManager::repositories()
               ) else BiocManager::repositories()
 
@@ -107,18 +107,6 @@ jobs:
           remotes::install_local(dependencies = TRUE, repos = gha_repos, build_vignettes = FALSE, upgrade = TRUE)
         continue-on-error: true
         shell: Rscript {0}
-
-      - name: Install dependencies pass 2
-        run: |
-          ## Pass #2 at installing dependencies
-          ## This pass does not use AnVIL and will thus update any packages
-          ## that have seen been updated in Bioconductor
-          message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
-          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
-        shell: Rscript {0}
-
-      - name: Manually install cutr
-        run: remotes::install_github("moodymudskipper/cutr")
 
       - name: Install covr
         if: github.ref == 'refs/heads/master' && runner.os == 'Linux'
