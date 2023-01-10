@@ -85,29 +85,38 @@ from the total samaples.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">center_normalise_to_ref</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  <span class="va">medians</span>,
-  center_to_zero <span class="op">=</span> <span class="cn">FALSE</span>,
-  on_log_scale <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">center_normalise_to_ref</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  <span class="va">medians</span>,</span>
+<span>  center_to_zero <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  on_log_scale <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p><code>MSnSet</code>. Contains PSMs.</p></dd>
+
+
 <dt>medians</dt>
 <dd><p><code>vector, numeric</code>. Sample medians from reference dataset</p></dd>
+
+
 <dt>center_to_zero</dt>
 <dd><p><code>logical</code>. Centre the data range on zero.
 If FALSE, normalisation retains original data range.</p></dd>
+
+
 <dt>on_log_scale</dt>
 <dd><p><code>logical</code>. Input data is log-transformed</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns an <code>MSnSet</code> with the expression matrix column center-median
+    
+
+<p>Returns an <code>MSnSet</code> with the expression matrix column center-median
 normalised</p>
     </div>
 
@@ -123,7 +132,7 @@ normalised</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

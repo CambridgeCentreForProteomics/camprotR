@@ -81,28 +81,39 @@ robust summarisation for isobaric tagging without PSM-level imputation</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">restrict_features_per_protein</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  <span class="va">min_features</span>,
-  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">restrict_features_per_protein</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  <span class="va">min_features</span>,</span>
+<span>  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p><code>MSnSet</code> with PSM or peptide-level quantification</p></dd>
+
+
 <dt>min_features</dt>
 <dd><p><code>numeric</code> Threshold for minimum features per protein</p></dd>
+
+
 <dt>master_protein_col</dt>
 <dd><p><code>character</code> Column name for master protein</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>Set TRUE to plot histogram of features per protein per sample</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>MSnSet</code></p>
+    
+
+<p><code>MSnSet</code></p>
+
+
     </div>
 
   </div>
@@ -117,7 +128,7 @@ robust summarisation for isobaric tagging without PSM-level imputation</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

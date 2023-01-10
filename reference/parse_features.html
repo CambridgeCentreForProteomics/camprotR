@@ -87,18 +87,18 @@ are <code>TRUE</code> and <code>level = "peptide"</code>.)</p></li>
 </ol></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parse_features</span><span class="op">(</span>
-  <span class="va">data</span>,
-  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,
-  protein_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,
-  unique_master <span class="op">=</span> <span class="cn">TRUE</span>,
-  silac <span class="op">=</span> <span class="cn">FALSE</span>,
-  TMT <span class="op">=</span> <span class="cn">FALSE</span>,
-  level <span class="op">=</span> <span class="st">"peptide"</span>,
-  filter_crap <span class="op">=</span> <span class="cn">TRUE</span>,
-  crap_proteins <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_associated_crap <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parse_features</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
+<span>  protein_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,</span>
+<span>  unique_master <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  silac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  TMT <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"peptide"</span>,</span>
+<span>  filter_crap <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  crap_proteins <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_associated_crap <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,35 +106,56 @@ are <code>TRUE</code> and <code>level = "peptide"</code>.)</p></li>
     <dl><dt>data</dt>
 <dd><p><code>data.frame</code> generated from txt file output from Proteome
 Discoverer.</p></dd>
+
+
 <dt>master_protein_col</dt>
 <dd><p><code>string</code>. Name of column containing master
 proteins.</p></dd>
+
+
 <dt>protein_col</dt>
 <dd><p><code>string</code>. Name of column containing all protein
 matches.</p></dd>
+
+
 <dt>unique_master</dt>
 <dd><p><code>logical</code>. Filter out features without a unique
 master protein.</p></dd>
+
+
 <dt>silac</dt>
 <dd><p><code>logical</code>. Is the experiment a SILAC experiment?</p></dd>
+
+
 <dt>TMT</dt>
 <dd><p><code>logical</code>. Is the experiment a TMT experiment?</p></dd>
+
+
 <dt>level</dt>
 <dd><p><code>string</code>. Type of input file, must be one of either
 <code>"peptide"</code> or <code>"PSM"</code>.</p></dd>
+
+
 <dt>filter_crap</dt>
 <dd><p><code>logical</code>. Filter out features which match a cRAP
 protein.</p></dd>
+
+
 <dt>crap_proteins</dt>
 <dd><p><code>character vector</code>. Contains the cRAP accessions,
 for example: <code>c("P02768")</code> which is serum albumin.</p></dd>
+
+
 <dt>filter_associated_crap</dt>
 <dd><p><code>logical</code>. Filter out features which
 match a cRAP associated protein.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code>data.frame</code> with the filtered Proteome Discoverer output.</p>
+    
+
+<p>Returns a <code>data.frame</code> with the filtered Proteome Discoverer output.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -168,7 +189,7 @@ f3       protein2                   protein2
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

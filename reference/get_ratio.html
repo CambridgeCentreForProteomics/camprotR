@@ -72,34 +72,41 @@ transformed SILAC/label-free intensity columns.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_ratio</span><span class="op">(</span><span class="va">data</span>, <span class="va">treatment</span>, <span class="va">control</span>, bind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_ratio</span><span class="op">(</span><span class="va">data</span>, <span class="va">treatment</span>, <span class="va">control</span>, bind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p><code>data.frame</code>.</p></dd>
+
+
 <dt>treatment, control</dt>
 <dd><p><code>variable</code>. Name of numeric column in the data.frame.</p></dd>
+
+
 <dt>bind</dt>
 <dd><p><code>logical</code>. Should the resulting ratios be added to data
 as a column? Default is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns <code>data</code> with 2 new columns: ratio (a numeric column) and
+    
+
+<p>Returns <code>data</code> with 2 new columns: ratio (a numeric column) and
 missing (a character column indicating if there was missing values in
 <code>treament</code> and/or <code>control</code>). Returns a <code>named list</code> if <code>bind = FALSE</code>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="cn">NA</span>, <span class="fl">12</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span class="r-in">  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">12</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">my_data2</span> <span class="op">&lt;-</span> <span class="fu">get_ratio</span><span class="op">(</span><span class="va">my_data</span>, <span class="va">treatment</span>, <span class="va">control</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="cn">NA</span>, <span class="fl">12</span>, <span class="cn">NA</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">12</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">my_data2</span> <span class="op">&lt;-</span> <span class="fu">get_ratio</span><span class="op">(</span><span class="va">my_data</span>, <span class="va">treatment</span>, <span class="va">control</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -114,7 +121,7 @@ missing (a character column indicating if there was missing values in
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -78,13 +78,13 @@ expect Ensembl gene IDs to have been used to construct the <code>pwf</code> inpu
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_enriched_go</span><span class="op">(</span>
-  <span class="va">pwf</span>,
-  gene2cat <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>,
-  shorten_term <span class="op">=</span> <span class="cn">TRUE</span>,
-  shorten_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">30L</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_enriched_go</span><span class="op">(</span></span>
+<span>  <span class="va">pwf</span>,</span>
+<span>  gene2cat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  shorten_term <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  shorten_lims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">30L</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,23 +94,34 @@ expect Ensembl gene IDs to have been used to construct the <code>pwf</code> inpu
 <code>bias.data</code> = numeric/integer, <code>pwf</code> = numeric) and row names (usually UniProt
 accessions, Ensembl gene IDs or similar).
 Typically constructed using <code><a href="https://rdrr.io/pkg/goseq/man/nullp.html" class="external-link">nullp</a></code>.</p></dd>
+
+
 <dt>gene2cat</dt>
 <dd><p><code>data.frame</code> with 2 columns containing the mapping between
 genes (usually UniProt accessions, Ensembl gene IDs or similar) and GO terms.
 Alternatively, a <code>named list</code> where the names are genes and each entry is
 a <code>character vector</code> of GO terms.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments to be passed to <code><a href="https://rdrr.io/pkg/goseq/man/goseq.html" class="external-link">goseq</a></code>.</p></dd>
+
+
 <dt>shorten_term</dt>
 <dd><p><code>logical</code>. Should an extra column with a substring of
 the output GO terms be added to the output data.frame? Default is <code>TRUE</code>.</p></dd>
+
+
 <dt>shorten_lims</dt>
 <dd><p><code>integer vector</code> of length 2. The start and stop
 coordinates of the substring.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code>data.frame</code> of over/underrepresented GO terms.</p>
+    
+
+<p>Returns a <code>data.frame</code> of over/underrepresented GO terms.</p>
     </div>
 
   </div>
@@ -125,7 +136,7 @@ coordinates of the substring.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

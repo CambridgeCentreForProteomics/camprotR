@@ -70,25 +70,32 @@ summarises the number of sub-notch values observed per protein</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_notch_per_protein</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,
-  notch_upper <span class="op">=</span> <span class="fl">5.75</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_notch_per_protein</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
+<span>  notch_upper <span class="op">=</span> <span class="fl">5.75</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p><code>MSnSet</code> containing PSM-level TMT intensities.</p></dd>
+
+
 <dt>master_prot_col</dt>
 <dd><p><code>character</code>. Column name for master proteins.</p></dd>
+
+
 <dt>notch_upper</dt>
 <dd><p><code>numeric</code>. Upper boundary of notch.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>data.frame</code> Summarises # PSMs above/below notch for each protein</p>
+    
+
+<p><code>data.frame</code> Summarises # PSMs above/below notch for each protein</p>
     </div>
 
   </div>
@@ -103,7 +110,7 @@ summarises the number of sub-notch values observed per protein</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

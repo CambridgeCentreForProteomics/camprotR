@@ -70,51 +70,62 @@ then (optionally) compare the new and old master protein assignments</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_parsimony_pep2prot</span><span class="op">(</span>
-  <span class="va">infiles</span>,
-  seq_col <span class="op">=</span> <span class="st">"Sequence"</span>,
-  prot_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,
-  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,
-  compare_old_new <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_parsimony_pep2prot</span><span class="op">(</span></span>
+<span>  <span class="va">infiles</span>,</span>
+<span>  seq_col <span class="op">=</span> <span class="st">"Sequence"</span>,</span>
+<span>  prot_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,</span>
+<span>  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
+<span>  compare_old_new <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>infiles</dt>
 <dd><p><code>list</code>. Outfiles from PD</p></dd>
+
+
 <dt>seq_col</dt>
 <dd><p><code>string</code> Column name for peptide sequence</p></dd>
+
+
 <dt>prot_col</dt>
 <dd><p><code>string</code> Column name for protein(s)</p></dd>
+
+
 <dt>master_prot_col</dt>
 <dd><p><code>string</code> Column name for master protein(s)</p></dd>
+
+
 <dt>compare_old_new</dt>
 <dd><p><code>logical</code> Compare the consensus master protein
 assignments with the original assignments</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns an <code>data.frame</code> object which maps peptide sequences to
+    
+
+<p>Returns an <code>data.frame</code> object which maps peptide sequences to
 consensus master protein ID(s)</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># The input in this example is 2x peptideGroups.txt outputs from Proteome</span></span>
-<span class="r-in"><span class="co"># Discoverer. Both files must have the columns (cols) specified. This may require</span></span>
-<span class="r-in"><span class="co"># re-exporting the peptideGroups.txt file from PD as the "Protein.Accessions"</span></span>
-<span class="r-in"><span class="co"># column is often not there by default.</span></span>
-<span class="r-in"><span class="fu">get_parsimony_pep2prot</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"peptideGroups1.txt"</span>, <span class="st">"peptideGroups2.txt"</span><span class="op">)</span>,</span>
-<span class="r-in">  seq_col <span class="op">=</span> <span class="st">"Sequence"</span>,</span>
-<span class="r-in">  prot_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,</span>
-<span class="r-in">  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
-<span class="r-in">  compare_old_new <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># The input in this example is 2x peptideGroups.txt outputs from Proteome</span></span></span>
+<span class="r-in"><span><span class="co"># Discoverer. Both files must have the columns (cols) specified. This may require</span></span></span>
+<span class="r-in"><span><span class="co"># re-exporting the peptideGroups.txt file from PD as the "Protein.Accessions"</span></span></span>
+<span class="r-in"><span><span class="co"># column is often not there by default.</span></span></span>
+<span class="r-in"><span><span class="fu">get_parsimony_pep2prot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"peptideGroups1.txt"</span>, <span class="st">"peptideGroups2.txt"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  seq_col <span class="op">=</span> <span class="st">"Sequence"</span>,</span></span>
+<span class="r-in"><span>  prot_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,</span></span>
+<span class="r-in"><span>  master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span></span>
+<span class="r-in"><span>  compare_old_new <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -129,7 +140,7 @@ consensus master protein ID(s)</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -80,24 +80,27 @@ Peptide:1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">psm_to_peptide_style_modifications</span><span class="op">(</span><span class="va">psm_style_modifications</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">psm_to_peptide_style_modifications</span><span class="op">(</span><span class="va">psm_style_modifications</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>psm_style_modifications</dt>
 <dd><p><code>vector</code> of PSM-style modification annotations</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>vector</code> of Peptide-style modification annotations</p>
+    
+
+<p><code>vector</code> of Peptide-style modification annotations</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">psm_mod</span> <span class="op">&lt;-</span> <span class="st">"N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)"</span></span>
-<span class="r-in"><span class="va">target</span> <span class="op">&lt;-</span> <span class="st">"1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]"</span></span>
-<span class="r-in"><span class="fu">psm_to_peptide_style_modifications</span><span class="op">(</span><span class="va">psm_mod</span><span class="op">)</span> <span class="op">==</span> <span class="va">target</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">psm_mod</span> <span class="op">&lt;-</span> <span class="st">"N-Term(Prot)(Acetyl); C2(Carbamidomethyl); C16(Carbamidomethyl)"</span></span></span>
+<span class="r-in"><span><span class="va">target</span> <span class="op">&lt;-</span> <span class="st">"1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]"</span></span></span>
+<span class="r-in"><span><span class="fu">psm_to_peptide_style_modifications</span><span class="op">(</span><span class="va">psm_mod</span><span class="op">)</span> <span class="op">==</span> <span class="va">target</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
@@ -113,7 +116,7 @@ Peptide:1xAcetyl [N-Term]; 2xCarbamidomethyl [C2; C16]</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

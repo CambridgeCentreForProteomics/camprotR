@@ -75,46 +75,57 @@ Save the sequences in a FASTA file
 </ol></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">make_fasta</span><span class="op">(</span>
-  <span class="va">accessions</span>,
-  <span class="va">file</span>,
-  is_crap <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_fasta</span><span class="op">(</span></span>
+<span>  <span class="va">accessions</span>,</span>
+<span>  <span class="va">file</span>,</span>
+<span>  is_crap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>accessions</dt>
 <dd><p><code>character vector</code>, the UniProt accessions to use</p></dd>
+
+
 <dt>file</dt>
 <dd><p><code>character</code>, filepath to save the fasta to e.g. <code>"crap.fasta"</code></p></dd>
+
+
 <dt>is_crap</dt>
 <dd><p><code>logical</code>, Is the output going to be a cRAP database? If <code>TRUE</code>
 cRAP001, cRAP002, etc. is appended to the sequence headers in the FASTA file.
 Default is <code>FALSE</code></p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p><code>logical</code>, if the FASTA file already exists should it be
 overwritten? Default is <code>FALSE</code></p></dd>
+
+
 <dt>verbose</dt>
 <dd><p><code>logical</code>, should the function send messages to the console?
 Default is <code>TRUE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a FASTA file saved to disk at the specified file path.</p>
+    
+
+<p>Returns a FASTA file saved to disk at the specified file path.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># specify some UniProt accessions</span></span>
-<span class="r-in"><span class="va">crap</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_ccp_crap.html">get_ccp_crap</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">make_fasta</span><span class="op">(</span><span class="va">crap</span>, <span class="st">"2021-01_cRAP.fasta"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># specify some UniProt accessions</span></span></span>
+<span class="r-in"><span><span class="va">crap</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_ccp_crap.html">get_ccp_crap</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">make_fasta</span><span class="op">(</span><span class="va">crap</span>, <span class="st">"2021-01_cRAP.fasta"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -129,7 +140,7 @@ Default is <code>TRUE</code></p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

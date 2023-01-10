@@ -72,7 +72,7 @@ and substitutes a cRAP number in place of the first <code>|</code> symbol, e.g.
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sub_crap</span><span class="op">(</span><span class="va">x</span>, start <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sub_crap</span><span class="op">(</span><span class="va">x</span>, start <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,30 +80,37 @@ and substitutes a cRAP number in place of the first <code>|</code> symbol, e.g.
     <dl><dt>x</dt>
 <dd><p><code>character vector</code>, each element must have two <code>|</code> symbols with
 some text in between e.g. <code>|sometext|</code>.</p></dd>
+
+
 <dt>start</dt>
 <dd><p><code>numeric</code>, the number to increment from, default is <code>1</code></p></dd>
+
+
 <dt>width</dt>
 <dd><p><code>numeric</code>, how many digits the cRAP number should be, default is <code>3</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code>character vector</code> the same length as x.</p>
+    
+
+<p>Returns a <code>character vector</code> the same length as x.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># basic use</span></span>
-<span class="r-in"><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># basic use</span></span></span>
+<span class="r-in"><span><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "|cRAP001|sometext|" "|cRAP002|moretext|"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># start from a different number</span></span>
-<span class="r-in"><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">88</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># start from a different number</span></span></span>
+<span class="r-in"><span><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">88</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "|cRAP088|sometext|" "|cRAP089|moretext|"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># increase number width</span></span>
-<span class="r-in"><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1111</span>, width <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># increase number width</span></span></span>
+<span class="r-in"><span><span class="fu">sub_crap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"|sometext|"</span>, <span class="st">"|moretext|"</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1111</span>, width <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "|cRAP1111|sometext|" "|cRAP1112|moretext|"</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -118,7 +125,7 @@ some text in between e.g. <code>|sometext|</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -72,19 +72,19 @@ outputs 3 plots and a .tsv file into the designated output directory.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">estimate_incorporation</span><span class="op">(</span>
-  <span class="va">psm_input</span>,
-  <span class="va">peptide_input</span>,
-  <span class="va">crap_fasta</span>,
-  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,
-  protein_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,
-  sequence_col <span class="op">=</span> <span class="st">"Sequence"</span>,
-  modifications_col <span class="op">=</span> <span class="st">"Modifications"</span>,
-  abundance_col_L <span class="op">=</span> <span class="st">"^Abundances.Grouped.(F\\d*.)?Light$"</span>,
-  abundance_col_H <span class="op">=</span> <span class="st">"^Abundances.Grouped.(F\\d*.)?Heavy$"</span>,
-  mix <span class="op">=</span> <span class="fl">0</span>,
-  outdir <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimate_incorporation</span><span class="op">(</span></span>
+<span>  <span class="va">psm_input</span>,</span>
+<span>  <span class="va">peptide_input</span>,</span>
+<span>  <span class="va">crap_fasta</span>,</span>
+<span>  master_protein_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span>,</span>
+<span>  protein_col <span class="op">=</span> <span class="st">"Protein.Accessions"</span>,</span>
+<span>  sequence_col <span class="op">=</span> <span class="st">"Sequence"</span>,</span>
+<span>  modifications_col <span class="op">=</span> <span class="st">"Modifications"</span>,</span>
+<span>  abundance_col_L <span class="op">=</span> <span class="st">"^Abundances.Grouped.(F\\d*.)?Light$"</span>,</span>
+<span>  abundance_col_H <span class="op">=</span> <span class="st">"^Abundances.Grouped.(F\\d*.)?Heavy$"</span>,</span>
+<span>  mix <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  outdir <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -92,39 +92,65 @@ outputs 3 plots and a .tsv file into the designated output directory.</p>
     <dl><dt>psm_input</dt>
 <dd><p><code>string</code> or <code>data.frame</code>. File path to PSM-level PD output or
 the PSM-level PD output data.frame created using <a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a>.</p></dd>
+
+
 <dt>peptide_input</dt>
 <dd><p><code>string</code> or <code>data.frame</code>. File path to peptide-level PD output or
 the peptide-level PD output data.frame created using <a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a>.</p></dd>
+
+
 <dt>crap_fasta</dt>
 <dd><p><code>string</code>. File path to cRAP fasta used for PD search</p></dd>
+
+
 <dt>master_protein_col</dt>
 <dd><p><code>string</code>. Name of column containing master
 protein accessions.</p></dd>
+
+
 <dt>protein_col</dt>
 <dd><p><code>string</code>. Name of column containing all protein
 accessions.</p></dd>
+
+
 <dt>sequence_col</dt>
 <dd><p><code>string</code>. Name of column containing peptide sequences.</p></dd>
+
+
 <dt>modifications_col</dt>
 <dd><p><code>string</code>. Name of column containing peptide modifications.</p></dd>
+
+
 <dt>abundance_col_L</dt>
 <dd><p><code>string</code>. Name of column containing light peptide
 intensity data, or a regex matching the names of multiple abundance columns.</p></dd>
+
+
 <dt>abundance_col_H</dt>
 <dd><p><code>string</code>. Name of column containing heavy peptide
 intensity data, or a regex matching the names of multiple abundance columns.</p></dd>
+
+
 <dt>mix</dt>
 <dd><p><code>numeric</code>. If Light material has been spiked in,
 what is the abundance relative to the Heavy material? Default is <code>mix = 0</code>
 e.g. no Light spike in. If they are equal, <code>mix = 1</code>.</p></dd>
+
+
 <dt>outdir</dt>
 <dd><p><code>NULL</code> or <code>string</code>. If not <code>NULL</code>, file path for directory to
 save the plots and summary table.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>By default returns a <code>list</code> with 3 ggplots (HL correlation, peptide-level
-incorporation, protein-level incorporation) and 1 summary table. If <code>outdir</code>is not <code>NULL</code> then the plots and table will be saved into <code>outdir</code>.</p>
+    
+
+<p>By default returns a <code>list</code> with 3 ggplots (HL correlation, peptide-level
+incorporation, protein-level incorporation) and 1 summary table. If <code>outdir</code></p>
+
+
+<p>is not <code>NULL</code> then the plots and table will be saved into <code>outdir</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -146,27 +172,27 @@ being analysed.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># input as file paths</span></span>
-<span class="r-in"><span class="fu">estimate_incorporation</span><span class="op">(</span></span>
-<span class="r-in">  psm_input <span class="op">=</span> <span class="st">"data-raw/Molm_13_P4_PSMs.txt"</span>,</span>
-<span class="r-in">  peptide_input <span class="op">=</span> <span class="st">"data-raw/Molm_13_P4_PeptideGroups.txt"</span>,</span>
-<span class="r-in">  crap_fasta <span class="op">=</span> <span class="st">"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span>
-<span class="r-in">  mix <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="st">"Molm_13_incorporation/"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># input as data.frames</span></span>
-<span class="r-in"><span class="fu">estimate_incorporation</span><span class="op">(</span></span>
-<span class="r-in">  psm_input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="st">"data-raw/Molm_13_P4_PSMs.txt"</span><span class="op">)</span>,</span>
-<span class="r-in">  peptide_input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="st">"data-raw/Molm_13_P4_PeptideGroups.txt"</span><span class="op">)</span>,</span>
-<span class="r-in">  crap_fasta <span class="op">=</span> <span class="st">"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span>
-<span class="r-in">  mix <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  outdir <span class="op">=</span> <span class="st">"Molm_13_incorporation/"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># input as file paths</span></span></span>
+<span class="r-in"><span><span class="fu">estimate_incorporation</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  psm_input <span class="op">=</span> <span class="st">"data-raw/Molm_13_P4_PSMs.txt"</span>,</span></span>
+<span class="r-in"><span>  peptide_input <span class="op">=</span> <span class="st">"data-raw/Molm_13_P4_PeptideGroups.txt"</span>,</span></span>
+<span class="r-in"><span>  crap_fasta <span class="op">=</span> <span class="st">"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span></span>
+<span class="r-in"><span>  mix <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="st">"Molm_13_incorporation/"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># input as data.frames</span></span></span>
+<span class="r-in"><span><span class="fu">estimate_incorporation</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  psm_input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="st">"data-raw/Molm_13_P4_PSMs.txt"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  peptide_input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="st">"data-raw/Molm_13_P4_PeptideGroups.txt"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  crap_fasta <span class="op">=</span> <span class="st">"inst/extdata/cRAP_20190401.fasta.gz"</span>,</span></span>
+<span class="r-in"><span>  mix <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  outdir <span class="op">=</span> <span class="st">"Molm_13_incorporation/"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -181,7 +207,7 @@ being analysed.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

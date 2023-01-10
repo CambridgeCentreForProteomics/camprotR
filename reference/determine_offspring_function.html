@@ -68,19 +68,24 @@ correct offpsring mapping object for that ontology.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">determine_offspring_function</span><span class="op">(</span><span class="va">term</span>, <span class="va">ontology</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">determine_offspring_function</span><span class="op">(</span><span class="va">term</span>, <span class="va">ontology</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>term</dt>
 <dd><p><code>string</code>. A single GO.ID.</p></dd>
+
+
 <dt>ontology</dt>
 <dd><p><code>string</code>. A single ontology, one of: BP, MF, CC.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns an <code>AnnDbBimap</code> object which maps GO terms (BP, MF, or
+    
+
+<p>Returns an <code>AnnDbBimap</code> object which maps GO terms (BP, MF, or
 CC) to all offspring terms. Each GO term is mapped to a vector of offsrping
 GO terms.</p>
     </div>
@@ -97,7 +102,7 @@ GO terms.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

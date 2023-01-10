@@ -72,34 +72,49 @@ threshold</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parse_PTM_scores</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  threshold <span class="op">=</span> <span class="fl">95</span>,
-  ptm_col <span class="op">=</span> <span class="st">"PhosphoRS.Best.Site.Probabilities"</span>,
-  prob_split <span class="op">=</span> <span class="st">"; |: "</span>,
-  collapse_delimiter <span class="op">=</span> <span class="st">";"</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parse_PTM_scores</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">95</span>,</span>
+<span>  ptm_col <span class="op">=</span> <span class="st">"PhosphoRS.Best.Site.Probabilities"</span>,</span>
+<span>  prob_split <span class="op">=</span> <span class="st">"; |: "</span>,</span>
+<span>  collapse_delimiter <span class="op">=</span> <span class="st">";"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p><code>data.frame</code> with PD output at PSM/peptide level</p></dd>
+
+
 <dt>threshold</dt>
 <dd><p><code>numeric</code> If any score is below a set threshold, disregard all putative PTM sites</p></dd>
+
+
 <dt>ptm_col</dt>
 <dd><p><code>character</code> Columm name for PTM probabilities</p></dd>
+
+
 <dt>prob_split</dt>
 <dd><p><code>character</code> regex to split PTM probabilities</p></dd>
+
+
 <dt>collapse_delimiter</dt>
 <dd><p><code>character</code> delimiter for multiple values in output columns</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Set TRUE to print log of events to console</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>data.frame</code></p>
+    
+
+<p><code>data.frame</code></p>
+
+
     </div>
 
   </div>
@@ -114,7 +129,7 @@ threshold</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -76,13 +76,13 @@ incorporation using the corrected 'Light' intensity.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_incorporation</span><span class="op">(</span>
-  <span class="va">data</span>,
-  incorporation_col <span class="op">=</span> <span class="st">"Incorporation"</span>,
-  corrected_col <span class="op">=</span> <span class="st">"Incorporation.corrected"</span>,
-  level <span class="op">=</span> <span class="st">"peptide"</span>,
-  mix <span class="op">=</span> <span class="fl">0</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_incorporation</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  incorporation_col <span class="op">=</span> <span class="st">"Incorporation"</span>,</span>
+<span>  corrected_col <span class="op">=</span> <span class="st">"Incorporation.corrected"</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"peptide"</span>,</span>
+<span>  mix <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,22 +91,33 @@ incorporation using the corrected 'Light' intensity.</p>
 <dd><p><code>data.frame</code> containing features with column 'incorporation'.
 If mix&gt;0, must also contain column 'corrected_incorporation' where incorporation
 is calculated using the corrected light peptide intensity</p></dd>
+
+
 <dt>incorporation_col</dt>
 <dd><p><code>string</code>. Name of the column containing incorporation values
 which can be calculated with <code><a href="get_incorporation.html">get_incorporation</a></code>.</p></dd>
+
+
 <dt>corrected_col</dt>
 <dd><p><code>string</code> Optional, but required if mix &gt; 0. Name of the
 column containing mix-corrected incorporation values which can be calculated
 with <code><a href="get_incorporation.html">get_incorporation</a></code>.</p></dd>
+
+
 <dt>level</dt>
 <dd><p><code>string</code>. Name for feature level, either 'peptide' or 'protein'.</p></dd>
+
+
 <dt>mix</dt>
 <dd><p><code>numeric</code>. The 'Heavy' to 'Light' mix ratio. Default is 0, otherwise
 use a number greater than 0.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code>list</code> with <code>p</code> = <code>ggplot</code> plot and
+    
+
+<p>Returns a <code>list</code> with <code>p</code> = <code>ggplot</code> plot and
 <code>incorporation_estimates</code> = <code>list</code> of incorporation estimates.</p>
     </div>
 
@@ -122,7 +133,7 @@ use a number greater than 0.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

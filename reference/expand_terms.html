@@ -70,7 +70,7 @@ that protein (annotated and ancestor).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">expand_terms</span><span class="op">(</span><span class="va">go_df</span>, <span class="va">go_col</span>, <span class="va">go2Ancestor</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expand_terms</span><span class="op">(</span><span class="va">go_df</span>, <span class="va">go_col</span>, <span class="va">go2Ancestor</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,17 +78,24 @@ that protein (annotated and ancestor).</p>
     <dl><dt>go_df</dt>
 <dd><p><code>data.frame</code> for a single protein with a single column where
 each row is a single GO term.</p></dd>
+
+
 <dt>go_col</dt>
 <dd><p><code>variable</code>. Name of column from the data.frame that
 contains the GO terms.</p></dd>
+
+
 <dt>go2Ancestor</dt>
 <dd><p><code>named list</code>. Returned by <code><a href="get_all_mappings.html">get_all_mappings</a></code>.
 Names == GO terms and values == vectors containing all ancestor GO terms
 for the particular input GO term.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code>data.frame</code> containing all ancestor GO terms for a
+    
+
+<p>Returns a <code>data.frame</code> containing all ancestor GO terms for a
 single protein.</p>
     </div>
 
@@ -104,7 +111,7 @@ single protein.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

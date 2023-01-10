@@ -72,40 +72,49 @@ headers of file1, starting at the desired number e.g. cRAP127.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">append_fasta</span><span class="op">(</span><span class="va">file1</span>, <span class="va">file2</span>, is_crap <span class="op">=</span> <span class="cn">FALSE</span>, crap_start <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">append_fasta</span><span class="op">(</span><span class="va">file1</span>, <span class="va">file2</span>, is_crap <span class="op">=</span> <span class="cn">FALSE</span>, crap_start <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>file1</dt>
 <dd><p><code>character</code>, file path of FASTA to append</p></dd>
+
+
 <dt>file2</dt>
 <dd><p><code>character</code>, file path of FASTA to append to</p></dd>
+
+
 <dt>is_crap</dt>
 <dd><p><code>logical</code>, should cRAP numbers e.g. cRAP001, cRAP002, etc.
 be added to sequence headers of file1? Default is <code>FALSE</code></p></dd>
+
+
 <dt>crap_start</dt>
 <dd><p><code>numeric</code>, what number should the cRAP00x start at?
 Default is 1.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Overwrites FASTA file2 with some more sequences added
+    
+
+<p>Overwrites FASTA file2 with some more sequences added
 to the end.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Add some commercial protease sequences onto the end of CCP cRAP FASTA</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">append_fasta</span><span class="op">(</span></span>
-<span class="r-in">  file1 <span class="op">=</span> <span class="st">"commercial-proteases.fasta"</span>,</span>
-<span class="r-in">  file2 <span class="op">=</span> <span class="st">"2021-01_CCP_cRAP.fasta"</span>,</span>
-<span class="r-in">  is_crap <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">  crap_start <span class="op">=</span> <span class="fl">128</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Add some commercial protease sequences onto the end of CCP cRAP FASTA</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">append_fasta</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  file1 <span class="op">=</span> <span class="st">"commercial-proteases.fasta"</span>,</span></span>
+<span class="r-in"><span>  file2 <span class="op">=</span> <span class="st">"2021-01_CCP_cRAP.fasta"</span>,</span></span>
+<span class="r-in"><span>  is_crap <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  crap_start <span class="op">=</span> <span class="fl">128</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -120,7 +129,7 @@ to the end.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

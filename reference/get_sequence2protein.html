@@ -71,23 +71,32 @@ across multiple samples</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_sequence2protein</span><span class="op">(</span><span class="va">seq2prot</span>, <span class="va">seq_col</span>, <span class="va">prot_col</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_sequence2protein</span><span class="op">(</span><span class="va">seq2prot</span>, <span class="va">seq_col</span>, <span class="va">prot_col</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>seq2prot</dt>
 <dd><p><code>data</code>. Output from <code><a href="read_infiles.html">read_infiles</a></code></p></dd>
+
+
 <dt>seq_col</dt>
 <dd><p><code>string</code> Column name for peptide sequence</p></dd>
+
+
 <dt>prot_col</dt>
 <dd><p><code>string</code> Column name for protein(s)</p></dd>
+
+
 <dt>master_prot_col</dt>
 <dd><p><code>string</code> Column name for master protein(s)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns an <code>data.frame</code> object which uniquely maps peptide sequence
+    
+
+<p>Returns an <code>data.frame</code> object which uniquely maps peptide sequence
 to master protein</p>
     </div>
     <div id="uses-an-approximate-parsimony-approach-e-g-least-number-of">
@@ -108,7 +117,7 @@ single map from sequence to protein for all samples</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

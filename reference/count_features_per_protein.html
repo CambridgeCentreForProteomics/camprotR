@@ -72,36 +72,41 @@ This function returns the number of features per protein per sample.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">count_features_per_protein</span><span class="op">(</span><span class="va">obj</span>, master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">count_features_per_protein</span><span class="op">(</span><span class="va">obj</span>, master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p><code>MSnSet</code>. Contains PSMs or peptides.</p></dd>
+
+
 <dt>master_prot_col</dt>
 <dd><p><code>character</code> Column name for master protein ID</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>tibble</code> with feature counts per sample per protein.</p>
+    
+
+<p><code>tibble</code> with feature counts per sample per protein.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Use a small example TMT dataset included with the camprotR package</span></span>
-<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Make an MSnSet</span></span>
-<span class="r-in"><span class="va">df_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Abundance"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"Abundance\\."</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df_exprs</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">df_fData</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Abundance"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">psm</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet</a></span><span class="op">(</span>exprs <span class="op">=</span> <span class="va">df_exprs</span>, fData <span class="op">=</span> <span class="va">df_fData</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Count the number of PSMs per protein</span></span>
-<span class="r-in"><span class="fu">count_features_per_protein</span><span class="op">(</span><span class="va">psm</span>, master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Use a small example TMT dataset included with the camprotR package</span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">psm_tmt_total</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Make an MSnSet</span></span></span>
+<span class="r-in"><span><span class="va">df_exprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Abundance"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df_exprs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"Abundance\\."</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df_exprs</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">df_fData</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Abundance"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">psm</span> <span class="op">&lt;-</span> <span class="fu">MSnbase</span><span class="fu">::</span><span class="fu"><a href="https://lgatto.github.io/MSnbase/reference/MSnSet-class.html" class="external-link">MSnSet</a></span><span class="op">(</span>exprs <span class="op">=</span> <span class="va">df_exprs</span>, fData <span class="op">=</span> <span class="va">df_fData</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Count the number of PSMs per protein</span></span></span>
+<span class="r-in"><span><span class="fu">count_features_per_protein</span><span class="op">(</span><span class="va">psm</span>, master_prot_col <span class="op">=</span> <span class="st">"Master.Protein.Accessions"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 23,542 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   sample [10]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample Master.Protein.Accessions     n</span>
@@ -117,7 +122,7 @@ This function returns the number of features per protein per sample.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 126    <span style="color: #949494;">"</span>A3KMH1<span style="color: #949494;">"</span>                      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 126    <span style="color: #949494;">"</span>A3KN83<span style="color: #949494;">"</span>                      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 23,532 more rows</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -132,7 +137,7 @@ This function returns the number of features per protein per sample.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
