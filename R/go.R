@@ -104,7 +104,7 @@ get_all_mappings <- function(go_ids, ontologies, verbose = TRUE, direction = "an
 
       go_relations <- AnnotationDbi::get(x, determineFunction(x, y))
 
-      if (class(go_relations) == "character") {
+      if (inherits(go_relations, "character")) {
         go2relations[[x]] <- go_relations
       } else {
         if (verbose) {
