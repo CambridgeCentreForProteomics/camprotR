@@ -4,12 +4,23 @@
 \alias{get_ratio}
 \title{Get ratio of two numbers}
 \usage{
-get_ratio(data, treatment, control, bind = TRUE)
+get_ratio(
+  data,
+  treatment,
+  control,
+  ratio_colname = "ratio",
+  missing_colname = "missing",
+  bind = TRUE
+)
 }
 \arguments{
 \item{data}{\code{data.frame}.}
 
 \item{treatment, control}{\code{variable}. Name of numeric column in the data.frame.}
+
+\item{ratio_colname}{\code{character}. Name for the output ratio column}
+
+\item{missing_colname}{\code{character}. Name for the output missing column}
 
 \item{bind}{\code{logical}. Should the resulting ratios be added to data
 as a column? Default is \code{TRUE}.}

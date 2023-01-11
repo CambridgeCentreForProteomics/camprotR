@@ -7,6 +7,8 @@
 #'
 #' @param data `data.frame`.
 #' @param treatment,control `variable`. Name of numeric column in the data.frame.
+#' @param ratio_colname `character`. Name for the output ratio column
+#' @param missing_colname `character`. Name for the output missing column
 #' @param bind `logical`. Should the resulting ratios be added to data
 #' as a column? Default is `TRUE`.
 #'
@@ -21,7 +23,10 @@
 #'
 #' my_data2 <- get_ratio(my_data, treatment, control)
 #' @export
-get_ratio <- function(data, treatment, control, bind = TRUE) {
+get_ratio <- function(data, treatment, control,
+                      ratio_colname = 'ratio',
+                      missing_colname = 'missing',
+                      bind = TRUE) {
   treatment <- deparse(substitute(treatment))
   control <- deparse(substitute(control))
 
@@ -44,10 +49,13 @@ get_ratio <- function(data, treatment, control, bind = TRUE) {
       c(ratio, missing)
     }
   )
-  result <- list(
-    ratio = as.numeric(ratios[1, ]),
-    missing = as.factor(ratios[2, ])
+
+  result <- list(as.numeric(ratios[1, ]),
+                 as.factor(ratios[2, ])
   )
+
+  names(result) <- c(ratio_colname, missing_colname)
+
   if (bind) result <- cbind(data, result)
   result
 }
