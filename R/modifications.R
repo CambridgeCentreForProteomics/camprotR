@@ -91,8 +91,9 @@ remove_silac_modifications <- function(mod_col, level = 'psm',
 #' \link[camprotR]{remove_silac_modifications}. Call without any arguments to see
 #' a description of the available modifications.
 #'
-#' @param `silac_mod` SILAC modification name (call without arguments to see available values)
-#' @return `character vector` regex for SILAC modification
+#' @param silac_mod SILAC modification name (call this function without
+#' arguments to see available values).
+#' @return Returns a `character vector`, regex for SILAC modification.
 #' @export
 get_psm_silac_mod_regex <- function(silac_mod){
 

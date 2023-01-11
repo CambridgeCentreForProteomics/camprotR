@@ -7,10 +7,11 @@
 get_psm_silac_mod_regex(silac_mod)
 }
 \arguments{
-\item{`silac_mod`}{SILAC modification name (call without arguments to see available values)}
+\item{silac_mod}{SILAC modification name (call this function without
+arguments to see available values).}
 }
 \value{
-\verb{character vector} regex for SILAC modification
+Returns a \verb{character vector}, regex for SILAC modification.
 }
 \description{
 This function returns a regex which can be used to remove SILAC

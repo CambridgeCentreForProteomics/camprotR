@@ -18,6 +18,19 @@ test_that("Peptide style SILAC modifications can be removed", {
     "1xCarbamidomethyl [C9]")
 })
 
+test_that("get_psm_silac_mod_regex works with no args", {
+  df <- get_psm_silac_mod_regex()
+
+  expect_true(inherits(df, "data.frame"))
+  expect_equal(colnames(df), c("name", "desc", "regex"))
+})
+
+test_that("get_psm_silac_mod_regex works with args", {
+  regex <- get_psm_silac_mod_regex("K_2H4")
+
+  expect_equal(regex, 'K\\d{1,2}\\(Label:2H\\(4\\)\\)')
+})
+
 #### Sanity checks -------------------------------------------------------------
 test_that("remove_silac_modifications() errors if level is nonsense", {
   expect_error(remove_silac_modifications(
