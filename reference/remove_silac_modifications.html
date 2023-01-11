@@ -72,7 +72,12 @@ features to peptide-level data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">remove_silac_modifications</span><span class="op">(</span><span class="va">mod_col</span>, level <span class="op">=</span> <span class="st">"psm"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">remove_silac_modifications</span><span class="op">(</span></span>
+<span>  <span class="va">mod_col</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"psm"</span>,</span>
+<span>  psm_modfication_regexes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="get_psm_silac_mod_regex.html">get_psm_silac_mod_regex</a></span><span class="op">(</span><span class="st">"R_13C6_15N4"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="get_psm_silac_mod_regex.html">get_psm_silac_mod_regex</a></span><span class="op">(</span><span class="st">"K_13C6_15N2"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,6 +88,11 @@ features to peptide-level data.</p>
 
 <dt>level</dt>
 <dd><p><code>character</code> Either 'psm' or 'peptide'</p></dd>
+
+
+<dt>psm_modfication_regexes</dt>
+<dd><p><code>character vector</code> One or more regexes to match the expected SILAC modifications.
+See <a href="get_psm_silac_mod_regex.html">get_psm_silac_mod_regex</a></p></dd>
 
 </dl></div>
     <div id="value">

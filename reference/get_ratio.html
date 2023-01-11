@@ -72,7 +72,14 @@ transformed SILAC/label-free intensity columns.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_ratio</span><span class="op">(</span><span class="va">data</span>, <span class="va">treatment</span>, <span class="va">control</span>, bind <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_ratio</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">treatment</span>,</span>
+<span>  <span class="va">control</span>,</span>
+<span>  ratio_colname <span class="op">=</span> <span class="st">"ratio"</span>,</span>
+<span>  missing_colname <span class="op">=</span> <span class="st">"missing"</span>,</span>
+<span>  bind <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,6 +90,14 @@ transformed SILAC/label-free intensity columns.</p>
 
 <dt>treatment, control</dt>
 <dd><p><code>variable</code>. Name of numeric column in the data.frame.</p></dd>
+
+
+<dt>ratio_colname</dt>
+<dd><p><code>character</code>. Name for the output ratio column</p></dd>
+
+
+<dt>missing_colname</dt>
+<dd><p><code>character</code>. Name for the output missing column</p></dd>
 
 
 <dt>bind</dt>
