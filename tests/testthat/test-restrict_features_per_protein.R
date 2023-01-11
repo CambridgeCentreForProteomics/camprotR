@@ -47,6 +47,7 @@ test_that("restrict_features_per_protein() works", {
       master_protein_col = "Master.Protein.Accessions",
       plot = FALSE
     ),
-    "restrict-features-msnset.txt"
+    "restrict-features-msnset.txt",
+    cran = TRUE
   )
 })

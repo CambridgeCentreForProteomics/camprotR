@@ -34,7 +34,8 @@ test_that("parse_PTM_scores() works", {
     snap_parse_PTM_scores(
       df = MSnbase::ms2df(small_psm_tmt_phospho) # convert MSnSet to data.frame
     ),
-    "psm_tmt_phospho_parsed.txt"
+    "psm_tmt_phospho_parsed.txt",
+    cran = TRUE
   )
 
   # test that error is produced if input is incorrect class
@@ -81,7 +82,8 @@ test_that("add_PTM_positions() works", {
       df = target,
       crap_fasta = system.file("extdata", "cRAP_20190401.fasta.gz", package = "camprotR")
     ),
-    "psm_tmt_phospho_scored.txt"
+    "psm_tmt_phospho_scored.txt",
+    cran = TRUE
   )
 })
 

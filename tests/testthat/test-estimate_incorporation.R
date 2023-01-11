@@ -29,6 +29,6 @@ test_that("estimate_incorporation() works", {
     write.table(out$incorporation_table, file = tf,
                 sep = "\t", row.names = FALSE, col.names = TRUE)
 
-    expect_snapshot_file(tf, "estimate-incorporation-table")
+    expect_snapshot_file(tf, "estimate-incorporation-table", cran = TRUE)
   })
 })

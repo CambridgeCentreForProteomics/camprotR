@@ -20,7 +20,7 @@ parse_PTM_scores <- function(obj,
                              prob_split = '; |: ',
                              collapse_delimiter = ";",
                              verbose = TRUE) {
-  if (class(obj) != "data.frame") {
+  if (!inherits(obj, "data.frame")) {
     stop("'obj' must be a data.frame")
   }
 

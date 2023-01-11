@@ -60,8 +60,8 @@ plot_TMT_notch <- function(obj, notch_lower=3.75, notch_upper=5.75, facet_by_sam
     log(base=2) %>%
     plot_quant(method='histogram', facet_by_sample=facet_by_sample) +
     xlab('PSM intensity (log2)') +
-    geom_vline(xintercept=log2(notch_lower), size=0.5, colour=colours[2]) +
-    geom_vline(xintercept=log2(notch_upper), size=0.5, colour=colours[1])
+    geom_vline(xintercept=log2(notch_lower), linewidth=0.5, colour=colours[2]) +
+    geom_vline(xintercept=log2(notch_upper), linewidth=0.5, colour=colours[1])
 
   if(facet_by_sample){
     psm_metrics <- get_psm_metrics(obj, threshold=notch_upper, group_by_sample=TRUE) %>%
@@ -111,7 +111,7 @@ get_notch_per_protein <- function(obj,
 
   notch_per_protein <- data.frame(exprs(obj)<log2(notch_upper)) %>%
     merge(fData(obj)[,master_prot_col, drop=FALSE], by='row.names') %>%
-    gather(key='sample', value='below_notch', -c(.data$Row.names, !!sym(master_prot_col))) %>%
+    gather(key='sample', value='below_notch', -c("Row.names", !!sym(master_prot_col))) %>%
     filter(!!sym(master_prot_col) %in% retain_prot) %>%
     filter(!is.na(.data$below_notch)) %>%
     #tibble::rownames_to_column('sample') %>%
@@ -209,7 +209,7 @@ plot_missing_SN <- function(obj,
     group_by(.data$n_missing, .data$binned_sn) %>%
     tally() %>%
     ggplot(aes(.data$binned_sn, n, fill=factor(n_missing))) +
-    geom_bar(stat='identity', position='fill', colour='grey20', lwd=0.1) +
+    geom_bar(stat='identity', position='fill', colour='grey20', linewidth=0.1) +
     scale_fill_manual(values=c('grey70', pal(max(n_missing))), name='Missing values') +
     guides(colour=guide_legend(override.aes = list(size = 1.5))) +
     xlab('Signal:Noise') +
@@ -242,7 +242,7 @@ plot_missing_SN_per_sample <- function(obj,
     exprs() %>%
     data.frame() %>%
     tibble::rownames_to_column('PSM_id') %>%
-    gather(key='sample', value="value", -.data$PSM_id) %>%
+    gather(key='sample', value="value", -"PSM_id") %>%
     merge(fData(obj)[,sn_column, drop=FALSE], by.x='PSM_id', by.y='row.names') %>%
     filter(is.finite(.data$Average.Reporter.SN))
 
@@ -256,7 +256,7 @@ plot_missing_SN_per_sample <- function(obj,
     mutate(percentage_missing=(100*.data$missing)/(.data$missing+.data$present),
            sample=remove_x(.data$sample)) %>%
     ggplot(aes(.data$binned_sn, sample, fill=.data$percentage_missing)) +
-    geom_tile(colour='grey20', lwd=0.1) +
+    geom_tile(colour='grey20', linewidth=0.1) +
     scale_fill_gradient(low='grey97', high=get_cat_palette(1), name='Missing (%)',
                         limits=c(0,100)) +
     theme_camprot(base_size=10) +
