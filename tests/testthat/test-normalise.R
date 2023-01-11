@@ -25,6 +25,7 @@ test_that("center_normalise_to_ref() works", {
     snap_center_normalise_to_ref(
       msnset = small_psm_tmt_total
     ),
-    "center_normalise_to_ref.txt"
+    "center_normalise_to_ref.txt",
+    cran = TRUE
   )
 })

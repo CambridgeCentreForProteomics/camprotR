@@ -73,11 +73,13 @@ can be assigned to a keratin which is not in the provided cRAP database.
 
 Using \code{filter_associated_crap = TRUE} will filter out f2 and f3 in
 addition to f1, in the example below; regardless of the value in the
-Master.Protein.Accession column.\preformatted{feature  Protein.Accessions         Master.Protein.Accessions
+Master.Protein.Accession column.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{feature  Protein.Accessions         Master.Protein.Accessions
 f1       protein1, protein2, cRAP,  protein1,
 f2       protein1, protein3         protein3,
 f3       protein2                   protein2
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

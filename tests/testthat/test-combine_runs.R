@@ -28,6 +28,7 @@ test_that("get_parsimony_pep2prot() works", {
         test_path("testdata/small_pep_silac_p4.txt")
       )
     ),
-    "parsimony.txt"
+    "parsimony.txt",
+    cran = TRUE
   )
 })

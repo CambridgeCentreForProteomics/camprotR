@@ -25,7 +25,8 @@ test_that("update_average_sn() works", {
     snap_update_average_sn(
       msnset = small_psm_tmt_total
     ),
-    "update_average_sn.txt"
+    "update_average_sn.txt",
+    cran = TRUE
   )
 })
 
@@ -69,7 +70,8 @@ test_that("filter_TMT_PSMs() works", {
       sn_thresh = 10,
       output = "exprs"
     ),
-    "filter_TMT_PSMs_exprs.txt"
+    "filter_TMT_PSMs_exprs.txt",
+    cran = TRUE
   )
 
   # compare tempfile (feature data) to snapshot file
@@ -80,6 +82,7 @@ test_that("filter_TMT_PSMs() works", {
       sn_thresh = 10,
       output = "fData"
     ),
-    "filter_TMT_PSMs_fData.txt"
+    "filter_TMT_PSMs_fData.txt",
+    cran = TRUE
   )
 })

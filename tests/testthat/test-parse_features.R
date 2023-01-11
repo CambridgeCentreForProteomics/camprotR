@@ -53,7 +53,8 @@ test_that("parse_features() works with TMT PSM data", {
       level = "PSM",
       crap_proteins = crap_accessions
     ),
-    "psm_tmt_total_parsed.txt"
+    "psm_tmt_total_parsed.txt",
+    cran = TRUE
   )
 })
 
@@ -70,7 +71,8 @@ test_that("parse_features() works with SILAC peptide data", {
       level = "peptide",
       crap_proteins = crap_accessions
     ),
-    "small_pep_silac_p4_parsed.txt"
+    "small_pep_silac_p4_parsed.txt",
+    cran = TRUE
   )
 })
 

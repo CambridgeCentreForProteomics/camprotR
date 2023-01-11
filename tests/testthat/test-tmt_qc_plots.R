@@ -43,7 +43,8 @@ test_that("get_notch_per_protein() works", {
     snap_get_notch_per_protein(
       msnset = small_psm_tmt_phospho
     ),
-    "notch_per_protein.txt"
+    "notch_per_protein.txt",
+    cran = TRUE
   )
 })
 

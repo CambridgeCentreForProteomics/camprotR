@@ -23,6 +23,7 @@ test_that("silac_psm_seq_int() works", {
       infile = test_path("testdata/small_psm_silac_p4.txt"),
       sequence_col = "Annotated.Sequence"
     ),
-    "silac_psm_seq_int.txt"
+    "silac_psm_seq_int.txt",
+    cran = TRUE
   )
 })
