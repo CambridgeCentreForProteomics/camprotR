@@ -43,7 +43,7 @@ get_sequence2protein <- function(seq2prot,
 
   # get unique seq->prot mappings
   seq_protein <- seq2prot %>%
-    separate_rows(.data$Protein.Accessions, sep='; ') %>%
+    separate_rows("Protein.Accessions", sep='; ') %>%
     dplyr::select(all_of(c(seq_col, prot_col))) %>%
     distinct()
 

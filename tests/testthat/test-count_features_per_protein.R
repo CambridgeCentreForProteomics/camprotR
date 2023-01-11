@@ -23,6 +23,7 @@ test_that("count_features_per_protein() works", {
       msnset = small_psm_tmt_total,
       master_prot_col = "Master.Protein.Accessions"
     ),
-    "feature_count.txt"
+    "feature_count.txt",
+    cran = TRUE
   )
 })

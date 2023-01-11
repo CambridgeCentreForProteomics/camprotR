@@ -35,9 +35,9 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMTYyLjc1fDYyNy42M3w1MC4wNHw1MTQuOTE=)'>
-<rect x='183.88' y='362.38' width='70.44' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #BEBEBE;' />
-<rect x='183.88' y='217.10' width='23.48' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #7F96B9;' />
-<rect x='183.88' y='71.83' width='352.18' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #2271B2;' />
+<rect x='183.88' y='362.38' width='70.44' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BEBEBE;' />
+<rect x='183.88' y='217.10' width='23.48' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #7F96B9;' />
+<rect x='183.88' y='71.83' width='352.18' height='130.75' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2271B2;' />
 <text x='606.50' y='431.55' text-anchor='end' style='font-size: 11.04px; font-family: sans;' textLength='12.28px' lengthAdjust='spacingAndGlyphs'>22</text>
 <text x='606.50' y='286.27' text-anchor='end' style='font-size: 11.04px; font-family: sans;' textLength='12.28px' lengthAdjust='spacingAndGlyphs'>78</text>
 <text x='606.50' y='141.00' text-anchor='end' style='font-size: 11.04px; font-family: sans;' textLength='18.42px' lengthAdjust='spacingAndGlyphs'>304</text>

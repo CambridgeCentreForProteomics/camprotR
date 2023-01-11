@@ -30,7 +30,7 @@ count_features_per_protein <- function(obj, master_prot_col='Master.Protein.Acce
     exprs() %>%
     data.frame() %>%
     tibble::rownames_to_column('feature') %>%
-    tidyr::pivot_longer(-.data$feature, names_to='sample') %>%
+    tidyr::pivot_longer(-"feature", names_to='sample') %>%
     dplyr::mutate(sample=remove_x(.data$sample)) %>%
     filter(is.finite(.data$value)) %>%
     merge(fData(obj)[,master_prot_col,drop=FALSE], by.x='feature', by.y='row.names') %>%

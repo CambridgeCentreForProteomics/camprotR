@@ -67,8 +67,8 @@ silac_psm_seq_int <- function(
     group_by(across(all_of(c(sequence_col, group_cols, mod_col)))) %>%
     tally() %>%
     mutate('matched'=TRUE) %>%
-    pivot_wider(names_from=.data$Quan.Channel,
-                values_from=c(.data$n, .data$matched)) %>%
+    pivot_wider(names_from="Quan.Channel",
+                values_from=c("n", "matched")) %>%
     mutate(n_Light=replace_na(.data$n_Light, 0),
            n_Heavy=replace_na(.data$n_Heavy, 0),
            matched_Light=replace_na(.data$matched_Light, FALSE),

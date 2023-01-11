@@ -28,7 +28,7 @@ restrict_features_per_protein <- function(obj,
   n_feature_per_prot <- exprs(obj) %>%
     data.frame() %>%
     tibble::rownames_to_column('feature_ID') %>%
-    gather(key = 'sample', value = 'value', -.data$feature_ID) %>%
+    gather(key = 'sample', value = 'value', -"feature_ID") %>%
     merge(feature2protein, by = "feature_ID") %>%
     filter(is.finite(.data$value)) %>%
     group_by(!!sym(master_protein_col), sample) %>%
@@ -48,8 +48,8 @@ restrict_features_per_protein <- function(obj,
       by = master_protein_col
     ) %>%
     mutate(retain = n >= min_features) %>%
-    dplyr::select(sample, .data$retain, .data$feature_ID) %>%
-    spread(key = sample, value = .data$retain) %>%
+    dplyr::select(sample, "retain", "feature_ID") %>%
+    spread(key = sample, value = "retain") %>%
     tibble::column_to_rownames('feature_ID') %>%
     as.matrix.data.frame()
 
