@@ -323,8 +323,10 @@ add_peptide_positions <- function(obj,
     if (!protein %in% names(proteome)) {
       return(c(NA, NA))
     }
-    peptide_start <- Biostrings::start(Biostrings::matchPattern(sequence, proteome[[protein]]))
-    peptide_end <- Biostrings::end(Biostrings::matchPattern(sequence, proteome[[protein]]))
+
+    m <- gregexpr(sprintf('(?=(%s))', sequence), proteome[[protein]], perl=T)[[1]]
+    peptide_start <- attr(m,"capture.start")
+    peptide_end <- attr(m,"capture.start") + attr(m,"capture.length") - 1
 
     if (length(peptide_start) != 1) {
       return(c(NA, NA))
@@ -334,7 +336,6 @@ add_peptide_positions <- function(obj,
       return(c(peptide_start, peptide_end))
     }
   }
-
 
   obj[, c('peptide_start', 'peptide_end')] <- t(apply(
     obj,
