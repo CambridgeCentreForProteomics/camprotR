@@ -47,7 +47,6 @@ silac_psm_seq_int <- function(
 
   obj <- obj %>%
     filter(.data$Quan.Channel!='') %>%
-    rowwise() %>%
     filter(is.finite(.data$Precursor.Abundance))
 
   obj[[mod_col]] <- remove_silac_modifications(
@@ -66,13 +65,10 @@ silac_psm_seq_int <- function(
   obj_seq <- obj %>%
     group_by(across(all_of(c(sequence_col, group_cols, mod_col)))) %>%
     tally() %>%
+    ungroup() %>%
     mutate('matched'=TRUE) %>%
     pivot_wider(names_from="Quan.Channel",
-                values_from=c("n", "matched")) %>%
-    mutate(n_Light=replace_na(.data$n_Light, 0),
-           n_Heavy=replace_na(.data$n_Heavy, 0),
-           matched_Light=replace_na(.data$matched_Light, FALSE),
-           matched_Heavy=replace_na(.data$matched_Heavy, FALSE))
+                values_from=c("n", "matched"))
 
   # Depending on which SILAC modifications in Quan.Channel column,
   # the output columns need to be updated
