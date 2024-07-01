@@ -84,7 +84,7 @@
                         <h4 data-toc-skip class="author">Charlotte
 Dawson</h4>
             
-            <h4 data-toc-skip class="date">2023-01-17</h4>
+            <h4 data-toc-skip class="date">2024-07-01</h4>
       
       
       <div class="hidden name"><code>crap.Rmd</code></div>
@@ -223,7 +223,7 @@ just use a temporary file.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ccp_tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".fasta"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/download_ccp_crap.html">download_ccp_crap</a></span><span class="op">(</span><span class="va">ccp_tmp</span>, is_crap <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading from UniProtKB release: 2022_05</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading from UniProtKB release: 2024_03</span></span></code></pre></div>
 <p>We can load this FASTA file into R and take a look.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ccp_crap</span> <span class="op">&lt;-</span> <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html" class="external-link">readAAStringSet</a></span><span class="op">(</span><span class="va">ccp_tmp</span><span class="op">)</span></span>
@@ -343,7 +343,7 @@ set <code>is_crap = FALSE</code>.</p>
 <span><span class="fu"><a href="../reference/make_fasta.html">make_fasta</a></span><span class="op">(</span>accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P00776"</span>, <span class="st">"P00777"</span>, <span class="st">"P80561"</span><span class="op">)</span>,</span>
 <span>                file <span class="op">=</span> <span class="va">griseus_tmp</span>,</span>
 <span>                is_crap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading from UniProtKB release: 2022_05</span></span></code></pre></div>
+<span><span class="co">#&gt; Downloading from UniProtKB release: 2024_03</span></span></code></pre></div>
 <p>Before we add these to our CCP cRAP FASTA, we just need to take note
 of what cRAP number the sequences headers stop at.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
